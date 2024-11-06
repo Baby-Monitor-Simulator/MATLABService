@@ -4,6 +4,9 @@ import com.babymonitoring.simulationplayer.models.results.FMPResult;
 
 import java.util.UUID;
 
+/**
+ * Class for a FMPResult message to a UUID user
+ */
 public class CoordsMessage extends Message {
     FMPResult fmpResult;
 

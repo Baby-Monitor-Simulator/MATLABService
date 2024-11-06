@@ -142,8 +142,9 @@ public class Simulation {
                     series.add(xCoord, yCoord); // Series.add( X-as, Y-as )
                     //---------------------
 
-                    //WEBSOCKET
+                    //----- WEBSOCKET -----
                     //controller.SendCoords(new CoordsMessage(userId, xCoord, yCoord));
+                    //---------------------
 
                     timeIndex++;
 
@@ -196,19 +197,8 @@ public class Simulation {
 
 
         Object[] tempSimResults = getProductionMatlabResultAsync(vMother, vUterus, vFoetus, vUmbilical, vBrain, vCAVmodel, vScen, vHES, vPersen, vDuty, vNCycleMax, vLamb).get();
-        //timer = new Timer(180, new ActionListener() {
-        //    @Override
-        //    public void actionPerformed(ActionEvent e) {
-        //        try {
-        //double xCoord = timeIndex + prevTimeIndex;
-        //double yCoord = simResults[(int) timeIndex];
 
-        //System.out.println("COORDS: " + xCoord + ", " + yCoord);
-
-
-        //----- For debug -----
-        //System.out.println("COORDS: " + xCoord + ", " + yCoord);
-        //System.out.println(Arrays.toString(simResults));
+        //------------------------ Use output to make new results ------------------------
         Object[] pUt = (Object[]) tempSimResults[0];
         double[] pUtT = (double[]) pUt[0];
         double[] pUtV = (double[]) pUt[1];
@@ -218,11 +208,13 @@ public class Simulation {
             upResults[i] = upResult;
         }
 
-
+        //Just here if we need it
+        /*
         Object[] qUt = (Object[]) tempSimResults[1];
         double[] qUtT = (double[]) qUt[0];
         double[] qUtV = (double[]) qUt[1];
-        //FHRResult fhrResult = new FHRResult(qUtT, qUtV);
+        FHRResult fhrResult = new FHRResult(qUtT, qUtV);
+        */
 
         Object[] pAo = (Object[]) tempSimResults[2];
         double[] pAoT = (double[]) pAo[0];
@@ -250,47 +242,25 @@ public class Simulation {
             FHRResult fhrResult = new FHRResult(FHRT[i], FHRV[i]);
             fhrResults[i] = fhrResult;
         }
-
         FMPResult fmpResult = new FMPResult(fhrResults, mapResults, o2PResults, upResults);
-
-        //SplitResults(userId, fmpResult);
-        CorrectResults(userId, fmpResult);
+        //--------------------------------------------------------------------------------
 
 
-        //series.add(xCoord, yCoord); // Series.add( X-as, Y-as )
-        //            timeIndex += 0.1;
-        //            prevTimeIndex = timeIndex + prevTimeIndex;
-        //            timeIndex = 0;
-        //---------------------
-
-        //----- For WEBSOCKET -----
-        //controller.SendCoords(new CoordsMessage(userId, fmpResult));
-        //-------------------------
-
-                    /*timeIndex++;
-
-                    if (timeIndex == 2){
-                        simResults = getProductionMatlabResultAsync(vMother, vUterus, vFoetus, vUmbilical, vBrain, vCAVmodel, vScen, vHES, vPersen, vDuty, vNCycleMax, vLamb).get();
-                    }
-
-                    if ((endSimulation || timeIndex >= steps)) {
-                        if (simPreResults.isDone() && (simResults[timeIndex-2] < simResults[timeIndex-1]) && simIsinRange(simResults[timeIndex]) ) {
-                            endSimulation = false;
-                            simcount++;
-                            prevTimeIndex = timeIndex + prevTimeIndex;
-                            timeIndex = 0;
-                            simResults = simPreResults.get();
-                        }
-                    }*/
-        //        } catch (Exception ex) {
-        //            ex.printStackTrace();
-        //        }
-        //    }
-        //});
-        //timer.start();
+        //------------------ Send CoordsMessage to the websocket through the controller ------------------
+        FMPResult[] results = SplitList(500,CorrectResults(fmpResult));
+        for (int i = 0; i < results.length; i++) {
+            controller.SendCoords(new CoordsMessage(userId, results[i]));
+        }
+        //------------------------------------------------------------------------------------------------
     }
 
-    private void CorrectResults (UUID userId, FMPResult fmpResult) {
+    /**
+     * Method which removes unnecessary amounts of data
+     *
+     * @param fmpResult The FMPResult class from your MatLab data
+     * @return FMPResult with possible removed data
+     */
+    private FMPResult CorrectResults (FMPResult fmpResult) {
         double timeSpanDif = 0.1;
         double uPressureDif = 0.1;
 
@@ -302,23 +272,23 @@ public class Simulation {
         for (int i = 0; i < fmpResult.upResult.length; i++) {
             UPResult result = fmpResult.upResult[i];
             if (i != 0 && i < (fmpResult.upResult.length - 1)) {
-                if ((timeSpan + timeSpanDif) < result.timeSpan) {
+                if ((timeSpan + timeSpanDif) < result.timeSpan) { //If timespan difference is big enough
                     newList.add(result);
                     timeSpan = result.timeSpan;
                     uPressure = result.uPressure;
                 }
-                else if ((uPressure + uPressureDif) < result.uPressure) {
+                else if ((uPressure + uPressureDif) < result.uPressure) { //If pressure difference is big enough
                     newList.add(result);
                     timeSpan = result.timeSpan;
                     uPressure = result.uPressure;
                 }
             }
-            else if (i != 0) {
+            else if (i != 0) { //If pressure isn`t big enough
                 newList.add(result);
                 timeSpan = result.timeSpan;
                 uPressure = result.uPressure;
             }
-            else {
+            else { //If first value
                 timeSpan = result.timeSpan;
                 uPressure = result.uPressure;
 
@@ -328,55 +298,76 @@ public class Simulation {
 
         fmpResult.upResult = newList.toArray(new UPResult[0]);
 
-
-        //double timeIndex = 0.5;
-        //int UPIndex = getTimedIndex(timeIndex, fmpResult.upResult);
-        //int O2PIndex = getTimedIndex(timeIndex, fmpResult.o2PResult);
-        //int MAPIndex = getTimedIndex(timeIndex, fmpResult.mapResult);
-        //int FHRIndex = getTimedIndex(timeIndex, fmpResult.fhrResult);
-
-
-
-        ObjectMapper mapper = new ObjectMapper();
-        try {
-            String json = mapper.writeValueAsString(fmpResult);
-            System.out.println(json);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
-
-        controller.SendCoords(new CoordsMessage(userId, fmpResult));
+        return fmpResult;
     }
 
-//    private void SplitResults (UUID userId, FMPResult fmpResult) {
-//        double timeIndex = 0.5;
-//
-//        //int UPIndex = getTimedIndex(timeIndex, fmpResult.upResult);
-//        //int O2PIndex = getTimedIndex(timeIndex, fmpResult.o2PResult);
-//        //int MAPIndex = getTimedIndex(timeIndex, fmpResult.mapResult);
-//        //int FHRIndex = getTimedIndex(timeIndex, fmpResult.fhrResult);
-//
-//
-//
-//        ObjectMapper mapper = new ObjectMapper();
-//        try {
-//            String json = mapper.writeValueAsString(fmpResult);
-//            System.out.println(json);
-//        } catch (JsonProcessingException e) {
-//            e.printStackTrace();
-//        }
-//
-//        controller.SendCoords(new CoordsMessage(userId, fmpResult));
-//    }
+    /**
+     * Method which splits one FMPResult into multiple if needed.
+     *
+     * @param arraySize The maximum size for the new arrays
+     * @param fmpResult The FMPResult class from corrected
+     * @return FMPResult array with split FMPResults
+     */
+    private FMPResult[] SplitList(double arraySize, FMPResult fmpResult) {
+        int length = 1;
 
-    private int getTimedIndex(double timeIndex, Result[] array) {
-        int index = -1;
+        //------------------------ Check for amount of messages ------------------------
+        double UPCeil = Math.ceil((double) fmpResult.upResult.length / arraySize);
+        if (UPCeil > length) length = (int) UPCeil;
 
-        for (int i = 0; i < array.length; i++) {
-            if (array[i].timeSpan > timeIndex) {
-                return i; // Return the first index where value is greater than x
+        double O2PCeil = Math.ceil((double) fmpResult.o2PResult.length / arraySize);
+        if (O2PCeil > length) length = (int) O2PCeil;
+
+        double MAPCeil = Math.ceil((double) fmpResult.mapResult.length / arraySize);
+        if (MAPCeil > length) length = (int) MAPCeil;
+
+        double FHRCeil = Math.ceil((double) fmpResult.fhrResult.length / arraySize);
+        if (FHRCeil > length) length = (int) FHRCeil;
+        //------------------------------------------------------------------------------
+
+        FMPResult[] fmpResultExport = new FMPResult[length];
+        int index = 0;
+        List<UPResult> upResults = new ArrayList<>();
+        List<O2PResult> o2pResults = new ArrayList<>();
+        List<MAPResult> mapResults = new ArrayList<>();
+        List<FHRResult> fhrResults = new ArrayList<>();
+
+        //------------------------ A for loop for the max length of the arrays ------------------------
+        for (int i = 0; i < length * arraySize; i++) {
+            if (i == arraySize) {
+                fmpResultExport[index] = new FMPResult();
+                fmpResultExport[index].upResult = upResults.toArray(new UPResult[0]);
+                fmpResultExport[index].o2PResult = o2pResults.toArray(new O2PResult[0]);
+                fmpResultExport[index].mapResult = mapResults.toArray(new MAPResult[0]);
+                fmpResultExport[index].fhrResult = fhrResults.toArray(new FHRResult[0]);
+
+                upResults = new ArrayList<>();
+                o2pResults = new ArrayList<>();
+                mapResults = new ArrayList<>();
+                fhrResults = new ArrayList<>();
+
+                index++;
+            }
+            if (i < fmpResult.upResult.length) {
+                upResults.add(fmpResult.upResult[i]);
+            }
+            if (i < fmpResult.o2PResult.length) {
+                o2pResults.add(fmpResult.o2PResult[i]);
+            }
+            if (i < fmpResult.mapResult.length) {
+                mapResults.add(fmpResult.mapResult[i]);
+            }
+            if (i < fmpResult.fhrResult.length) {
+                fhrResults.add(fmpResult.fhrResult[i]);
             }
         }
-        return index;
+        //----------------------------------------------------------------------------------------------
+        fmpResultExport[index] = new FMPResult();
+        fmpResultExport[index].upResult = upResults.toArray(new UPResult[0]);
+        fmpResultExport[index].o2PResult = o2pResults.toArray(new O2PResult[0]);
+        fmpResultExport[index].mapResult = mapResults.toArray(new MAPResult[0]);
+        fmpResultExport[index].fhrResult = fhrResults.toArray(new FHRResult[0]);
+
+        return fmpResultExport;
     }
 }

@@ -2,6 +2,9 @@ package com.babymonitoring.simulationplayer.models.messages;
 
 import java.util.UUID;
 
+/**
+ * Base class for messages
+ */
 public class Message {
     UUID UserId;
 
