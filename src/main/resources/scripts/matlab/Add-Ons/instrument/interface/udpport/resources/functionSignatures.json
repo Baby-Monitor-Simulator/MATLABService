@@ -1,0 +1,535 @@
+{
+    "udpport": {
+        "inputs": [
+            {
+                "name": "Type",
+                "kind": "ordered",
+                "type": "choices = {'byte', 'datagram'}"
+            },
+            {
+                "name": "IPAddressVersion",
+                "kind": "ordered",
+                "type": "choices = {'IPV4', 'IPV6'}"
+            },
+            {
+                "name": "ByteOrder",
+                "kind": "namevalue",
+                "type": "choices={'little-endian', 'big-endian'}"
+            },
+            {
+                "name": "Timeout",
+                "kind": "namevalue",
+                "type": "double"
+            },
+            {
+                "name": "Tag",
+                "kind": "namevalue",
+                "type": [
+                    [ "scalar", "string" ],
+                    [ "char" ]
+                ]
+            },
+            {
+                "name": "LocalHost",
+                "kind": "namevalue",
+                "type": [ "scalar", "string", "char" ]
+            },
+            {
+                "name": "LocalPort",
+                "kind": "namevalue",
+                "type": [ "scalar", "integer", ">=0", "<=65535" ]
+            },
+            {
+                "name": "OutputDatagramSize",
+                "kind": "namevalue",
+                "type": [ "scalar", "integer", "positive" ]
+            },
+            {
+                "name": "EnablePortSharing",
+                "kind": "namevalue",
+                "type": [ "scalar", "logical" ]
+            }
+
+        ],
+        "outputs": [
+            {
+                "name": "obj",
+                "type": [
+                    [ "udpport.byte.UDPPort" ],
+                    [ "udpport.datagram.UDPPort" ]
+                ]
+            }
+        ]
+    },
+    "udpport.byte.UDPPort.delete": {
+        "inputs": [
+            {
+                "name": "obj",
+                "kind": "required",
+                "type": "udpport.byte.UDPPort"
+            }
+        ]
+    },
+    "udpport.datagram.UDPPort.delete": {
+        "inputs": [
+            {
+                "name": "obj",
+                "kind": "required",
+                "type": "udpport.datagram.UDPPort"
+            }
+        ]
+    },
+    "udpport.byte.UDPPort.read": {
+        "inputs": [
+            {
+                "name": "obj",
+                "kind": "required",
+                "type": "udpport.byte.UDPPort"
+            },
+            {
+                "name": "count",
+                "kind": "required",
+                "type": [ "integer", "scalar", "positive" ]
+            },
+            {
+                "name": "precision",
+                "kind": "positional",
+                "type": "choices= matlabshared.transportlib.internal.client.GenericClient.PrecisionOptions"
+            }
+        ],
+        "outputs": [
+            {
+                "name": "data",
+                "type": [
+                    [ "double" ],
+                    [ "string" ],
+                    [ "char" ]
+                ]
+            }
+        ]
+    },
+    "udpport.datagram.UDPPort.read": {
+        "inputs": [
+            {
+                "name": "obj",
+                "kind": "required",
+                "type": "udpport.datagram.UDPPort"
+            },
+            {
+                "name": "count",
+                "kind": "required",
+                "type": [ "integer", "scalar", "positive" ]
+            },
+            {
+                "name": "precision",
+                "kind": "positional",
+                "type": "choices= matlabshared.transportlib.internal.client.GenericClient.PrecisionOptions"
+            }
+        ],
+        "outputs": [
+            {
+                "name": "data",
+                "type": "udpport.datagram.Datagram"
+            }
+        ]
+    },
+    "udpport.byte.UDPPort.write": {
+        "inputs": [
+            {
+                "name": "obj",
+                "kind": "required",
+                "type": "udpport.byte.UDPPort"
+            },
+            {
+                "name": "data",
+                "kind": "required",
+                "type": [
+                    [ "numeric" ],
+                    [ "char" ],
+                    [ "string" ]
+                ]
+            },
+            {
+                "name": "precision",
+                "kind": "ordered",
+                "type": "choices= matlabshared.transportlib.internal.client.GenericClient.PrecisionOptions"
+            },
+            {
+                "name": "destinationAddress",
+                "kind": "positional",
+                "type": [
+                    [ "char" ],
+                    [ "scalar", "string" ]
+                ]
+            },
+            {
+                "name": "destinationPort",
+                "kind": "positional",
+                "type": [ "scalar", "integer", ">=0", "<=65535" ]
+            }
+        ]
+    },
+    "udpport.datagram.UDPPort.write": {
+        "inputs": [
+            {
+                "name": "obj",
+                "kind": "required",
+                "type": "udpport.datagram.UDPPort"
+            },
+            {
+                "name": "data",
+                "kind": "required",
+                "type": [
+                    [ "numeric" ],
+                    [ "char" ],
+                    [ "string" ]
+                ]
+            },
+            {
+                "name": "precision",
+                "kind": "ordered",
+                "type": "choices= matlabshared.transportlib.internal.client.GenericClient.PrecisionOptions"
+            },
+            {
+                "name": "destinationAddress",
+                "kind": "positional",
+                "type": [
+                    [ "char" ],
+                    [ "scalar", "string" ]
+                ]
+            },
+            {
+                "name": "destinationPort",
+                "kind": "positional",
+                "type": [ "scalar", "integer", ">=0", "<=65535" ]
+            }
+        ]
+    },
+    "udpport.byte.UDPPort.readline": {
+        "inputs": [
+            {
+                "name": "obj",
+                "kind": "required",
+                "type": "udpport.byte.UDPPort"
+            }
+        ],
+        "outputs": [
+            {
+                "name": "data",
+                "type": "string"
+            }
+        ]
+    },
+    "udpport.byte.UDPPort.writeline": {
+        "inputs": [
+            {
+                "name": "obj",
+                "kind": "required",
+                "type": "udpport.byte.UDPPort"
+            },
+            {
+                "name": "data",
+                "kind": "required",
+                "type": [ "char", "string" ]
+            },
+            {
+                "name": "destinationAddress",
+                "kind": "positional",
+                "type": [
+                    [ "char" ],
+                    [ "scalar", "string" ]
+                ]
+            },
+            {
+                "name": "destinationPort",
+                "kind": "positional",
+                "type": [ "scalar", "integer", ">=0", "<=65535" ]
+            }
+        ]
+    },
+    "udpport.byte.UDPPort.flush": {
+        "inputs": [
+            {
+                "name": "obj",
+                "kind": "required",
+                "type": "udpport.byte.UDPPort"
+            },
+            {
+                "name": "buffer",
+                "kind": "ordered",
+                "type": "choices={'input','output'}"
+            }
+        ]
+    },
+    "udpport.datagram.UDPPort.flush": {
+        "inputs": [
+            {
+                "name": "obj",
+                "kind": "required",
+                "type": "udpport.datagram.UDPPort"
+            },
+            {
+                "name": "buffer",
+                "kind": "ordered",
+                "type": "choices={'input','output'}"
+            }
+        ]
+    },
+    "udpport.byte.UDPPort.configureCallback": {
+        "inputs": [
+            {
+                "name": "obj",
+                "kind": "required",
+                "type": "udpport.byte.UDPPort"
+            },
+            {
+                "name": "mode",
+                "kind": "required",
+                "type": "choices={'off', 'byte', 'terminator'}"
+            },
+            {
+                "name": "count",
+                "kind": "positional",
+                "type": ["integer", "scalar", "positive"]
+            },
+            {
+                "name": "callbackfcn",
+                "kind": "positional",
+                "type": [ "function_handle", "scalar" ]
+            }
+        ]
+    },
+    "udpport.datagram.UDPPort.configureCallback": {
+        "inputs": [
+            {
+                "name": "obj",
+                "kind": "required",
+                "type": "udpport.datagram.UDPPort"
+            },
+            {
+                "name": "mode",
+                "kind": "required",
+                "type": "choices={'off', 'datagram'}"
+            },
+            {
+                "name": "count",
+                "kind": "positional",
+                "type": [ "integer", "scalar", "positive" ]
+            },
+            {
+                "name": "callbackfcn",
+                "kind": "positional",
+                "type": [ "function_handle", "scalar" ]
+            }
+        ]
+    },
+    "udpport.byte.UDPPort.configureTerminator": {
+        "inputs": [
+            {
+                "name": "obj",
+                "kind": "required",
+                "type": "udpport.byte.UDPPort"
+            },
+            {
+                "name": "terminator",
+                "kind": "required",
+                "type": [
+                    [ "integer", "scalar", ">=0", "<=255" ],
+                    [ "choices={'LF', 'CR', 'CR/LF'}" ]
+                ]
+            },
+            {
+                "name": "writeTerminator",
+                "kind": "ordered",
+                "type": [
+                    [ "integer", "scalar", ">=0", "<=255" ],
+                    [ "choices={'LF', 'CR', 'CR/LF'}" ]
+                ]
+            }
+        ]
+    },
+    "udpport.byte.UDPPort.configureMulticast": {
+        "inputs": [
+            {
+                "name": "obj",
+                "kind": "required",
+                "type": "udpport.byte.UDPPort"
+            },
+            {
+                "name": "address",
+                "kind": "required",
+                "type": [
+                    [ "scalar", "string" ],
+                    [ "char" ],
+                    [ "choices={'off'}" ]
+                ]
+            },
+            {
+                "name": "loopback",
+                "kind": "ordered",
+                "type": [ "logical", "scalar" ]
+            }
+        ]
+    },
+    "udpport.datagram.UDPPort.configureMulticast": {
+        "inputs": [
+            {
+                "name": "obj",
+                "kind": "required",
+                "type": "udpport.datagram.UDPPort"
+            },
+            {
+                "name": "address",
+                "kind": "required",
+                "type": [
+                    [ "scalar", "string" ],
+                    [ "char" ],
+                    [ "choices={'off'}" ]
+                ]
+            },
+            {
+                "name": "loopback",
+                "kind": "ordered",
+                "type": [ "logical", "scalar" ]
+            }
+        ]
+    },
+    "udpportfind": {
+        "inputs": [
+            {
+                "name": "Tag",
+                "kind": "namevalue",
+                "type": [
+                    [ "scalar", "string" ],
+                    [ "char" ]
+                ]
+            },
+            {
+                "name": "IPAddressVersion",
+                "kind": "namevalue",
+                "type": "choices = {'IPV4', 'IPV6'}"
+            },
+            {
+                "name": "ByteOrder",
+                "kind": "namevalue",
+                "type": "choices = matlabshared.transportlib.internal.TabCompletionUtility.ByteOrder"
+            },
+            {
+                "name": "Timeout",
+                "kind": "namevalue",
+                "type": [ "numeric", ">=0" ]
+            },
+            {
+                "name": "LocalHost",
+                "kind": "namevalue",
+                "type": [ "scalar", "string", "char" ]
+            },
+            {
+                "name": "LocalPort",
+                "kind": "namevalue",
+                "type": [ "scalar", "integer", ">=0", "<=65535" ]
+            },
+            {
+                "name": "OutputDatagramSize",
+                "kind": "namevalue",
+                "type": [ "scalar", "integer", "positive" ]
+            },
+            {
+                "name": "EnablePortSharing",
+                "kind": "namevalue",
+                "type": [ "scalar", "logical" ]
+            },
+            {
+                "name": "EnableBroadcast",
+                "kind": "namevalue",
+                "type": [ "scalar", "logical" ]
+            },
+            {
+                "name": "EnableMulticast",
+                "kind": "namevalue",
+                "type": [ "scalar", "logical" ]
+            },
+            {
+                "name": "MulticastGroup",
+                "kind": "namevalue",
+                "type": [ "string", "char" ]
+            },
+            {
+                "name": "EnableMulticastLoopback",
+                "kind": "namevalue",
+                "type": [ "scalar", "logical" ]
+            },
+            {
+                "name": "NumBytesAvailable",
+                "kind": "namevalue",
+                "type": [ "numeric", "scalar" ]
+            },
+            {
+                "name": "NumBytesWritten",
+                "kind": "namevalue",
+                "type": [ "numeric", "scalar" ]
+            },
+            {
+                "name": "Terminator",
+                "kind": "namevalue",
+                "type": "choices = matlabshared.transportlib.internal.TabCompletionUtility.Terminator"
+            },
+            {
+                "name": "BytesAvailableFcnMode",
+                "kind": "namevalue",
+                "type": "choices = matlabshared.transportlib.internal.TabCompletionUtility.BytesAvailableFcnMode"
+            },
+            {
+                "name": "BytesAvailableFcnCount",
+                "kind": "namevalue",
+                "type": [ "numeric", ">=0" ]
+            },
+            {
+                "name": "BytesAvailableFcn",
+                "kind": "namevalue",
+                "type": [ "function_handle", "scalar" ]
+            },
+            {
+                "name": "ErrorOccurredFcn",
+                "kind": "namevalue",
+                "type": [ "function_handle", "scalar" ]
+            },
+            {
+                "name": "UserData",
+                "kind": "namevalue",
+                "type": []
+            },
+            {
+                "name": "NumDatagramsAvailable",
+                "kind": "namevalue",
+                "type": [ "numeric", "scalar" ]
+            },
+            {
+                "name": "NumDatagramsWritten",
+                "kind": "namevalue",
+                "type": [ "numeric", "scalar" ]
+            },
+            {
+                "name": "DatagramsAvailableFcn",
+                "kind": "namevalue",
+                "type": [ "function_handle", "scalar" ]
+            },
+            {
+                "name": "DatagramsAvailableFcnCount",
+                "kind": "namevalue",
+                "type": [ "numeric", "scalar" ]
+            },
+            {
+                "name": "DatagramsAvailableFcnMode",
+                "kind": "namevalue",
+                "type": "choices = {'off', 'datagram'}"
+            }
+        ],
+        "outputs": [
+            {
+                "name": "obj",
+                "type": [ "udpport.UDPPortBase" ]
+            }
+        ]
+    }
+}

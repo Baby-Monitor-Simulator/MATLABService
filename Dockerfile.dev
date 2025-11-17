@@ -1,4 +1,4 @@
-FROM openjdk:17-jdk-slim
+FROM eclipse-temurin:17-jdk
 
 WORKDIR /matlab
 
@@ -9,12 +9,12 @@ COPY .mvn .mvn
 # Copy source files
 COPY src ./src
 
-# Ensure the mvnw script is executable
-RUN chmod +x mvnw
+# Fix Windows line endings (CRLF -> LF) and make executable
+RUN tr -d '\r' < mvnw > mvnw.tmp && mv mvnw.tmp mvnw && chmod +x mvnw
 
 # Copy the entrypoint script
 COPY entrypoint.sh /matlab/entrypoint.sh
-RUN chmod +x /matlab/entrypoint.sh
+RUN tr -d '\r' < /matlab/entrypoint.sh > /matlab/entrypoint.sh.tmp && mv /matlab/entrypoint.sh.tmp /matlab/entrypoint.sh && chmod +x /matlab/entrypoint.sh
 
 # Set the entrypoint
 ENTRYPOINT ["./entrypoint.sh"]

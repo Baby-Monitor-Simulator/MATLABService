@@ -1,0 +1,1 @@
+T = linspace(ts, te, num_points);

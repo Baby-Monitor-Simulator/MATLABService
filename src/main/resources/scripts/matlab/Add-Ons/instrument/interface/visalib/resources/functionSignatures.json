@@ -1,0 +1,495 @@
+{
+    "visadevlist":
+    {
+        "inputs":
+        [
+            {
+                "name":"Timeout",
+                "kind":"namevalue",
+                "type":["numeric", "scalar", ">=2"]
+            }
+        ],
+        "outputs":
+        [
+            {
+                "name":"devlist",
+                "type":"table"
+            }
+        ]
+    },
+    "visadev":
+    {
+        "inputs": [
+            {
+                "name": "resourceID",
+                "kind": "required",
+                "type": "choices=visalib.internal.TabCompletionHelper.resourceIDOptions"
+            },
+            {
+                "name": "Tag",
+                "kind": "namevalue",
+                "type": [
+                    [ "scalar", "string" ],
+                    [ "char" ]
+                ]
+            }
+        ],
+        "outputs":
+        [
+            {
+                "name":"resource",
+                "type":"visalib.Resource"
+            }
+        ]
+    },
+    "visalib.Resource.read":
+    {
+        "inputs":
+        [
+            {
+                "name":"resource",
+                "kind":"required",
+                "type":"visalib.Resource"
+            },
+            {
+                "name":"count",
+                "kind":"required",
+                "type":[ "numeric", "integer", "positive", "scalar" ]
+            },
+            {
+                "name":"precision",
+                "kind":"positional",
+                "type": "choices= matlabshared.transportlib.internal.client.GenericClient.PrecisionOptions"
+            }
+        ],
+        "outputs":
+        [
+            {
+                "name":"data",
+                "type":[ ["double"], ["char"], ["string"] ]
+            }
+        ]
+    },
+    "visalib.Resource.readline":
+    {
+        "inputs":
+        [
+            {
+                "name":"resource",
+                "kind":"required",
+                "type":"visalib.Resource"
+            }
+        ],
+        "outputs":
+        [
+            {
+                "name":"data",
+                "type":"string"
+            }
+        ]
+    },
+    "visalib.Resource.readbinblock":
+    {
+        "inputs":
+        [
+            {
+                "name":"resource",
+                "kind":"required",
+                "type":"visalib.Resource"
+            },
+            {
+                "name":"precision",
+                "kind":"positional",
+                "type": "choices= matlabshared.transportlib.internal.client.GenericClient.PrecisionOptions"
+            }
+        ],
+        "outputs":
+        [
+            {
+                "name":"data",
+                "type":[ ["double"], ["char"], ["string"] ]
+            }
+        ]
+    },
+    "visalib.Resource.write":
+    {
+        "inputs":
+        [
+            {
+                "name":"resource",
+                "kind":"required",
+                "type":"visalib.Resource"
+            },
+            {
+                "name":"data",
+                "kind":"required",
+                "type":[ ["numeric"], ["char"], ["string"] ]
+            },
+            {
+                "name":"precision",
+                "kind":"positional",
+                "type": "choices= matlabshared.transportlib.internal.client.GenericClient.PrecisionOptions"
+            }
+        ]
+    },
+    "visalib.Resource.writeline":
+    {
+        "inputs":
+        [
+            {
+                "name":"resource",
+                "kind":"required",
+                "type":"visalib.Resource"
+            },
+            {
+                "name":"data",
+                "kind":"required",
+                "type":[ ["char"], ["string"] ]
+            }
+        ]
+    },
+    "visalib.Resource.writebinblock":
+    {
+        "inputs":
+        [
+            {
+                "name":"resource",
+                "kind":"required",
+                "type":"visalib.Resource"
+            },
+            {
+                "name":"data",
+                "kind":"required",
+                "type":[ ["numeric"], ["char"], ["string"] ]
+            },
+            {
+                "name":"precision",
+                "kind":"required",
+                "type": "choices= matlabshared.transportlib.internal.client.GenericClient.PrecisionOptions"
+            }
+        ]
+    },
+    "visalib.Resource.writeread":
+    {
+        "inputs":
+        [
+            {
+                "name":"resource",
+                "kind":"required",
+                "type":"visalib.Resource"
+            },
+            {
+                "name":"command",
+                "kind":"required",
+                "type":"choices=visalib.internal.TabCompletionHelper.queryOptions"
+            }
+        ]
+    },
+    "visalib.Resource.flush":
+    {
+        "inputs":
+        [
+            {
+                "name":"resource",
+                "kind":"required",
+                "type":"visalib.Resource"
+            },
+            {
+                "name":"buffer",
+                "kind":"ordered",
+                "type":"choices={'input', 'output'}"
+            }
+        ]
+    },
+    "visalib.Resource.configureCallback":
+    {
+        "inputs":
+        [
+            {
+                "name":"resource",
+                "kind":"required",
+                "type":"visalib.Resource"
+            },
+            {
+                "name": "mode",
+                "kind": "required",
+                "type": "choices={'off', 'byte', 'terminator'}"
+            },
+            {
+                "name": "count",
+                "kind": "positional",
+                "type": [ "numeric", "integer", "scalar", ">0" ]
+            },
+            {
+                "name": "callbackfcn",
+                "kind": "positional",
+                "type": [ "function_handle", "scalar" ]
+            }
+        ]
+    },
+    "visalib.Resource.configureTerminator":
+    {
+        "inputs":
+        [
+            {
+                "name":"resource",
+                "kind":"required",
+                "type":"visalib.Resource"
+            },
+            {
+                "name": "terminator",
+                "kind": "required",
+                "type":
+                [
+                    [ "numeric", "integer", "scalar", ">=0", "<=255" ],
+                    [ "choices={'off', 'LF', 'CR', 'CR/LF'}" ]
+                ]
+            },
+            {
+                "name": "writeTerminator",
+                "kind": "optional",
+                "type":
+                [
+                    [ "numeric", "integer", "scalar", ">=0", "<=255" ],
+                    [ "choices={'LF', 'CR', 'CR/LF'}" ]
+                ]
+            }
+        ]
+    },
+    "visalib.Resource.visastatus":
+    {
+        "inputs":
+        [
+            {
+                "name":"resource",
+                "kind":"required",
+                "type":"visalib.Resource"
+            }
+        ],
+        "outputs":
+        [
+            {
+                "name":"ready",
+                "type":"logical"
+            },
+            {
+                "name":"status",
+                "type":"double"
+            }
+        ]
+    },
+    "visalib.Resource.setTransferPeriod":
+    {
+        "inputs":
+        [
+            {
+                "name":"resource",
+                "kind":"required",
+                "type":"visalib.Resource"
+            },
+            {
+                "name":"period",
+                "kind":"required",
+                "type":
+                [
+                    [ "numeric", "integer", "scalar", ">=0", "<=4294967295" ]
+                ]
+            }
+        ]
+    },
+    "visadevfind":
+    {
+        "inputs": [
+            {
+                "name": "Tag",
+                "kind": "namevalue",
+                "type": [
+                    [ "scalar", "string" ],
+                    [ "char" ]
+                ]
+            },
+            {
+                "name": "ResourceName",
+                "kind": "namevalue",
+                "type": "choices = matlabshared.transportlib.internal.TabCompletionUtility.visaResourceList().ResourceName"
+            },
+            {
+                "name": "Alias",
+                "kind": "namevalue",
+                "type": "choices = matlabshared.transportlib.internal.TabCompletionUtility.visaResourceList().Alias"
+            },
+            {
+                "name": "Vendor",
+                "kind": "namevalue",
+                "type": "choices = matlabshared.transportlib.internal.TabCompletionUtility.visaResourceList().Vendor"
+            },
+            {
+                "name": "Model",
+                "kind": "namevalue",
+                "type": "choices = matlabshared.transportlib.internal.TabCompletionUtility.visaResourceList().Model"
+            },
+            {
+                "name": "SerialNumber",
+                "kind": "namevalue",
+                "type": "choices = matlabshared.transportlib.internal.TabCompletionUtility.visaResourceList().SerialNumber"
+            },
+            {
+                "name": "Type",
+                "kind": "namevalue",
+                "type": "choices = matlabshared.transportlib.internal.TabCompletionUtility.visaResourceList().Type"
+            },
+            {
+                "name": "ByteOrder",
+                "kind": "namevalue",
+                "type": "choices = matlabshared.transportlib.internal.TabCompletionUtility.ByteOrder"
+            },
+            {
+                "name": "Timeout",
+                "kind": "namevalue",
+                "type": [ "numeric", ">=0" ]
+            },
+            {
+                "name": "Terminator",
+                "kind": "namevalue",
+                "type": "choices = matlabshared.transportlib.internal.TabCompletionUtility.Terminator"
+            },
+            {
+                "name": "NumBytesWritten",
+                "kind": "namevalue",
+                "type": [ "numeric", "scalar" ]
+            },
+            {
+                "name": "ErrorOccurredFcn",
+                "kind": "namevalue",
+                "type": [ "function_handle", "scalar" ]
+            },
+            {
+                "name": "UserData",
+                "kind": "namevalue",
+                "type": []
+            },
+            {
+                "name": "LANName",
+                "kind": "namevalue",
+                "type": [ "string", "scalar" ]
+            },
+            {
+                "name": "InstrumentAddress",
+                "kind": "namevalue",
+                "type": [ "string", "scalar" ]
+            },
+            {
+                "name": "BoardIndex",
+                "kind": "namevalue",
+                "type": [ "numeric", ">=0" ]
+            },
+            {
+                "name": "IPAddress",
+                "kind": "namevalue",
+                "type": [ "string", "scalar" ]
+            },
+            {
+                "name": "Port",
+                "kind": "namevalue",
+                "type": [ "string", "scalar" ]
+            },
+            {
+                "name": "VendorID",
+                "kind": "namevalue",
+                "type": [ "string", "scalar" ]
+            },
+            {
+                "name": "ProductID",
+                "kind": "namevalue",
+                "type": [ "string", "scalar" ]
+            },
+            {
+                "name": "InterfaceIndex",
+                "kind": "namevalue",
+                "type": [ "string", "scalar" ]
+            },
+            {
+                "name": "PrimaryAddress",
+                "kind": "namevalue",
+                "type": [ "numeric", ">=0" ]
+            },
+            {
+                "name": "SecondaryAddress",
+                "kind": "namevalue",
+                "type": [ "numeric", ">=0" ]
+            },
+            {
+                "name": "EOIMode",
+                "kind": "namevalue",
+                "type": "choices = matlabshared.transportlib.internal.TabCompletionUtility.EOIMode"
+            },
+            {
+                "name": "BaudRate",
+                "kind": "namevalue",
+                "type": [ "numeric", ">=0" ]
+            },
+            {
+                "name": "Parity",
+                "kind": "namevalue",
+                "type": "choices = matlabshared.transportlib.internal.TabCompletionUtility.Parity"
+            },
+            {
+                "name": "DataBits",
+                "kind": "namevalue",
+                "type": "choices = matlabshared.transportlib.internal.TabCompletionUtility.DataBits"
+            },
+            {
+                "name": "StopBits",
+                "kind": "namevalue",
+                "type": "choices = matlabshared.transportlib.internal.TabCompletionUtility.StopBits"
+            },
+            {
+                "name": "FlowControl",
+                "kind": "namevalue",
+                "type": "choices = matlabshared.transportlib.internal.TabCompletionUtility.FlowControl"
+            },
+            {
+                "name": "Bus",
+                "kind": "namevalue",
+                "type": "numeric"
+            },
+            {
+                "name": "DeviceIndex",
+                "kind": "namevalue",
+                "type": "numeric"
+            },
+            {
+                "name": "FunctionIndex",
+                "kind": "namevalue",
+                "type": "numeric"
+            },
+            {
+                "name": "ChassisIndex",
+                "kind": "namevalue",
+                "type": "numeric"
+            },
+            {
+                "name": "LogicalAddress",
+                "kind": "namevalue",
+                "type": "numeric"
+            },
+            {
+                "name": "Slot",
+                "kind": "namevalue",
+                "type": "numeric"
+            },
+            {
+                "name": "PreferredVisa",
+                "kind": "namevalue",
+                "type": "choices = matlabshared.transportlib.internal.TabCompletionUtility.PreferredVisa"
+            }
+        ],
+        "outputs":
+        [
+            {
+                "name":"resource",
+                "type":"visalib.Resource"
+            }
+        ]
+    }
+}

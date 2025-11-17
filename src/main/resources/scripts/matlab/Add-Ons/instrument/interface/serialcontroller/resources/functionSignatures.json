@@ -1,0 +1,427 @@
+{
+    "ni845x": {
+        "inputs": [
+            {
+                "name": "SerialNumber",
+                "kind": "required",
+                "type": "choices = ni845xlist().SerialNumber"
+            },
+            {
+                "name": "EnablePullupResistors",
+                "kind": "namevalue",
+                "type": [ "scalar", "logical" ]
+            },
+            {
+                "name": "Tag",
+                "kind": "namevalue",
+                "type": [
+                    [ "scalar", "string" ],
+                    [ "char" ]
+                ]
+            },
+            {
+                "name": "VoltageLevel",
+                "kind": "namevalue",
+                "type": "choices = serialcontroller.internal.ni845x.NI845xControllerImplementor.VoltageLevelValues"
+            },
+            {
+                "name": "OutputDriverType",
+                "kind": "namevalue",
+                "type": "choices = serialcontroller.internal.ni845x.NI845xControllerImplementor.OutputDriverTypes"
+            }
+        ],
+        "outputs": [
+            {
+                "name": "obj",
+                "type": "serialcontroller.internal.ni845x.NI845x"
+            }
+        ]
+    },
+    "serialcontroller.internal.ni845x.NI845x.delete": {
+        "inputs": [
+            {
+                "name": "obj",
+                "kind": "required",
+                "type": "serialcontroller.internal.ni845x.NI845x"
+            }
+        ]
+    },
+    "ni845xfind": {
+        "inputs": [
+            {
+                "name": "Tag",
+                "kind": "namevalue",
+                "type": [
+                    [ "scalar", "string" ],
+                    [ "char" ]
+                ]
+            },
+            {
+                "name": "Model",
+                "kind": "namevalue",
+                "type": "choices = matlabshared.transportlib.internal.TabCompletionUtility.ni845xDeviceList().DeviceName"
+            },
+            {
+                "name": "SerialNumber",
+                "kind": "namevalue",
+                "type": "choices = matlabshared.transportlib.internal.TabCompletionUtility.ni845xDeviceList().SerialNumber"
+            },
+            {
+                "name": "AvailableDigitalPins",
+                "kind": "namevalue",
+                "type": "choices = matlabshared.transportlib.internal.TabCompletionUtility.AvailableDigitalPinsni845x"
+            },
+            {
+                "name": "EnablePullupResistors",
+                "kind": "namevalue",
+                "type": [ "scalar", "logical" ]
+            },
+            {
+                "name": "VoltageLevel",
+                "kind": "namevalue",
+                "type": "choices = matlabshared.transportlib.internal.TabCompletionUtility.VoltageLevelValues"
+            },
+            {
+                "name": "OutputDriverType",
+                "kind": "namevalue",
+                "type": "choices = matlabshared.transportlib.internal.TabCompletionUtility.OutputDriverTypes"
+            },
+            {
+                "name": "DigitalPinModes",
+                "kind": "namevalue",
+                "type": "table"
+            }
+        ],
+        "outputs": [
+            {
+                "name": "obj",
+                "type": "serialcontroller.internal.ni845x.NI845x"
+            }
+        ]
+    },
+    "aardvark": {
+        "inputs": [
+            {
+                "name": "SerialNumber",
+                "kind": "required",
+                "type": "choices = aardvarklist().SerialNumber"
+            },
+            {
+                "name": "EnablePullupResistors",
+                "kind": "namevalue",
+                "type": [ "scalar", "logical" ]
+            },
+            {
+                "name": "Tag",
+                "kind": "namevalue",
+                "type": [
+                    [ "scalar", "string" ],
+                    [ "char" ]
+                ]
+            },
+            {
+                "name": "EnableTargetPower",
+                "kind": "namevalue",
+                "type": [ "scalar", "logical" ]
+            }
+        ],
+        "outputs": [
+            {
+                "name": "obj",
+                "type": "serialcontroller.internal.aardvark.Aardvark"
+            }
+        ]
+    },
+    "serialcontroller.internal.aardvark.Aardvark.delete": {
+        "inputs": [
+            {
+                "name": "obj",
+                "kind": "required",
+                "type": "serialcontroller.internal.aardvark.Aardvark"
+            }
+        ]
+    },
+    "serialcontroller.internal.dio.ControllerDIOMixin.configureDigitalPin": {
+        "inputs": [
+            {
+                "name": "obj",
+                "kind": "required",
+                "type": [
+                    [ "serialcontroller.internal.ni845x.NI845x" ],
+                    [ "serialcontroller.internal.aardvark.Aardvark" ]
+                ]
+            },
+            {
+                "name": "pin",
+                "kind": "required",
+                "type": "choices = obj.AvailableDigitalPins"
+            },
+            {
+                "name": "mode",
+                "kind": "required",
+                "type": "choices = serialcontroller.internal.dio.CommonDIOImplementor.DigitalPinMode"
+            }
+        ]
+    },
+    "serialcontroller.internal.dio.ControllerDIOMixin.writeDigitalPin": {
+        "inputs": [
+            {
+                "name": "obj",
+                "kind": "required",
+                "type": [
+                    [ "serialcontroller.internal.ni845x.NI845x" ],
+                    [ "serialcontroller.internal.aardvark.Aardvark" ]
+                ]
+            },
+            {
+                "name": "pin",
+                "kind": "required",
+                "type": "choices = obj.AvailableDigitalPins"
+            },
+            {
+                "name": "data",
+                "kind": "required",
+                "type": "choices = serialcontroller.internal.dio.CommonDIOImplementor.DigitalPinAllowedValueArray"
+            }
+        ]
+    },
+    "serialcontroller.internal.dio.ControllerDIOMixin.readDigitalPin": {
+        "inputs": [
+            {
+                "name": "obj",
+                "kind": "required",
+                "type": [
+                    [ "serialcontroller.internal.ni845x.NI845x" ],
+                    [ "serialcontroller.internal.aardvark.Aardvark" ]
+                ]
+            },
+            {
+                "name": "pin",
+                "kind": "required",
+                "type": "choices = obj.AvailableDigitalPins"
+            }
+        ],
+        "outputs": [
+            {
+                "name": "data",
+                "type": "double"
+            }
+        ]
+    },
+    "serialcontroller.internal.i2c.ControllerI2CMixin.scanI2CBus": {
+        "inputs": [
+            {
+                "name": "obj",
+                "kind": "required",
+                "type": [
+                    [ "serialcontroller.internal.ni845x.NI845x" ],
+                    [ "serialcontroller.internal.aardvark.Aardvark" ]
+                ]
+            }
+        ],
+        "outputs": [
+            {
+                "name": "address",
+                "type": "string"
+            }
+        ]
+    },
+    "serialcontroller.internal.common.ControllerGeneralMixin.device": {
+        "inputs": [
+            {
+                "name": "obj",
+                "kind": "required",
+                "type": [
+                    [ "serialcontroller.internal.ni845x.NI845x" ],
+                    [ "serialcontroller.internal.aardvark.Aardvark" ]
+                ]
+            },
+            {
+                "name": "I2CAddress",
+                "kind": "namevalue",
+                "type": "choices = obj.scanI2CBus()"
+            },
+            {
+                "name": "BitRate",
+                "kind": "namevalue",
+                "type": [ "numeric", "scalar", "positive", "choices = getI2CDeviceProperty(obj.ChannelHandler,'BitRateValues')"]
+            },
+            {
+                "name": "ByteOrder",
+                "kind": "namevalue",
+                "type": "choices = serialcontroller.internal.i2c.I2CDevice.ByteOrderValues"
+            }
+        ],
+        "outputs": [
+            {
+                "name": "i2cDeviceObj",
+                "type": "serialcontroller.internal.i2c.I2CDevice"
+            }
+        ]
+    },
+    "serialcontroller.internal.i2c.I2CDevice.read": {
+        "inputs": [
+            {
+                "name": "i2cDeviceObj",
+                "kind": "required",
+                "type": "serialcontroller.internal.i2c.I2CDevice"
+            },
+            {
+                "name": "count",
+                "kind": "required",
+                "type": [ "numeric", "scalar", "positive" ]
+            },
+            {
+                "name": "precision",
+                "kind": "positional",
+                "type": "choices = serialcontroller.internal.i2c.CommonI2CImplementor.I2CPrecisions"
+            }
+        ],
+        "outputs": [
+            {
+                "name": "data",
+                "type": [
+                    [ "double" ],
+                    [ "char" ]
+                ]
+            }
+        ]
+    },
+    "serialcontroller.internal.i2c.I2CDevice.write": {
+        "inputs": [
+            {
+                "name": "i2cDeviceObj",
+                "kind": "required",
+                "type": "serialcontroller.internal.i2c.I2CDevice"
+            },
+            {
+                "name": "data",
+                "kind": "required",
+                "type": [
+                    [ "numeric" ],
+                    [ "char" ],
+                    [ "string" ]
+                ]
+            },
+            {
+                "name": "precision",
+                "kind": "positional",
+                "type": "choices = serialcontroller.internal.i2c.CommonI2CImplementor.I2CPrecisions"
+            }
+        ]
+    },
+    "serialcontroller.internal.i2c.I2CDevice.writeRegister": {
+        "inputs": [
+            {
+                "name": "i2cDeviceObj",
+                "kind": "required",
+                "type": "serialcontroller.internal.i2c.I2CDevice"
+            },
+            {
+                "name": "register",
+                "kind": "required",
+                "type": [ "numeric", "scalar", "positive" ]
+            },
+            {
+                "name": "data",
+                "kind": "required",
+                "type": [
+                    [ "numeric" ],
+                    [ "char" ],
+                    [ "string" ]
+                ]
+            },
+            {
+                "name": "precision",
+                "kind": "positional",
+                "type": "choices = serialcontroller.internal.i2c.CommonI2CImplementor.I2CPrecisions"
+            }
+        ]
+    },
+    "serialcontroller.internal.i2c.I2CDevice.readRegister": {
+        "inputs": [
+            {
+                "name": "i2cDeviceObj",
+                "kind": "required",
+                "type": "serialcontroller.internal.i2c.I2CDevice"
+            },
+            {
+                "name": "register",
+                "kind": "required",
+                "type": [ "numeric", "scalar", "positive" ]
+            },
+            {
+                "name": "count",
+                "kind": "positional",
+                "type": [ "numeric", "scalar", "positive" ]
+            },
+            {
+                "name": "precision",
+                "kind": "positional",
+                "type": "choices = serialcontroller.internal.i2c.CommonI2CImplementor.I2CPrecisions"
+            }
+        ],
+        "outputs": [
+            {
+                "name": "data",
+                "type": [
+                    [ "double" ],
+                    [ "char" ]
+                ]
+            }
+        ]
+    },
+    "aardvarkfind": {
+        "inputs": [
+            {
+                "name": "Tag",
+                "kind": "namevalue",
+                "type": [
+                    [ "scalar", "string" ],
+                    [ "char" ]
+                ]
+            },
+            {
+                "name": "Model",
+                "kind": "namevalue",
+                "type": "choices = matlabshared.transportlib.internal.TabCompletionUtility.aardvarkDeviceList().DeviceName"
+            },
+            {
+                "name": "SerialNumber",
+                "kind": "namevalue",
+                "type": "choices = matlabshared.transportlib.internal.TabCompletionUtility.aardvarkDeviceList().SerialNumber"
+            },
+            {
+                "name": "AvailableDigitalPins",
+                "kind": "namevalue",
+                "type": "choices = matlabshared.transportlib.internal.TabCompletionUtility.AvailableDigitalPinsAardvark"
+            },
+            {
+                "name": "VoltageLevel",
+                "kind": "namevalue",
+                "type": "choices = matlabshared.transportlib.internal.TabCompletionUtility.VoltageLevel"
+            },
+            {
+                "name": "EnablePullupResistors",
+                "kind": "namevalue",
+                "type": [ "scalar", "logical" ]
+            },
+            {
+                "name": "EnableTargetPower",
+                "kind": "namevalue",
+                "type": [ "scalar", "logical" ]
+            },
+            {
+                "name": "DigitalPinModes",
+                "kind": "namevalue",
+                "type": "table"
+            }
+        ],
+        "outputs": [
+            {
+                "name": "obj",
+                "type": "serialcontroller.internal.aardvark.Aardvark"
+            }
+        ]
+    }
+}

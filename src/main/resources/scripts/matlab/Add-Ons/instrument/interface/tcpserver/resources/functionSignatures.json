@@ -1,0 +1,346 @@
+{
+    "tcpserver": {
+        "inputs": [
+            {
+                "name": "ServerAddress",
+                "kind": "ordered",
+                "type": [ "char", "string" ]
+            },
+            {
+                "name": "ServerPort",
+                "kind": "required",
+                "type": [ "numeric", "integer", "<=65535", ">=1" ]
+            },
+            {
+                "name": "ByteOrder",
+                "kind": "namevalue",
+                "type": "choices={'little-endian', 'big-endian'}"
+            },
+            {
+                "name": "Timeout",
+                "kind": "namevalue",
+                "type": [ "numeric", ">=0" ]
+            },
+            {
+                "name": "Tag",
+                "kind": "namevalue",
+                "type": [
+                    [ "scalar", "string" ],
+                    [ "char" ]
+                ]
+            },
+            {
+                "name": "ConnectionChangedFcn",
+                "kind": "namevalue",
+                "type": [ "function_handle", "scalar" ]
+            }
+        ],
+        "outputs": [
+            {
+                "name": "obj",
+                "type": "tcpserver.internal.TCPServer"
+            }
+        ]
+    },
+    "tcpserver.internal.TCPServer.delete": {
+        "inputs": [
+            {
+                "name": "obj",
+                "kind": "required",
+                "type": "tcpserver.internal.TCPServer"
+            }
+        ]
+    },
+    "tcpserver.internal.TCPServer.write": {
+        "inputs": [
+            {
+                "name": "obj",
+                "kind": "required",
+                "type": "tcpserver.internal.TCPServer"
+            },
+            {
+                "name": "data",
+                "kind": "required",
+                "type": [
+                    [ "numeric" ],
+                    [ "char" ],
+                    [ "string" ]
+                ]
+            },
+            {
+                "name": "precision",
+                "kind": "positional",
+                "type": "choices= matlabshared.transportlib.internal.client.GenericClient.PrecisionOptions"
+            }
+        ]
+    },
+    "tcpserver.internal.TCPServer.writeline": {
+        "inputs": [
+            {
+                "name": "obj",
+                "kind": "required",
+                "type": "tcpserver.internal.TCPServer"
+            },
+            {
+                "name": "data",
+                "kind": "required",
+                "type": [ "char", "string" ]
+            }
+        ]
+    },
+    "tcpserver.internal.TCPServer.writebinblock": {
+        "inputs": [
+            {
+                "name": "obj",
+                "kind": "required",
+                "type": "tcpserver.internal.TCPServer"
+            },
+            {
+                "name": "data",
+                "kind": "required",
+                "type": [
+                    [ "numeric" ],
+                    [ "char" ],
+                    [ "string" ]
+                ]
+            },
+            {
+                "name": "precision",
+                "kind": "required",
+                "type": "choices= matlabshared.transportlib.internal.client.GenericClient.PrecisionOptions"
+            }
+        ]
+    },
+    "tcpserver.internal.TCPServer.read": {
+        "inputs": [
+            {
+                "name": "obj",
+                "kind": "required",
+                "type": "tcpserver.internal.TCPServer"
+            },
+            {
+                "name": "count",
+                "kind": "required",
+                "type": [ "numeric", "integer", "scalar", "positive" ]
+            },
+            {
+                "name": "precision",
+                "kind": "positional",
+                "type": "choices= matlabshared.transportlib.internal.client.GenericClient.PrecisionOptions"
+            }
+        ],
+        "outputs": [
+            {
+                "name": "data",
+                "type": [
+                    [ "double" ],
+                    [ "char" ],
+                    [ "string" ]
+                ]
+            }
+        ]
+    },
+    "tcpserver.internal.TCPServer.readline": {
+        "inputs": [
+            {
+                "name": "obj",
+                "kind": "required",
+                "type": "tcpserver.internal.TCPServer"
+            }
+        ],
+        "outputs": [
+            {
+                "name": "data",
+                "type": "string"
+            }
+        ]
+    },
+    "tcpserver.internal.TCPServer.readbinblock": {
+        "inputs": [
+            {
+                "name": "obj",
+                "kind": "required",
+                "type": "tcpserver.internal.TCPServer"
+            },
+            {
+                "name": "precision",
+                "kind": "positional",
+                "type": "choices= matlabshared.transportlib.internal.client.GenericClient.PrecisionOptions"
+            }
+        ],
+        "outputs": [
+            {
+                "name": "data",
+                "type": [
+                    [ "double" ],
+                    [ "char" ],
+                    [ "string" ]
+                ]
+            }
+        ]
+    },
+    "tcpserver.internal.TCPServer.flush": {
+        "inputs": [
+            {
+                "name": "obj",
+                "kind": "required",
+                "type": "tcpserver.internal.TCPServer"
+            },
+            {
+                "name": "buffer",
+                "kind": "ordered",
+                "type": "choices={'input','output'}"
+            }
+        ]
+    },
+    "tcpserver.internal.TCPServer.configureCallback": {
+        "inputs": [
+            {
+                "name": "obj",
+                "kind": "required",
+                "type": "tcpserver.internal.TCPServer"
+            },
+            {
+                "name": "mode",
+                "kind": "required",
+                "type": "choices={'off','byte','terminator'}"
+            },
+            {
+                "name": "count",
+                "kind": "positional",
+                "type": [ "numeric", "integer", "scalar", ">0" ]
+            },
+            {
+                "name": "callbackfcn",
+                "kind": "positional",
+                "type": [ "function_handle", "scalar" ]
+            }
+        ]
+    },
+    "tcpserver.internal.TCPServer.configureTerminator": {
+        "inputs": [
+            {
+                "name": "obj",
+                "kind": "required",
+                "type": "tcpserver.internal.TCPServer"
+            },
+            {
+                "name": "terminator",
+                "kind": "required",
+                "type": [
+                    [ "numeric", "integer", "scalar", ">=0", "<=255" ],
+                    [ "choices={'LF', 'CR', 'CR/LF'}" ]
+                ]
+            },
+            {
+                "name": "writeTerminator",
+                "kind": "optional",
+                "type": [
+                    [ "numeric", "integer", "scalar", ">=0", "<=255" ],
+                    [ "choices={'LF', 'CR', 'CR/LF'}" ]
+                ]
+            }
+        ]
+    },
+    "tcpserverfind": {
+        "inputs": [
+            {
+                "name": "Tag",
+                "kind": "namevalue",
+                "type": [
+                    [ "scalar", "string" ],
+                    [ "char" ]
+                ]
+            },
+            {
+                "name": "ServerAddress",
+                "kind": "namevalue",
+                "type": [
+                    [ "scalar", "string" ],
+                    [ "char" , "vector" ]
+                ]
+            },
+            {
+                "name": "ServerPort",
+                "kind": "namevalue",
+                "type": [ "numeric", "<=65535", ">=1" ]
+            },
+            {
+                "name": "ByteOrder",
+                "kind": "namevalue",
+                "type": "choices = matlabshared.transportlib.internal.TabCompletionUtility.ByteOrder"
+            },
+            {
+                "name": "Timeout",
+                "kind": "namevalue",
+                "type": [ "numeric", ">=0" ]
+            },
+            {
+                "name": "ConnectionChangedFcn",
+                "kind": "namevalue",
+                "type": [ "function_handle", "scalar" ]
+            },
+            {
+                "name": "Connected",
+                "kind": "namevalue",
+                "type": [ "scalar", "logical" ]
+            },
+            {
+                "name": "ClientAddress",
+                "kind": "namevalue",
+                "type": [ "scalar", "string" ]
+            },
+            {
+                "name": "ClientPort",
+                "kind": "namevalue",
+                "type": "numeric"
+            },
+            {
+                "name": "NumBytesAvailable",
+                "kind": "namevalue",
+                "type": [ "numeric", "scalar" ]
+            },
+            {
+                "name": "NumBytesWritten",
+                "kind": "namevalue",
+                "type": [ "numeric", "scalar" ]
+            },
+            {
+                "name": "Terminator",
+                "kind": "namevalue",
+                "type": "choices = matlabshared.transportlib.internal.TabCompletionUtility.Terminator"
+            },
+            {
+                "name": "BytesAvailableFcnMode",
+                "kind": "namevalue",
+                "type": "choices = matlabshared.transportlib.internal.TabCompletionUtility.BytesAvailableFcnMode"
+            },
+            {
+                "name": "BytesAvailableFcnCount",
+                "kind": "namevalue",
+                "type": [ "numeric", ">=0" ]
+            },
+            {
+                "name": "BytesAvailableFcn",
+                "kind": "namevalue",
+                "type": [ "function_handle", "scalar" ]
+            },
+            {
+                "name": "ErrorOccurredFcn",
+                "kind": "namevalue",
+                "type": [ "function_handle", "scalar" ]
+            },
+            {
+                "name": "UserData",
+                "kind": "namevalue",
+                "type": []
+            }
+        ],
+        "outputs": [
+            {
+                "name": "obj",
+                "type": "tcpserver.internal.tcpserver"
+            }
+        ]
+    }
+}

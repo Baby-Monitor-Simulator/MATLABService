@@ -173,8 +173,9 @@ public class Simulation {
         return CompletableFuture.supplyAsync(() -> {
             try {
                 // Start de MATLAB-engine
+                System.out.println("Starting MATLAB engine...");
                 MatlabEngine eng = MatlabEngine.startMatlab();
-
+                System.out.println("MATLAB engine started...");
                 String projectDir = Paths.get("").toAbsolutePath().toString();
                 String relativePath = projectDir + "\\src\\main\\resources\\scripts\\matlab\\production";
                 eng.eval("addpath('" + relativePath.replace("\\", "\\\\") + "')");

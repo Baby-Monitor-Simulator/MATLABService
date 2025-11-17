@@ -1,0 +1,5227 @@
+<?xml version="1.0" encoding="utf-8"?>
+<MATLABInstrumentDriver>
+   <FileVersion>1.0</FileVersion>
+   <DriverName>D:\A\matlab\matlab\toolbox\instrument\instrument\drivers\generic_agilent_e3648a.mdd</DriverName>
+   <DriverType>MATLAB generic</DriverType>
+   <InstrumentType>DC Power Supply</InstrumentType>
+   <InstrumentManufacturer>Agilent</InstrumentManufacturer>
+   <InstrumentModel>E3648A</InstrumentModel>
+   <InstrumentVersion>1.0</InstrumentVersion>
+   <Identify>*IDN?</Identify>
+   <Reset>*RST</Reset>
+   <Selftest>*TST?</Selftest>
+   <Error/>
+   <CreateInitCode>
+      <Code>function init(obj)
+% This method is called after the object is created.
+% OBJ is the device object.
+% End of function definition - DO NOT EDIT
+	% Extract the interface object.
+
+%initializes driverData
+driverData = get(obj, 'DriverData');
+
+try
+   load('generic_agilent_e36481_initialData')
+catch
+
+driverData.track = 'off';
+driverData.volt.old = {0,0};
+driverData.current.old = {0,0};
+driverData.trigger = 0;
+driverData.error = {};
+driverData.holdplace = 1;
+
+driverData.calibration.count = 0;
+driverData.calibration.enabled ='off';
+driverData.calibration.message = '';
+driverData.calibration.current.min = 1;
+driverData.calibration.current.mid = 0;
+driverData.calibration.current.max = 0;
+driverData.calibration.voltage.min = 0;
+driverData.calibration.voltage.mid = 0;
+driverData.calibration.voltage.max = 0;
+driverData.calibration.state = 'on';
+driverData.calibration.code = 'E003648A';
+
+driverData.display.enabled = 'on';
+driverData.display.mode = 'voltage-current';
+driverData.display.settext = '';
+
+driverData.obj = 1;
+driverData.output.currentlimit = {5,5};
+driverData.output.currentstep = {9.5705E-5,9.5705E-5};
+driverData.output.enabled = {'on','on'};
+driverData.output.OverVoltProtectEnab = {'on','on'};
+driverData.output.OverVoltProtectLim = {22,22};
+driverData.output.state = {'on','on'};
+driverData.output.trigcoupling = {'off','off'};
+driverData.output.TrigCurrLim = {5,5};
+driverData.output.triggerdelay = {0,0};
+driverData.output.triggersource = {'bus','bus'};
+driverData.output.TrigVoltLev = {0,0};
+driverData.output.VoltLev = {0,0};
+driverData.output.current = {0,0};
+driverData.output.voltageoutrange = {'p8v','p8v'};
+driverData.output.voltagestep = {0.00038184,0.00038184};
+
+save('generic_agilent_e36481_initialData', 'driverData')
+end
+test = get(obj, 'DriverData');
+set(obj, 'DriverData', driverData);
+	</Code>
+   </CreateInitCode>
+   <ConnectInitCode>
+      <Type>MCode</Type>
+      <Code>function init(obj)
+% This function is called after the object is connected.
+% OBJ is the device object.
+% End of function definition - DO NOT EDIT
+
+%get the interface
+
+driverData = get(obj, 'DriverData');
+driverData.connect = true;
+set(obj, 'DriverData', driverData);</Code>
+   </ConnectInitCode>
+   <CleanupCode>
+      <Type>MCode</Type>
+      <Code>function cleanup(obj)
+% This function is called before the object is disconnected.
+% OBJ is the device object.
+% End of function definition - DO NOT EDIT
+ 
+driverData = get(obj, 'DriverData');
+try 
+    invoke(obj,'reset')
+    driverData = get(obj, 'DriverData');
+    save('generic_agilent_e36481_initialData', 'driverData')
+catch
+end
+driverData.disconnect = true;
+set(obj, 'DriverData', driverData);</Code>
+   </CleanupCode>
+   <GroupInfo>
+      <Group>
+         <Name>parent</Name>
+         <Description/>
+         <Command/>
+         <Size>1</Size>
+         <Mappings>
+            <ChannelMap Command="parent1" Index="1"/>
+         </Mappings>
+         <PropertyInfo>
+            <Property>
+               <Name>TrackEnabled</Name>
+               <Location>parent</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>MCode</Type>
+               <Code>
+                  <GetMCode>function propertyValue = getProperty(obj, propertyName)
+% Return a property value.
+%   This function is called to return the device or group object property
+%   value. If the property is a group property, OBJ is the group object. If
+%   the property is a base device property, OBJ is the device object.
+
+driverData = get(obj, 'DriverData');
+propertyValue = driverData.track;</GetMCode>
+                  <SetMCode>function set(obj, propertyName, propertyValue)
+% Set a property value.
+%   This function is called to set the device or group object property
+%   value. If the property is a group property, OBJ is the group object. If
+%   the property is a base device property, OBJ is the device object.
+
+driverData = get(obj, 'DriverData');
+driverData.track = propertyValue;
+set(obj, 'DriverData', driverData);</SetMCode>
+               </Code>
+               <PermissibleType>
+                  <Type>String</Type>
+                  <Constraint>enum</Constraint>
+                  <ConstraintValue>
+                     <Enum Name="on" Value="on"/>
+                     <Enum Name="off" Value="off"/>
+                  </ConstraintValue>
+               </PermissibleType>
+               <DefaultValue>off</DefaultValue>
+               <ReadOnly>never</ReadOnly>
+               <Description>Enables or disables the power supply track mode.
+
+The device provides tracking outputs. In the track mode, two voltages of the output1 and the output2 supplies track each other within the voltage programming accuracy. The track mode is always off state when the power supply is turned off or after a remote interface reset.
+</Description>
+            </Property>
+         </PropertyInfo>
+         <MethodInfo>
+            <Method>
+               <Name>drivertest</Name>
+               <Location>parent</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>MCode</Type>
+               <Code>
+                  <MCode>function varargout = drivertest1(obj)
+
+% Set the object variable name.
+deviceObj = obj;
+
+% Wrap entire test in try catch.
+try
+fprintf('Test: Generic Agilent e3648a Test\n');
+fprintf(['Start time: ' datestr(now) '\n']);
+
+% Initialize variables.
+varargout              = {};
+stepWarningOccurred    = false;
+warningOccurred        = false;
+errorOccurred          = false;
+ 
+
+% Test Step 1: securedevice Function (Function Test Step)
+driverData = get(deviceObj,'DriverData');
+securityCode = driverData.calibration.code;
+errorcode = false;
+try
+    % Execute the function.
+    groupObj = get(deviceObj, 'Calibration');
+    invoke(groupObj, 'securedevice', securityCode, 'unsecure');
+ 
+    % Check if instrument error occurred.
+    result = invoke(deviceObj,'error');
+    errorcode = ~isempty(result);
+    
+    % Post information about error if one occurred.
+    if (errorcode == true)
+        fprintf('An instrument error occurred while executing the function.\n');
+        fprintf([result, '\n']);
+    end
+catch
+    % A MATLAB error occurred.
+    errorcode = true;
+
+    % Post information about error.
+    fprintf('A MATLAB error occurred while testing the function.\n');
+    fprintf([lasterr, '\n']);
+end
+
+% Post message indicating if test step passed.
+if (errorcode == true)
+    errorOccurred = true;
+    fprintf('Test step status: FAILED\n');
+elseif (stepWarningOccurred == true)
+    fprintf('Test step status: PASSED with warnings\n');
+else
+    fprintf('Test step status: PASSED\n');
+end
+
+% Test Step 2: All Properties Sweep (Properties Sweep Test Step)
+% Reset errorcode.
+errorcode = false;
+
+% Post information on the property being tested.
+fprintf('Testing InstrumentModel property in the parent group.\n');
+ 
+try
+    % Query the value for the read-only property, InstrumentModel.
+    get(deviceObj, 'InstrumentModel');
+
+    % Check if instrument error occurred.
+    result = invoke(deviceObj,'error');
+    errorcode = ~isempty(result);
+
+    % Post information about error if one occurred.
+    if (errorcode == true)
+        fprintf('An instrument error occurred while getting the property value.\n');
+        fprintf([result, '\n']);
+    end
+catch
+    % A MATLAB error occurred.
+    errorcode = true;
+
+    % Post information about error.
+    fprintf('A MATLAB error occurred while getting the property value.\n');
+    fprintf([lasterr, '\n']);
+end
+
+% Reset errorcode.
+errorcode = false;
+
+% Post information on the property being tested.
+fprintf('Testing TrackEnabled property in the parent group.\n');
+
+% Overall error status for all settings.
+finalerrorcode = false;
+
+% Valid values for the TrackEnabled property.
+validValues = {'on', 'off'};
+
+% Test all supported values.
+for i = 1:length(validValues)
+    try
+        % Configure the property.
+        set(deviceObj, 'TrackEnabled', validValues{i});
+
+        % Check if instrument error occurred.
+        result = invoke(deviceObj,'error');
+        errorcode = ~isempty(result);
+
+        % Post information about error if one occurred.
+        if (errorcode == true)
+            fprintf('An instrument error occurred while setting the property value.\n');
+            fprintf([result, '\n']);
+        end
+
+        % Verify that the configured value matches the expected value.
+        if (errorcode == false)
+            % Get the current property value.
+            tempOut = get(deviceObj, 'TrackEnabled');
+
+            % Compare to the expected value.
+            errorcode = ~isequal(tempOut, validValues{i});
+    
+            % Post information about test step failure.
+            if (errorcode == true)
+                fprintf('The property is not configured to the expected value.\n');
+    
+                % Post actual value.
+                if isnumeric(tempOut)
+                    fprintf(['Actual value: ' num2str(tempOut), '\n']);
+                else
+                    fprintf(['Actual value: ' tempOut, '\n']);
+                end
+    
+                % Post expected value.
+                if isnumeric(validValues{i})
+                    fprintf(['Expected value: ' num2str(validValues{i}), '\n']);
+                else
+                    fprintf(['Expected value: ' validValues{i}, '\n']);
+                end
+            end
+
+            % Check if instrument error occurred.
+            result = invoke(deviceObj,'error');
+            errorcode1 = ~isempty(result);
+
+            % Post information about error if one occurred.
+            if (errorcode1 == true)
+                errorcode = errorcode1;
+                fprintf('An instrument error occurred while getting the property value.\n');
+                fprintf([result, '\n']);
+            end
+        end
+    catch
+        % A MATLAB error occurred.
+        errorcode = true;
+
+        % Post information about error.
+        fprintf('A MATLAB error occurred while testing the property.\n');
+        fprintf([lasterr, '\n']);
+    end
+    if (errorcode == true)
+        finalerrorcode = true;
+    end
+end
+errorcode = finalerrorcode;
+
+% Reset errorcode.
+errorcode = false;
+
+% Post information on the property being tested.
+fprintf('Testing Count property in the Calibration group.\n');
+ 
+try
+    % Query the value for the read-only property, Count.
+    groupObj = get(deviceObj, 'Calibration');
+    get(groupObj, {'Count'});
+
+    % Check if instrument error occurred.
+    result = invoke(deviceObj,'error');
+    errorcode = ~isempty(result);
+
+    % Post information about error if one occurred.
+    if (errorcode == true)
+        fprintf('An instrument error occurred while getting the property value.\n');
+        fprintf([result, '\n']);
+    end
+catch
+    % A MATLAB error occurred.
+    errorcode = true;
+
+    % Post information about error.
+    fprintf('A MATLAB error occurred while getting the property value.\n');
+    fprintf([lasterr, '\n']);
+end
+
+% Reset errorcode.
+errorcode = false;
+
+% Post information on the property being tested.
+fprintf('Testing Enabled property in the Calibration group.\n');
+ 
+try
+    % Query the value for the read-only property, Enabled.
+    groupObj = get(deviceObj, 'Calibration');
+    get(groupObj, {'Enabled'});
+
+    % Check if instrument error occurred.
+    result = invoke(deviceObj,'error');
+    errorcode = ~isempty(result);
+
+    % Post information about error if one occurred.
+    if (errorcode == true)
+        fprintf('An instrument error occurred while getting the property value.\n');
+        fprintf([result, '\n']);
+    end
+catch
+    % A MATLAB error occurred.
+    errorcode = true;
+
+    % Post information about error.
+    fprintf('A MATLAB error occurred while getting the property value.\n');
+    fprintf([lasterr, '\n']);
+end
+
+% Reset errorcode.
+errorcode = false;
+
+% Post information on the property being tested.
+fprintf('Testing Message property in the Calibration group.\n');
+
+% Overall error status for all settings.
+finalerrorcode = false;
+
+% Valid values for the Message property.
+validValues = {'on', 'off', 'sydney', 'wayne', 'min', 'max'};
+expectedValues = {'"on"', '"off"', '"sydney"', '"wayne"', '"min"', '"max"'};
+
+% Test all supported values.
+for i = 1:length(validValues)
+    try
+        % Configure the property.
+        groupObj = get(deviceObj, 'Calibration');
+        set(groupObj, 'Message', validValues{i});
+
+        % Check if instrument error occurred.
+        result = invoke(deviceObj,'error');
+        errorcode = ~isempty(result);
+
+        % Post information about error if one occurred.
+        if (errorcode == true)
+            fprintf('An instrument error occurred while setting the property value.\n');
+            fprintf([result, '\n']);
+        end
+
+        % Verify that the configured value matches the expected value.
+        if (errorcode == false)
+            % Get the current property value.
+            tempOut = get(groupObj, {'Message'});
+
+            % Compare to the expected value.
+            expectedValue = cell(size(groupObj))';
+            [expectedValue{:}] = deal(expectedValues{i});
+            errorcode = ~isequal(tempOut, expectedValue);
+    
+            % Post information about test step failure.
+            if (errorcode == true)
+                fprintf('The property is not configured to the expected value.\n');
+    
+                % Post actual value.
+                for k=1:length(tempOut)
+                    c = tempOut{k};
+                    if isnumeric(c)
+                        fprintf(['Actual value(' num2str(k) '): ' num2str(c), '\n']);
+                    else
+                        fprintf(['Actual value(' num2str(k) '): ' c, '\n']);
+                    end
+                end
+    
+                % Post expected value.
+                if isnumeric(validValues{i})
+                    fprintf(['Expected value: ' num2str(validValues{i}), '\n']);
+                else
+                    fprintf(['Expected value: ' validValues{i}, '\n']);
+                end
+            end
+
+            % Check if instrument error occurred.
+            result = invoke(deviceObj,'error');
+            errorcode1 = ~isempty(result);
+
+            % Post information about error if one occurred.
+            if (errorcode1 == true)
+                errorcode = errorcode1;
+                fprintf('An instrument error occurred while getting the property value.\n');
+                fprintf([result, '\n']);
+            end
+        end
+    catch
+        % A MATLAB error occurred.
+        errorcode = true;
+
+        % Post information about error.
+        fprintf('A MATLAB error occurred while testing the property.\n');
+        fprintf([lasterr, '\n']);
+    end
+    if (errorcode == true)
+        finalerrorcode = true;
+    end
+end
+errorcode = finalerrorcode;
+
+% Reset errorcode.
+errorcode = false;
+
+% Post information on the property being tested.
+fprintf('Testing Enabled property in the Display group.\n');
+
+% Overall error status for all settings.
+finalerrorcode = false;
+
+% Valid values for the Enabled property.
+validValues = {'on', 'off'};
+
+% Test all supported values.
+for i = 1:length(validValues)
+    try
+        % Configure the property.
+        groupObj = get(deviceObj, 'Display');
+        set(groupObj, 'Enabled', validValues{i});
+
+        % Check if instrument error occurred.
+        result = invoke(deviceObj,'error');
+        errorcode = ~isempty(result);
+
+        % Post information about error if one occurred.
+        if (errorcode == true)
+            fprintf('An instrument error occurred while setting the property value.\n');
+            fprintf([result, '\n']);
+        end
+
+        % Verify that the configured value matches the expected value.
+        if (errorcode == false)
+            % Get the current property value.
+            tempOut = get(groupObj, {'Enabled'});
+
+            % Compare to the expected value.
+            expectedValue = cell(size(groupObj))';
+            [expectedValue{:}] = deal(validValues{i});
+            errorcode = ~isequal(tempOut, expectedValue);
+    
+            % Post information about test step failure.
+            if (errorcode == true)
+                fprintf('The property is not configured to the expected value.\n');
+    
+                % Post actual value.
+                for k=1:length(tempOut)
+                    c = tempOut{k};
+                    if isnumeric(c)
+                        fprintf(['Actual value(' num2str(k) '): ' num2str(c), '\n']);
+                    else
+                        fprintf(['Actual value(' num2str(k) '): ' c, '\n']);
+                    end
+                end
+    
+                % Post expected value.
+                if isnumeric(validValues{i})
+                    fprintf(['Expected value: ' num2str(validValues{i}), '\n']);
+                else
+                    fprintf(['Expected value: ' validValues{i}, '\n']);
+                end
+            end
+
+            % Check if instrument error occurred.
+            result = invoke(deviceObj,'error');
+            errorcode1 = ~isempty(result);
+
+            % Post information about error if one occurred.
+            if (errorcode1 == true)
+                errorcode = errorcode1;
+                fprintf('An instrument error occurred while getting the property value.\n');
+                fprintf([result, '\n']);
+            end
+        end
+    catch
+        % A MATLAB error occurred.
+        errorcode = true;
+
+        % Post information about error.
+        fprintf('A MATLAB error occurred while testing the property.\n');
+        fprintf([lasterr, '\n']);
+    end
+    if (errorcode == true)
+        finalerrorcode = true;
+    end
+end
+errorcode = finalerrorcode;
+
+% Reset errorcode.
+errorcode = false;
+
+% Post information on the property being tested.
+fprintf('Testing Mode property in the Display group.\n');
+
+% Overall error status for all settings.
+finalerrorcode = false;
+
+% Valid values for the Mode property.
+validValues = {'voltage-voltage', 'voltage-current', 'current-current'};
+
+% Test all supported values.
+for i = 1:length(validValues)
+    try
+        % Configure the property.
+        groupObj = get(deviceObj, 'Display');
+        set(groupObj, 'Mode', validValues{i});
+
+        % Check if instrument error occurred.
+        result = invoke(deviceObj,'error');
+        errorcode = ~isempty(result);
+
+        % Post information about error if one occurred.
+        if (errorcode == true)
+            fprintf('An instrument error occurred while setting the property value.\n');
+            fprintf([result, '\n']);
+        end
+
+        % Verify that the configured value matches the expected value.
+        if (errorcode == false)
+            % Get the current property value.
+            tempOut = get(groupObj, {'Mode'});
+
+            % Compare to the expected value.
+            expectedValue = cell(size(groupObj))';
+            [expectedValue{:}] = deal(validValues{i});
+            errorcode = ~isequal(tempOut, expectedValue);
+    
+            % Post information about test step failure.
+            if (errorcode == true)
+                fprintf('The property is not configured to the expected value.\n');
+    
+                % Post actual value.
+                for k=1:length(tempOut)
+                    c = tempOut{k};
+                    if isnumeric(c)
+                        fprintf(['Actual value(' num2str(k) '): ' num2str(c), '\n']);
+                    else
+                        fprintf(['Actual value(' num2str(k) '): ' c, '\n']);
+                    end
+                end
+    
+                % Post expected value.
+                if isnumeric(validValues{i})
+                    fprintf(['Expected value: ' num2str(validValues{i}), '\n']);
+                else
+                    fprintf(['Expected value: ' validValues{i}, '\n']);
+                end
+            end
+
+            % Check if instrument error occurred.
+            result = invoke(deviceObj,'error');
+            errorcode1 = ~isempty(result);
+
+            % Post information about error if one occurred.
+            if (errorcode1 == true)
+                errorcode = errorcode1;
+                fprintf('An instrument error occurred while getting the property value.\n');
+                fprintf([result, '\n']);
+            end
+        end
+    catch
+        % A MATLAB error occurred.
+        errorcode = true;
+
+        % Post information about error.
+        fprintf('A MATLAB error occurred while testing the property.\n');
+        fprintf([lasterr, '\n']);
+    end
+    if (errorcode == true)
+        finalerrorcode = true;
+    end
+end
+errorcode = finalerrorcode;
+
+% Reset errorcode.
+errorcode = false;
+
+% Post information on the property being tested.
+fprintf('Testing CurrentLimit property in the Output group.\n');
+
+% Overall error status for all settings.
+finalerrorcode = false;
+
+% Valid values for the CurrentLimit property.
+validValues = {0.0, 1.0, 2.0, 5.15};
+
+% Test all supported values.
+for i = 1:length(validValues)
+    try
+        % Configure the property.
+        groupObj = get(deviceObj, 'Output');
+        set(groupObj, 'CurrentLimit', validValues{i});
+
+        % Check if instrument error occurred.
+        result = invoke(deviceObj,'error');
+        errorcode = ~isempty(result);
+
+        % Post information about error if one occurred.
+        if (errorcode == true)
+            fprintf('An instrument error occurred while setting the property value.\n');
+            fprintf([result, '\n']);
+        end
+
+        % Verify that the configured value matches the expected value.
+        if (errorcode == false)
+            % Get the current property value.
+            tempOut = get(groupObj, {'CurrentLimit'});
+
+            % Compare to the expected value.
+            expectedValue = cell(size(groupObj))';
+            [expectedValue{:}] = deal(validValues{i});
+            errorcode = ~isequal(tempOut, expectedValue);
+    
+            % Post information about test step failure.
+            if (errorcode == true)
+                fprintf('The property is not configured to the expected value.\n');
+    
+                % Post actual value.
+                for k=1:length(tempOut)
+                    c = tempOut{k};
+                    if isnumeric(c)
+                        fprintf(['Actual value(' num2str(k) '): ' num2str(c), '\n']);
+                    else
+                        fprintf(['Actual value(' num2str(k) '): ' c, '\n']);
+                    end
+                end
+    
+                % Post expected value.
+                if isnumeric(validValues{i})
+                    fprintf(['Expected value: ' num2str(validValues{i}), '\n']);
+                else
+                    fprintf(['Expected value: ' validValues{i}, '\n']);
+                end
+            end
+
+            % Check if instrument error occurred.
+            result = invoke(deviceObj,'error');
+            errorcode1 = ~isempty(result);
+
+            % Post information about error if one occurred.
+            if (errorcode1 == true)
+                errorcode = errorcode1;
+                fprintf('An instrument error occurred while getting the property value.\n');
+                fprintf([result, '\n']);
+            end
+        end
+    catch
+        % A MATLAB error occurred.
+        errorcode = true;
+
+        % Post information about error.
+        fprintf('A MATLAB error occurred while testing the property.\n');
+        fprintf([lasterr, '\n']);
+    end
+    if (errorcode == true)
+        finalerrorcode = true;
+    end
+end
+errorcode = finalerrorcode;
+
+% Reset errorcode.
+errorcode = false;
+
+% Post information on the property being tested.
+fprintf('Testing CurrentStep property in the Output group.\n');
+
+% Overall error status for all settings.
+finalerrorcode = false;
+
+% Valid values for the CurrentStep property.
+validValues = {9.57505E-5, 1.0000957505, 2.0000957505, 5.15};
+
+% Test all supported values.
+for i = 1:length(validValues)
+    try
+        % Configure the property.
+        groupObj = get(deviceObj, 'Output');
+        set(groupObj, 'CurrentStep', validValues{i});
+
+        % Check if instrument error occurred.
+        result = invoke(deviceObj,'error');
+        errorcode = ~isempty(result);
+
+        % Post information about error if one occurred.
+        if (errorcode == true)
+            fprintf('An instrument error occurred while setting the property value.\n');
+            fprintf([result, '\n']);
+        end
+
+        % Verify that the configured value matches the expected value.
+        if (errorcode == false)
+            % Get the current property value.
+            tempOut = get(groupObj, {'CurrentStep'});
+
+            % Compare to the expected value.
+            expectedValue = cell(size(groupObj))';
+            [expectedValue{:}] = deal(validValues{i});
+            errorcode = ~isequal(tempOut, expectedValue);
+    
+            % Post information about test step failure.
+            if (errorcode == true)
+                fprintf('The property is not configured to the expected value.\n');
+    
+                % Post actual value.
+                for k=1:length(tempOut)
+                    c = tempOut{k};
+                    if isnumeric(c)
+                        fprintf(['Actual value(' num2str(k) '): ' num2str(c), '\n']);
+                    else
+                        fprintf(['Actual value(' num2str(k) '): ' c, '\n']);
+                    end
+                end
+    
+                % Post expected value.
+                if isnumeric(validValues{i})
+                    fprintf(['Expected value: ' num2str(validValues{i}), '\n']);
+                else
+                    fprintf(['Expected value: ' validValues{i}, '\n']);
+                end
+            end
+
+            % Check if instrument error occurred.
+            result = invoke(deviceObj,'error');
+            errorcode1 = ~isempty(result);
+
+            % Post information about error if one occurred.
+            if (errorcode1 == true)
+                errorcode = errorcode1;
+                fprintf('An instrument error occurred while getting the property value.\n');
+                fprintf([result, '\n']);
+            end
+        end
+    catch
+        % A MATLAB error occurred.
+        errorcode = true;
+
+        % Post information about error.
+        fprintf('A MATLAB error occurred while testing the property.\n');
+        fprintf([lasterr, '\n']);
+    end
+    if (errorcode == true)
+        finalerrorcode = true;
+    end
+end
+errorcode = finalerrorcode;
+
+% Reset errorcode.
+errorcode = false;
+
+% Post information on the property being tested.
+fprintf('Testing Enabled property in the Output group.\n');
+
+% Overall error status for all settings.
+finalerrorcode = false;
+
+% Valid values for the Enabled property.
+validValues = {'on', 'off'};
+
+% Test all supported values.
+for i = 1:length(validValues)
+    try
+        % Configure the property.
+        groupObj = get(deviceObj, 'Output');
+        set(groupObj, 'Enabled', validValues{i});
+
+        % Check if instrument error occurred.
+        result = invoke(deviceObj,'error');
+        errorcode = ~isempty(result);
+
+        % Post information about error if one occurred.
+        if (errorcode == true)
+            fprintf('An instrument error occurred while setting the property value.\n');
+            fprintf([result, '\n']);
+        end
+
+        % Verify that the configured value matches the expected value.
+        if (errorcode == false)
+            % Get the current property value.
+            tempOut = get(groupObj, {'Enabled'});
+
+            % Compare to the expected value.
+            expectedValue = cell(size(groupObj))';
+            [expectedValue{:}] = deal(validValues{i});
+            errorcode = ~isequal(tempOut, expectedValue);
+    
+            % Post information about test step failure.
+            if (errorcode == true)
+                fprintf('The property is not configured to the expected value.\n');
+    
+                % Post actual value.
+                for k=1:length(tempOut)
+                    c = tempOut{k};
+                    if isnumeric(c)
+                        fprintf(['Actual value(' num2str(k) '): ' num2str(c), '\n']);
+                    else
+                        fprintf(['Actual value(' num2str(k) '): ' c, '\n']);
+                    end
+                end
+    
+                % Post expected value.
+                if isnumeric(validValues{i})
+                    fprintf(['Expected value: ' num2str(validValues{i}), '\n']);
+                else
+                    fprintf(['Expected value: ' validValues{i}, '\n']);
+                end
+            end
+
+            % Check if instrument error occurred.
+            result = invoke(deviceObj,'error');
+            errorcode1 = ~isempty(result);
+
+            % Post information about error if one occurred.
+            if (errorcode1 == true)
+                errorcode = errorcode1;
+                fprintf('An instrument error occurred while getting the property value.\n');
+                fprintf([result, '\n']);
+            end
+        end
+    catch
+        % A MATLAB error occurred.
+        errorcode = true;
+
+        % Post information about error.
+        fprintf('A MATLAB error occurred while testing the property.\n');
+        fprintf([lasterr, '\n']);
+    end
+    if (errorcode == true)
+        finalerrorcode = true;
+    end
+end
+errorcode = finalerrorcode;
+
+% Reset errorcode.
+errorcode = false;
+
+% Post information on the property being tested.
+fprintf('Testing OverVoltageProtectionEnabled property in the Output group.\n');
+
+% Overall error status for all settings.
+finalerrorcode = false;
+
+% Valid values for the OverVoltageProtectionEnabled property.
+validValues = {'on', 'off'};
+
+% Test all supported values.
+for i = 1:length(validValues)
+    try
+        % Configure the property.
+        groupObj = get(deviceObj, 'Output');
+        set(groupObj, 'OverVoltageProtectionEnabled', validValues{i});
+
+        % Check if instrument error occurred.
+        result = invoke(deviceObj,'error');
+        errorcode = ~isempty(result);
+
+        % Post information about error if one occurred.
+        if (errorcode == true)
+            fprintf('An instrument error occurred while setting the property value.\n');
+            fprintf([result, '\n']);
+        end
+
+        % Verify that the configured value matches the expected value.
+        if (errorcode == false)
+            % Get the current property value.
+            tempOut = get(groupObj, {'OverVoltageProtectionEnabled'});
+
+            % Compare to the expected value.
+            expectedValue = cell(size(groupObj))';
+            [expectedValue{:}] = deal(validValues{i});
+            errorcode = ~isequal(tempOut, expectedValue);
+    
+            % Post information about test step failure.
+            if (errorcode == true)
+                fprintf('The property is not configured to the expected value.\n');
+    
+                % Post actual value.
+                for k=1:length(tempOut)
+                    c = tempOut{k};
+                    if isnumeric(c)
+                        fprintf(['Actual value(' num2str(k) '): ' num2str(c), '\n']);
+                    else
+                        fprintf(['Actual value(' num2str(k) '): ' c, '\n']);
+                    end
+                end
+    
+                % Post expected value.
+                if isnumeric(validValues{i})
+                    fprintf(['Expected value: ' num2str(validValues{i}), '\n']);
+                else
+                    fprintf(['Expected value: ' validValues{i}, '\n']);
+                end
+            end
+
+            % Check if instrument error occurred.
+            result = invoke(deviceObj,'error');
+            errorcode1 = ~isempty(result);
+
+            % Post information about error if one occurred.
+            if (errorcode1 == true)
+                errorcode = errorcode1;
+                fprintf('An instrument error occurred while getting the property value.\n');
+                fprintf([result, '\n']);
+            end
+        end
+    catch
+        % A MATLAB error occurred.
+        errorcode = true;
+
+        % Post information about error.
+        fprintf('A MATLAB error occurred while testing the property.\n');
+        fprintf([lasterr, '\n']);
+    end
+    if (errorcode == true)
+        finalerrorcode = true;
+    end
+end
+errorcode = finalerrorcode;
+
+% Reset errorcode.
+errorcode = false;
+
+% Post information on the property being tested.
+fprintf('Testing OverVoltageProtectionLimit property in the Output group.\n');
+
+% Overall error status for all settings.
+finalerrorcode = false;
+
+% Valid values for the OverVoltageProtectionLimit property.
+validValues = {1.0, 8.0, 15.0, 22.0};
+
+% Test all supported values.
+for i = 1:length(validValues)
+    try
+        % Configure the property.
+        groupObj = get(deviceObj, 'Output');
+        set(groupObj, 'OverVoltageProtectionLimit', validValues{i});
+
+        % Check if instrument error occurred.
+        result = invoke(deviceObj,'error');
+        errorcode = ~isempty(result);
+
+        % Post information about error if one occurred.
+        if (errorcode == true)
+            fprintf('An instrument error occurred while setting the property value.\n');
+            fprintf([result, '\n']);
+        end
+
+        % Verify that the configured value matches the expected value.
+        if (errorcode == false)
+            % Get the current property value.
+            tempOut = get(groupObj, {'OverVoltageProtectionLimit'});
+
+            % Compare to the expected value.
+            expectedValue = cell(size(groupObj))';
+            [expectedValue{:}] = deal(validValues{i});
+            errorcode = ~isequal(tempOut, expectedValue);
+    
+            % Post information about test step failure.
+            if (errorcode == true)
+                fprintf('The property is not configured to the expected value.\n');
+    
+                % Post actual value.
+                for k=1:length(tempOut)
+                    c = tempOut{k};
+                    if isnumeric(c)
+                        fprintf(['Actual value(' num2str(k) '): ' num2str(c), '\n']);
+                    else
+                        fprintf(['Actual value(' num2str(k) '): ' c, '\n']);
+                    end
+                end
+    
+                % Post expected value.
+                if isnumeric(validValues{i})
+                    fprintf(['Expected value: ' num2str(validValues{i}), '\n']);
+                else
+                    fprintf(['Expected value: ' validValues{i}, '\n']);
+                end
+            end
+
+            % Check if instrument error occurred.
+            result = invoke(deviceObj,'error');
+            errorcode1 = ~isempty(result);
+
+            % Post information about error if one occurred.
+            if (errorcode1 == true)
+                errorcode = errorcode1;
+                fprintf('An instrument error occurred while getting the property value.\n');
+                fprintf([result, '\n']);
+            end
+        end
+    catch
+        % A MATLAB error occurred.
+        errorcode = true;
+
+        % Post information about error.
+        fprintf('A MATLAB error occurred while testing the property.\n');
+        fprintf([lasterr, '\n']);
+    end
+    if (errorcode == true)
+        finalerrorcode = true;
+    end
+end
+errorcode = finalerrorcode;
+
+% Reset errorcode.
+errorcode = false;
+
+% Post information on the property being tested.
+fprintf('Testing State property in the Output group.\n');
+ 
+try
+    % Query the value for the read-only property, State.
+    groupObj = get(deviceObj, 'Output');
+    get(groupObj, {'State'});
+
+    % Check if instrument error occurred.
+    result = invoke(deviceObj,'error');
+    errorcode = ~isempty(result);
+
+    % Post information about error if one occurred.
+    if (errorcode == true)
+        fprintf('An instrument error occurred while getting the property value.\n');
+        fprintf([result, '\n']);
+    end
+catch
+    % A MATLAB error occurred.
+    errorcode = true;
+
+    % Post information about error.
+    fprintf('A MATLAB error occurred while getting the property value.\n');
+    fprintf([lasterr, '\n']);
+end
+
+% Reset errorcode.
+errorcode = false;
+
+% Post information on the property being tested.
+fprintf('Testing TriggerCoupling property in the Output group.\n');
+
+% Overall error status for all settings.
+finalerrorcode = false;
+
+% Valid values for the TriggerCoupling property.
+validValues = {'on', 'off'};
+
+% Test all supported values.
+for i = 1:length(validValues)
+    try
+        % Configure the property.
+        groupObj = get(deviceObj, 'Output');
+        set(groupObj, 'TriggerCoupling', validValues{i});
+
+        % Check if instrument error occurred.
+        result = invoke(deviceObj,'error');
+        errorcode = ~isempty(result);
+
+        % Post information about error if one occurred.
+        if (errorcode == true)
+            fprintf('An instrument error occurred while setting the property value.\n');
+            fprintf([result, '\n']);
+        end
+
+        % Verify that the configured value matches the expected value.
+        if (errorcode == false)
+            % Get the current property value.
+            tempOut = get(groupObj, {'TriggerCoupling'});
+
+            % Compare to the expected value.
+            expectedValue = cell(size(groupObj))';
+            [expectedValue{:}] = deal(validValues{i});
+            errorcode = ~isequal(tempOut, expectedValue);
+    
+            % Post information about test step failure.
+            if (errorcode == true)
+                fprintf('The property is not configured to the expected value.\n');
+    
+                % Post actual value.
+                for k=1:length(tempOut)
+                    c = tempOut{k};
+                    if isnumeric(c)
+                        fprintf(['Actual value(' num2str(k) '): ' num2str(c), '\n']);
+                    else
+                        fprintf(['Actual value(' num2str(k) '): ' c, '\n']);
+                    end
+                end
+    
+                % Post expected value.
+                if isnumeric(validValues{i})
+                    fprintf(['Expected value: ' num2str(validValues{i}), '\n']);
+                else
+                    fprintf(['Expected value: ' validValues{i}, '\n']);
+                end
+            end
+
+            % Check if instrument error occurred.
+            result = invoke(deviceObj,'error');
+            errorcode1 = ~isempty(result);
+
+            % Post information about error if one occurred.
+            if (errorcode1 == true)
+                errorcode = errorcode1;
+                fprintf('An instrument error occurred while getting the property value.\n');
+                fprintf([result, '\n']);
+            end
+        end
+    catch
+        % A MATLAB error occurred.
+        errorcode = true;
+
+        % Post information about error.
+        fprintf('A MATLAB error occurred while testing the property.\n');
+        fprintf([lasterr, '\n']);
+    end
+    if (errorcode == true)
+        finalerrorcode = true;
+    end
+end
+errorcode = finalerrorcode;
+
+% Reset errorcode.
+errorcode = false;
+
+% Post information on the property being tested.
+fprintf('Testing TriggerCurrentLimit property in the Output group.\n');
+
+% Overall error status for all settings.
+finalerrorcode = false;
+
+% Valid values for the TriggerCurrentLimit property.
+validValues = {0.0, 1.0, 2.0, 5.15};
+
+% Test all supported values.
+for i = 1:length(validValues)
+    try
+        % Configure the property.
+        groupObj = get(deviceObj, 'Output');
+        set(groupObj, 'TriggerCurrentLimit', validValues{i});
+
+        % Check if instrument error occurred.
+        result = invoke(deviceObj,'error');
+        errorcode = ~isempty(result);
+
+        % Post information about error if one occurred.
+        if (errorcode == true)
+            fprintf('An instrument error occurred while setting the property value.\n');
+            fprintf([result, '\n']);
+        end
+
+        % Verify that the configured value matches the expected value.
+        if (errorcode == false)
+            % Get the current property value.
+            tempOut = get(groupObj, {'TriggerCurrentLimit'});
+
+            % Compare to the expected value.
+            expectedValue = cell(size(groupObj))';
+            [expectedValue{:}] = deal(validValues{i});
+            errorcode = ~isequal(tempOut, expectedValue);
+    
+            % Post information about test step failure.
+            if (errorcode == true)
+                fprintf('The property is not configured to the expected value.\n');
+    
+                % Post actual value.
+                for k=1:length(tempOut)
+                    c = tempOut{k};
+                    if isnumeric(c)
+                        fprintf(['Actual value(' num2str(k) '): ' num2str(c), '\n']);
+                    else
+                        fprintf(['Actual value(' num2str(k) '): ' c, '\n']);
+                    end
+                end
+    
+                % Post expected value.
+                if isnumeric(validValues{i})
+                    fprintf(['Expected value: ' num2str(validValues{i}), '\n']);
+                else
+                    fprintf(['Expected value: ' validValues{i}, '\n']);
+                end
+            end
+
+            % Check if instrument error occurred.
+            result = invoke(deviceObj,'error');
+            errorcode1 = ~isempty(result);
+
+            % Post information about error if one occurred.
+            if (errorcode1 == true)
+                errorcode = errorcode1;
+                fprintf('An instrument error occurred while getting the property value.\n');
+                fprintf([result, '\n']);
+            end
+        end
+    catch
+        % A MATLAB error occurred.
+        errorcode = true;
+
+        % Post information about error.
+        fprintf('A MATLAB error occurred while testing the property.\n');
+        fprintf([lasterr, '\n']);
+    end
+    if (errorcode == true)
+        finalerrorcode = true;
+    end
+end
+errorcode = finalerrorcode;
+
+% Reset errorcode.
+errorcode = false;
+
+% Post information on the property being tested.
+fprintf('Testing TriggerDelay property in the Output group.\n');
+
+% Overall error status for all settings.
+finalerrorcode = false;
+
+% Valid values for the TriggerDelay property.
+validValues = {0.0, 1200.0, 2400.0, 3600.0};
+
+% Test all supported values.
+for i = 1:length(validValues)
+    try
+        % Configure the property.
+        groupObj = get(deviceObj, 'Output');
+        set(groupObj, 'TriggerDelay', validValues{i});
+
+        % Check if instrument error occurred.
+        result = invoke(deviceObj,'error');
+        errorcode = ~isempty(result);
+
+        % Post information about error if one occurred.
+        if (errorcode == true)
+            fprintf('An instrument error occurred while setting the property value.\n');
+            fprintf([result, '\n']);
+        end
+
+        % Verify that the configured value matches the expected value.
+        if (errorcode == false)
+            % Get the current property value.
+            tempOut = get(groupObj, {'TriggerDelay'});
+
+            % Compare to the expected value.
+            expectedValue = cell(size(groupObj))';
+            [expectedValue{:}] = deal(validValues{i});
+            errorcode = ~isequal(tempOut, expectedValue);
+    
+            % Post information about test step failure.
+            if (errorcode == true)
+                fprintf('The property is not configured to the expected value.\n');
+    
+                % Post actual value.
+                for k=1:length(tempOut)
+                    c = tempOut{k};
+                    if isnumeric(c)
+                        fprintf(['Actual value(' num2str(k) '): ' num2str(c), '\n']);
+                    else
+                        fprintf(['Actual value(' num2str(k) '): ' c, '\n']);
+                    end
+                end
+    
+                % Post expected value.
+                if isnumeric(validValues{i})
+                    fprintf(['Expected value: ' num2str(validValues{i}), '\n']);
+                else
+                    fprintf(['Expected value: ' validValues{i}, '\n']);
+                end
+            end
+
+            % Check if instrument error occurred.
+            result = invoke(deviceObj,'error');
+            errorcode1 = ~isempty(result);
+
+            % Post information about error if one occurred.
+            if (errorcode1 == true)
+                errorcode = errorcode1;
+                fprintf('An instrument error occurred while getting the property value.\n');
+                fprintf([result, '\n']);
+            end
+        end
+    catch
+        % A MATLAB error occurred.
+        errorcode = true;
+
+        % Post information about error.
+        fprintf('A MATLAB error occurred while testing the property.\n');
+        fprintf([lasterr, '\n']);
+    end
+    if (errorcode == true)
+        finalerrorcode = true;
+    end
+end
+errorcode = finalerrorcode;
+
+% Reset errorcode.
+errorcode = false;
+
+% Post information on the property being tested.
+fprintf('Testing TriggerSource property in the Output group.\n');
+
+% Overall error status for all settings.
+finalerrorcode = false;
+
+% Valid values for the TriggerSource property.
+validValues = {'bus', 'immediate'};
+
+% Test all supported values.
+for i = 1:length(validValues)
+    try
+        % Configure the property.
+        groupObj = get(deviceObj, 'Output');
+        set(groupObj, 'TriggerSource', validValues{i});
+
+        % Check if instrument error occurred.
+        result = invoke(deviceObj,'error');
+        errorcode = ~isempty(result);
+
+        % Post information about error if one occurred.
+        if (errorcode == true)
+            fprintf('An instrument error occurred while setting the property value.\n');
+            fprintf([result, '\n']);
+        end
+
+        % Verify that the configured value matches the expected value.
+        if (errorcode == false)
+            % Get the current property value.
+            tempOut = get(groupObj, {'TriggerSource'});
+
+            % Compare to the expected value.
+            expectedValue = cell(size(groupObj))';
+            [expectedValue{:}] = deal(validValues{i});
+            errorcode = ~isequal(tempOut, expectedValue);
+    
+            % Post information about test step failure.
+            if (errorcode == true)
+                fprintf('The property is not configured to the expected value.\n');
+    
+                % Post actual value.
+                for k=1:length(tempOut)
+                    c = tempOut{k};
+                    if isnumeric(c)
+                        fprintf(['Actual value(' num2str(k) '): ' num2str(c), '\n']);
+                    else
+                        fprintf(['Actual value(' num2str(k) '): ' c, '\n']);
+                    end
+                end
+    
+                % Post expected value.
+                if isnumeric(validValues{i})
+                    fprintf(['Expected value: ' num2str(validValues{i}), '\n']);
+                else
+                    fprintf(['Expected value: ' validValues{i}, '\n']);
+                end
+            end
+
+            % Check if instrument error occurred.
+            result = invoke(deviceObj,'error');
+            errorcode1 = ~isempty(result);
+
+            % Post information about error if one occurred.
+            if (errorcode1 == true)
+                errorcode = errorcode1;
+                fprintf('An instrument error occurred while getting the property value.\n');
+                fprintf([result, '\n']);
+            end
+        end
+    catch
+        % A MATLAB error occurred.
+        errorcode = true;
+
+        % Post information about error.
+        fprintf('A MATLAB error occurred while testing the property.\n');
+        fprintf([lasterr, '\n']);
+    end
+    if (errorcode == true)
+        finalerrorcode = true;
+    end
+end
+errorcode = finalerrorcode;
+
+% Reset errorcode.
+errorcode = false;
+
+% Post information on the property being tested.
+fprintf('Testing TriggerVoltageLevel property in the Output group.\n');
+
+% Overall error status for all settings.
+finalerrorcode = false;
+
+% Valid values for the TriggerVoltageLevel property.
+validValues = {0.0, 6.0, 8.0};
+
+% Test all supported values.
+for i = 1:length(validValues)
+    try
+        % Configure the property.
+        groupObj = get(deviceObj, 'Output');
+        set(groupObj, 'TriggerVoltageLevel', validValues{i});
+
+        % Check if instrument error occurred.
+        result = invoke(deviceObj,'error');
+        errorcode = ~isempty(result);
+
+        % Post information about error if one occurred.
+        if (errorcode == true)
+            fprintf('An instrument error occurred while setting the property value.\n');
+            fprintf([result, '\n']);
+        end
+
+        % Verify that the configured value matches the expected value.
+        if (errorcode == false)
+            % Get the current property value.
+            tempOut = get(groupObj, {'TriggerVoltageLevel'});
+
+            % Compare to the expected value.
+            expectedValue = cell(size(groupObj))';
+            [expectedValue{:}] = deal(validValues{i});
+            errorcode = ~isequal(tempOut, expectedValue);
+    
+            % Post information about test step failure.
+            if (errorcode == true)
+                fprintf('The property is not configured to the expected value.\n');
+    
+                % Post actual value.
+                for k=1:length(tempOut)
+                    c = tempOut{k};
+                    if isnumeric(c)
+                        fprintf(['Actual value(' num2str(k) '): ' num2str(c), '\n']);
+                    else
+                        fprintf(['Actual value(' num2str(k) '): ' c, '\n']);
+                    end
+                end
+    
+                % Post expected value.
+                if isnumeric(validValues{i})
+                    fprintf(['Expected value: ' num2str(validValues{i}), '\n']);
+                else
+                    fprintf(['Expected value: ' validValues{i}, '\n']);
+                end
+            end
+
+            % Check if instrument error occurred.
+            result = invoke(deviceObj,'error');
+            errorcode1 = ~isempty(result);
+
+            % Post information about error if one occurred.
+            if (errorcode1 == true)
+                errorcode = errorcode1;
+                fprintf('An instrument error occurred while getting the property value.\n');
+                fprintf([result, '\n']);
+            end
+        end
+    catch
+        % A MATLAB error occurred.
+        errorcode = true;
+
+        % Post information about error.
+        fprintf('A MATLAB error occurred while testing the property.\n');
+        fprintf([lasterr, '\n']);
+    end
+    if (errorcode == true)
+        finalerrorcode = true;
+    end
+end
+errorcode = finalerrorcode;
+
+% Reset errorcode.
+errorcode = false;
+
+% Post information on the property being tested.
+fprintf('Testing VoltageLevel property in the Output group.\n');
+
+% Overall error status for all settings.
+finalerrorcode = false;
+
+% Valid values for the VoltageLevel property.
+validValues = {0.0, 6.0, 8.0};
+
+% Test all supported values.
+for i = 1:length(validValues)
+    try
+        % Configure the property.
+        groupObj = get(deviceObj, 'Output');
+        set(groupObj, 'VoltageLevel', validValues{i});
+
+        % Check if instrument error occurred.
+        result = invoke(deviceObj,'error');
+        errorcode = ~isempty(result);
+
+        % Post information about error if one occurred.
+        if (errorcode == true)
+            fprintf('An instrument error occurred while setting the property value.\n');
+            fprintf([result, '\n']);
+        end
+
+        % Verify that the configured value matches the expected value.
+        if (errorcode == false)
+            % Get the current property value.
+            tempOut = get(groupObj, {'VoltageLevel'});
+
+            % Compare to the expected value.
+            expectedValue = cell(size(groupObj))';
+            [expectedValue{:}] = deal(validValues{i});
+            errorcode = ~isequal(tempOut, expectedValue);
+    
+            % Post information about test step failure.
+            if (errorcode == true)
+                fprintf('The property is not configured to the expected value.\n');
+    
+                % Post actual value.
+                for k=1:length(tempOut)
+                    c = tempOut{k};
+                    if isnumeric(c)
+                        fprintf(['Actual value(' num2str(k) '): ' num2str(c), '\n']);
+                    else
+                        fprintf(['Actual value(' num2str(k) '): ' c, '\n']);
+                    end
+                end
+    
+                % Post expected value.
+                if isnumeric(validValues{i})
+                    fprintf(['Expected value: ' num2str(validValues{i}), '\n']);
+                else
+                    fprintf(['Expected value: ' validValues{i}, '\n']);
+                end
+            end
+
+            % Check if instrument error occurred.
+            result = invoke(deviceObj,'error');
+            errorcode1 = ~isempty(result);
+
+            % Post information about error if one occurred.
+            if (errorcode1 == true)
+                errorcode = errorcode1;
+                fprintf('An instrument error occurred while getting the property value.\n');
+                fprintf([result, '\n']);
+            end
+        end
+    catch
+        % A MATLAB error occurred.
+        errorcode = true;
+
+        % Post information about error.
+        fprintf('A MATLAB error occurred while testing the property.\n');
+        fprintf([lasterr, '\n']);
+    end
+    if (errorcode == true)
+        finalerrorcode = true;
+    end
+end
+errorcode = finalerrorcode;
+
+% Reset errorcode.
+errorcode = false;
+
+% Post information on the property being tested.
+fprintf('Testing VoltageStep property in the Output group.\n');
+
+% Overall error status for all settings.
+finalerrorcode = false;
+
+% Valid values for the VoltageStep property.
+validValues = {9.57505E-5, 6.0000957505, 8.000000245};
+
+% Test all supported values.
+for i = 1:length(validValues)
+    try
+        % Configure the property.
+        groupObj = get(deviceObj, 'Output');
+        set(groupObj, 'VoltageStep', validValues{i});
+
+        % Check if instrument error occurred.
+        result = invoke(deviceObj,'error');
+        errorcode = ~isempty(result);
+
+        % Post information about error if one occurred.
+        if (errorcode == true)
+            fprintf('An instrument error occurred while setting the property value.\n');
+            fprintf([result, '\n']);
+        end
+
+        % Verify that the configured value matches the expected value.
+        if (errorcode == false)
+            % Get the current property value.
+            tempOut = get(groupObj, {'VoltageStep'});
+
+            % Compare to the expected value.
+            expectedValue = cell(size(groupObj))';
+            [expectedValue{:}] = deal(validValues{i});
+            errorcode = ~isequal(tempOut, expectedValue);
+    
+            % Post information about test step failure.
+            if (errorcode == true)
+                fprintf('The property is not configured to the expected value.\n');
+    
+                % Post actual value.
+                for k=1:length(tempOut)
+                    c = tempOut{k};
+                    if isnumeric(c)
+                        fprintf(['Actual value(' num2str(k) '): ' num2str(c), '\n']);
+                    else
+                        fprintf(['Actual value(' num2str(k) '): ' c, '\n']);
+                    end
+                end
+    
+                % Post expected value.
+                if isnumeric(validValues{i})
+                    fprintf(['Expected value: ' num2str(validValues{i}), '\n']);
+                else
+                    fprintf(['Expected value: ' validValues{i}, '\n']);
+                end
+            end
+
+            % Check if instrument error occurred.
+            result = invoke(deviceObj,'error');
+            errorcode1 = ~isempty(result);
+
+            % Post information about error if one occurred.
+            if (errorcode1 == true)
+                errorcode = errorcode1;
+                fprintf('An instrument error occurred while getting the property value.\n');
+                fprintf([result, '\n']);
+            end
+        end
+    catch
+        % A MATLAB error occurred.
+        errorcode = true;
+
+        % Post information about error.
+        fprintf('A MATLAB error occurred while testing the property.\n');
+        fprintf([lasterr, '\n']);
+    end
+    if (errorcode == true)
+        finalerrorcode = true;
+    end
+end
+errorcode = finalerrorcode;
+
+% Reset errorcode.
+errorcode = false;
+
+% Post information on the property being tested.
+fprintf('Testing Version property in the System group.\n');
+ 
+try
+    % Query the value for the read-only property, Version.
+    groupObj = get(deviceObj, 'System');
+    get(groupObj, {'Version'});
+
+    % Check if instrument error occurred.
+    result = invoke(deviceObj,'error');
+    errorcode = ~isempty(result);
+
+    % Post information about error if one occurred.
+    if (errorcode == true)
+        fprintf('An instrument error occurred while getting the property value.\n');
+        fprintf([result, '\n']);
+    end
+catch
+    % A MATLAB error occurred.
+    errorcode = true;
+
+    % Post information about error.
+    fprintf('A MATLAB error occurred while getting the property value.\n');
+    fprintf([lasterr, '\n']);
+end
+
+
+% Post message indicating if test step passed.
+if (errorcode == true)
+    errorOccurred = true;
+    fprintf('Test step status: FAILED\n');
+elseif (stepWarningOccurred == true)
+    fprintf('Test step status: PASSED with warnings\n');
+else
+    fprintf('Test step status: PASSED\n');
+end
+
+% Test Step 3: error Function (Function Test Step)
+
+errorcode = false;
+try
+    % Execute the function.
+    invoke(deviceObj, 'error');
+ 
+    % Check if instrument error occurred.
+    result = invoke(deviceObj,'error');
+    errorcode = ~isempty(result);
+    
+    % Post information about error if one occurred.
+    if (errorcode == true)
+        fprintf('An instrument error occurred while executing the function.\n');
+        fprintf([result, '\n']);
+    end
+catch
+    % A MATLAB error occurred.
+    errorcode = true;
+
+    % Post information about error.
+    fprintf('A MATLAB error occurred while testing the function.\n');
+    fprintf([lasterr, '\n']);
+end
+
+% Post message indicating if test step passed.
+if (errorcode == true)
+    errorOccurred = true;
+    fprintf('Test step status: FAILED\n');
+elseif (stepWarningOccurred == true)
+    fprintf('Test step status: PASSED with warnings\n');
+else
+    fprintf('Test step status: PASSED\n');
+end
+
+% Test Step 5: measure (voltage) Function (Function Test Step)
+
+errorcode = false;
+try
+    % Execute the function.
+    [voltageValue] = invoke(deviceObj, 'measure', 'voltage');
+     
+    % Store the result so that it can be returned.
+    varargout = {varargout{:}, voltageValue};
+ 
+    % Check if instrument error occurred.
+    result = invoke(deviceObj,'error');
+    errorcode = ~isempty(result);
+    
+    % Post information about error if one occurred.
+    if (errorcode == true)
+        fprintf('An instrument error occurred while executing the function.\n');
+        fprintf([result, '\n']);
+    end
+catch
+    % A MATLAB error occurred.
+    errorcode = true;
+
+    % Post information about error.
+    fprintf('A MATLAB error occurred while testing the function.\n');
+    fprintf([lasterr, '\n']);
+end
+
+% Post message indicating if test step passed.
+if (errorcode == true)
+    errorOccurred = true;
+    fprintf('Test step status: FAILED\n');
+elseif (stepWarningOccurred == true)
+    fprintf('Test step status: PASSED with warnings\n');
+else
+    fprintf('Test step status: PASSED\n');
+end
+
+% Test Step 7: measure (current) Function (Function Test Step)
+
+errorcode = false;
+try
+    % Execute the function.
+    [currentValue] = invoke(deviceObj, 'measure', 'current');
+     
+    % Store the result so that it can be returned.
+    varargout = {varargout{:}, currentValue};
+ 
+    % Check if instrument error occurred.
+    result = invoke(deviceObj,'error');
+    errorcode = ~isempty(result);
+    
+    % Post information about error if one occurred.
+    if (errorcode == true)
+        fprintf('An instrument error occurred while executing the function.\n');
+        fprintf([result, '\n']);
+    end
+catch
+    % A MATLAB error occurred.
+    errorcode = true;
+
+    % Post information about error.
+    fprintf('A MATLAB error occurred while testing the function.\n');
+    fprintf([lasterr, '\n']);
+end
+
+% Post message indicating if test step passed.
+if (errorcode == true)
+    errorOccurred = true;
+    fprintf('Test step status: FAILED\n');
+elseif (stepWarningOccurred == true)
+    fprintf('Test step status: PASSED with warnings\n');
+else
+    fprintf('Test step status: PASSED\n');
+end
+
+% Test Step 8: trigger Function (Function Test Step)
+
+errorcode = false;
+try
+    % Execute the function.
+    invoke(deviceObj, 'trigger');
+ 
+    % Check if instrument error occurred.
+    result = invoke(deviceObj,'error');
+    errorcode = ~isempty(result);
+    
+    % Post information about error if one occurred.
+    if (errorcode == true)
+        fprintf('An instrument error occurred while executing the function.\n');
+        fprintf([result, '\n']);
+    end
+catch
+    % A MATLAB error occurred.
+    errorcode = true;
+
+    % Post information about error.
+    fprintf('A MATLAB error occurred while testing the function.\n');
+    fprintf([lasterr, '\n']);
+end
+
+% Post message indicating if test step passed.
+if (errorcode == true)
+    errorOccurred = true;
+    fprintf('Test step status: FAILED\n');
+elseif (stepWarningOccurred == true)
+    fprintf('Test step status: PASSED with warnings\n');
+else
+    fprintf('Test step status: PASSED\n');
+end
+
+% Test Step 9: calibratecurrent Function (Function Test Step)
+
+errorcode = false;
+groupObj = get(deviceObj, 'Output');
+set(groupObj, 'Enabled', 'on');
+try
+    % Execute the function.
+    groupObj = get(deviceObj, 'Calibration');
+    invoke(groupObj, 'calibratecurrent', 0,0,120);
+ 
+    % Check if instrument error occurred.
+    result = invoke(deviceObj,'error');
+    errorcode = ~isempty(result);
+    
+    % Post information about error if one occurred.
+    if (errorcode == true)
+        fprintf('An instrument error occurred while executing the function.\n');
+        fprintf([result, '\n']);
+    end
+catch
+    % A MATLAB error occurred.
+    errorcode = true;
+
+    % Post information about error.
+    fprintf('A MATLAB error occurred while testing the function.\n');
+    fprintf([lasterr, '\n']);
+end
+
+% Post message indicating if test step passed.
+if (errorcode == true)
+    errorOccurred = true;
+    fprintf('Test step status: FAILED\n');
+elseif (stepWarningOccurred == true)
+    fprintf('Test step status: PASSED with warnings\n');
+else
+    fprintf('Test step status: PASSED\n');
+end
+
+% Test Step 10: calibratevoltage Function (Function Test Step)
+
+errorcode = false;
+try
+    % Execute the function.
+    groupObj = get(deviceObj, 'Calibration');
+    invoke(groupObj, 'calibratevoltage', 0,0,120);
+ 
+    % Check if instrument error occurred.
+    result = invoke(deviceObj,'error');
+    errorcode = ~isempty(result);
+    
+    % Post information about error if one occurred.
+    if (errorcode == true)
+        fprintf('An instrument error occurred while executing the function.\n');
+        fprintf([result, '\n']);
+    end
+catch
+    % A MATLAB error occurred.
+    errorcode = true;
+
+    % Post information about error.
+    fprintf('A MATLAB error occurred while testing the function.\n');
+    fprintf([lasterr, '\n']);
+end
+
+% Post message indicating if test step passed.
+if (errorcode == true)
+    errorOccurred = true;
+    fprintf('Test step status: FAILED\n');
+elseif (stepWarningOccurred == true)
+    fprintf('Test step status: PASSED with warnings\n');
+else
+    fprintf('Test step status: PASSED\n');
+end
+
+% Test Step 11: calibratevoltageprotection Function (Function Test Step)
+
+errorcode = false;
+try
+    % Execute the function.
+    groupObj = get(deviceObj, 'Calibration');
+    invoke(groupObj, 'calibratevoltageprotection');
+ 
+    % Check if instrument error occurred.
+    result = invoke(deviceObj,'error');
+    errorcode = ~isempty(result);
+    
+    % Post information about error if one occurred.
+    if (errorcode == true)
+        fprintf('An instrument error occurred while executing the function.\n');
+        fprintf([result, '\n']);
+    end
+catch
+    % A MATLAB error occurred.
+    errorcode = true;
+
+    % Post information about error.
+    fprintf('A MATLAB error occurred while testing the function.\n');
+    fprintf([lasterr, '\n']);
+end
+
+% Post message indicating if test step passed.
+if (errorcode == true)
+    errorOccurred = true;
+    fprintf('Test step status: FAILED\n');
+elseif (stepWarningOccurred == true)
+    fprintf('Test step status: PASSED with warnings\n');
+else
+    fprintf('Test step status: PASSED\n');
+end
+
+% Test Step 12: clear Function (Function Test Step)
+
+errorcode = false;
+try
+    % Execute the function.
+    groupObj = get(deviceObj, 'Display');
+    invoke(groupObj, 'clear');
+ 
+    % Check if instrument error occurred.
+    result = invoke(deviceObj,'error');
+    errorcode = ~isempty(result);
+    
+    % Post information about error if one occurred.
+    if (errorcode == true)
+        fprintf('An instrument error occurred while executing the function.\n');
+        fprintf([result, '\n']);
+    end
+catch
+    % A MATLAB error occurred.
+    errorcode = true;
+
+    % Post information about error.
+    fprintf('A MATLAB error occurred while testing the function.\n');
+    fprintf([lasterr, '\n']);
+end
+
+% Post message indicating if test step passed.
+if (errorcode == true)
+    errorOccurred = true;
+    fprintf('Test step status: FAILED\n');
+elseif (stepWarningOccurred == true)
+    fprintf('Test step status: PASSED with warnings\n');
+else
+    fprintf('Test step status: PASSED\n');
+end
+
+% Test Step 13: settext Function (Function Test Step)
+
+errorcode = false;
+try
+    % Execute the function.
+    groupObj = get(deviceObj, 'Display');
+    invoke(groupObj, 'settext', 'Test_Msg');
+ 
+    % Check if instrument error occurred.
+    result = invoke(deviceObj,'error');
+    errorcode = ~isempty(result);
+    
+    % Post information about error if one occurred.
+    if (errorcode == true)
+        fprintf('An instrument error occurred while executing the function.\n');
+        fprintf([result, '\n']);
+    end
+catch
+    % A MATLAB error occurred.
+    errorcode = true;
+
+    % Post information about error.
+    fprintf('A MATLAB error occurred while testing the function.\n');
+    fprintf([lasterr, '\n']);
+end
+
+% Post message indicating if test step passed.
+if (errorcode == true)
+    errorOccurred = true;
+    fprintf('Test step status: FAILED\n');
+elseif (stepWarningOccurred == true)
+    fprintf('Test step status: PASSED with warnings\n');
+else
+    fprintf('Test step status: PASSED\n');
+end
+
+% Test Step 14: decreasecurrent Function (Function Test Step)
+
+errorcode = false;
+try
+    % Execute the function.
+    groupObj = get(deviceObj, 'Output');
+    set(groupObj,'currentstep',0.5);
+    invoke(groupObj,'increasecurrent');
+    invoke(groupObj, 'decreasecurrent');
+ 
+    % Check if instrument error occurred.
+    result = invoke(deviceObj,'error');
+    errorcode = ~isempty(result);
+    
+    % Post information about error if one occurred.
+    if (errorcode == true)
+        fprintf('An instrument error occurred while executing the function.\n');
+        fprintf([result, '\n']);
+    end
+catch
+    % A MATLAB error occurred.
+    errorcode = true;
+
+    % Post information about error.
+    fprintf('A MATLAB error occurred while testing the function.\n');
+    fprintf([lasterr, '\n']);
+end
+
+% Post message indicating if test step passed.
+if (errorcode == true)
+    errorOccurred = true;
+    fprintf('Test step status: FAILED\n');
+elseif (stepWarningOccurred == true)
+    fprintf('Test step status: PASSED with warnings\n');
+else
+    fprintf('Test step status: PASSED\n');
+end
+
+% Test Step 15: decreasevoltage Function (Function Test Step)
+
+errorcode = false;
+try
+    % Execute the function.
+    groupObj = get(deviceObj, 'Output');
+    set(groupObj,'voltagestep',0.5);
+    invoke(groupObj, 'decreasevoltage');
+
+ 
+    % Check if instrument error occurred.
+    result = invoke(deviceObj,'error');
+    errorcode = ~isempty(result);
+    
+    % Post information about error if one occurred.
+    if (errorcode == true)
+        fprintf('An instrument error occurred while executing the function.\n');
+        fprintf([result, '\n']);
+    end
+catch
+    % A MATLAB error occurred.
+    errorcode = true;
+
+    % Post information about error.
+    fprintf('A MATLAB error occurred while testing the function.\n');
+    fprintf([lasterr, '\n']);
+end
+
+% Post message indicating if test step passed.
+if (errorcode == true)
+    errorOccurred = true;
+    fprintf('Test step status: FAILED\n');
+elseif (stepWarningOccurred == true)
+    fprintf('Test step status: PASSED with warnings\n');
+else
+    fprintf('Test step status: PASSED\n');
+end
+
+% Test Step 16: enable Function (Function Test Step)
+
+errorcode = false;
+try
+    % Execute the function.
+    groupObj = get(deviceObj, 'Output');
+    invoke(groupObj, 'enable');
+ 
+    % Check if instrument error occurred.
+    result = invoke(deviceObj,'error');
+    errorcode = ~isempty(result);
+    
+    % Post information about error if one occurred.
+    if (errorcode == true)
+        fprintf('An instrument error occurred while executing the function.\n');
+        fprintf([result, '\n']);
+    end
+catch
+    % A MATLAB error occurred.
+    errorcode = true;
+
+    % Post information about error.
+    fprintf('A MATLAB error occurred while testing the function.\n');
+    fprintf([lasterr, '\n']);
+end
+
+% Post message indicating if test step passed.
+if (errorcode == true)
+    errorOccurred = true;
+    fprintf('Test step status: FAILED\n');
+elseif (stepWarningOccurred == true)
+    fprintf('Test step status: PASSED with warnings\n');
+else
+    fprintf('Test step status: PASSED\n');
+end
+
+% Test Step 17: disable Function (Function Test Step)
+
+errorcode = false;
+try
+    % Execute the function.
+    groupObj = get(deviceObj, 'Output');
+    invoke(groupObj, 'disable');
+ 
+    % Check if instrument error occurred.
+    result = invoke(deviceObj,'error');
+    errorcode = ~isempty(result);
+    
+    % Post information about error if one occurred.
+    if (errorcode == true)
+        fprintf('An instrument error occurred while executing the function.\n');
+        fprintf([result, '\n']);
+    end
+catch
+    % A MATLAB error occurred.
+    errorcode = true;
+
+    % Post information about error.
+    fprintf('A MATLAB error occurred while testing the function.\n');
+    fprintf([lasterr, '\n']);
+end
+
+% Post message indicating if test step passed.
+if (errorcode == true)
+    errorOccurred = true;
+    fprintf('Test step status: FAILED\n');
+elseif (stepWarningOccurred == true)
+    fprintf('Test step status: PASSED with warnings\n');
+else
+    fprintf('Test step status: PASSED\n');
+end
+
+% Test Step 18: increasecurrent Function (Function Test Step)
+
+errorcode = false;
+try
+    % Execute the function.
+    groupObj = get(deviceObj, 'Output');
+    invoke(groupObj, 'increasecurrent');
+ 
+    % Check if instrument error occurred.
+    result = invoke(deviceObj,'error');
+    errorcode = ~isempty(result);
+    
+    % Post information about error if one occurred.
+    if (errorcode == true)
+        fprintf('An instrument error occurred while executing the function.\n');
+        fprintf([result, '\n']);
+    end
+catch
+    % A MATLAB error occurred.
+    errorcode = true;
+
+    % Post information about error.
+    fprintf('A MATLAB error occurred while testing the function.\n');
+    fprintf([lasterr, '\n']);
+end
+
+% Post message indicating if test step passed.
+if (errorcode == true)
+    errorOccurred = true;
+    fprintf('Test step status: FAILED\n');
+elseif (stepWarningOccurred == true)
+    fprintf('Test step status: PASSED with warnings\n');
+else
+    fprintf('Test step status: PASSED\n');
+end
+
+% Test Step 19: increasevoltage Function (Function Test Step)
+
+errorcode = false;
+try
+    % Execute the function.
+    groupObj = get(deviceObj, 'Output');
+    invoke(groupObj, 'increasevoltage');
+ 
+    % Check if instrument error occurred.
+    result = invoke(deviceObj,'error');
+    errorcode = ~isempty(result);
+    
+    % Post information about error if one occurred.
+    if (errorcode == true)
+        fprintf('An instrument error occurred while executing the function.\n');
+        fprintf([result, '\n']);
+    end
+catch
+    % A MATLAB error occurred.
+    errorcode = true;
+
+    % Post information about error.
+    fprintf('A MATLAB error occurred while testing the function.\n');
+    fprintf([lasterr, '\n']);
+end
+
+% Post message indicating if test step passed.
+if (errorcode == true)
+    errorOccurred = true;
+    fprintf('Test step status: FAILED\n');
+elseif (stepWarningOccurred == true)
+    fprintf('Test step status: PASSED with warnings\n');
+else
+    fprintf('Test step status: PASSED\n');
+end
+
+% Test Step 20: resetvoltageprotectionFunction (Function Test Step)
+
+errorcode = false;
+try
+    % Execute the function.
+    groupObj = get(deviceObj, 'Output');
+    invoke(groupObj, 'resetvoltageprotection');
+ 
+    % Check if instrument error occurred.
+    result = invoke(deviceObj,'error');
+    errorcode = ~isempty(result);
+    
+    % Post information about error if one occurred.
+    if (errorcode == true)
+        fprintf('An instrument error occurred while executing the function.\n');
+        fprintf([result, '\n']);
+    end
+catch
+    % A MATLAB error occurred.
+    errorcode = true;
+
+    % Post information about error.
+    fprintf('A MATLAB error occurred while testing the function.\n');
+    fprintf([lasterr, '\n']);
+end
+
+% Post message indicating if test step passed.
+if (errorcode == true)
+    errorOccurred = true;
+    fprintf('Test step status: FAILED\n');
+elseif (stepWarningOccurred == true)
+    fprintf('Test step status: PASSED with warnings\n');
+else
+    fprintf('Test step status: PASSED\n');
+end
+
+% Test Step 21: beep Function (Function Test Step)
+
+errorcode = false;
+try
+    % Execute the function.
+    groupObj = get(deviceObj, 'System');
+    invoke(groupObj, 'beep');
+ 
+    % Check if instrument error occurred.
+    result = invoke(deviceObj,'error');
+    errorcode = ~isempty(result);
+    
+    % Post information about error if one occurred.
+    if (errorcode == true)
+        fprintf('An instrument error occurred while executing the function.\n');
+        fprintf([result, '\n']);
+    end
+catch
+    % A MATLAB error occurred.
+    errorcode = true;
+
+    % Post information about error.
+    fprintf('A MATLAB error occurred while testing the function.\n');
+    fprintf([lasterr, '\n']);
+end
+
+% Post message indicating if test step passed.
+if (errorcode == true)
+    errorOccurred = true;
+    fprintf('Test step status: FAILED\n');
+elseif (stepWarningOccurred == true)
+    fprintf('Test step status: PASSED with warnings\n');
+else
+    fprintf('Test step status: PASSED\n');
+end
+
+% Test Step 22: disablelocalcontrols Function (Function Test Step)
+
+errorcode = false;
+try
+    % Execute the function.
+    groupObj = get(deviceObj, 'System');
+    invoke(groupObj, 'disablelocalcontrols');
+ 
+    % Check if instrument error occurred.
+    result = invoke(deviceObj,'error');
+    errorcode = ~isempty(result);
+    
+    % Post information about error if one occurred.
+    if (errorcode == true)
+        fprintf('An instrument error occurred while executing the function.\n');
+        fprintf([result, '\n']);
+    end
+catch
+    % A MATLAB error occurred.
+    errorcode = true;
+
+    % Post information about error.
+    fprintf('A MATLAB error occurred while testing the function.\n');
+    fprintf([lasterr, '\n']);
+end
+
+% Post message indicating if test step passed.
+if (errorcode == true)
+    errorOccurred = true;
+    fprintf('Test step status: FAILED\n');
+elseif (stepWarningOccurred == true)
+    fprintf('Test step status: PASSED with warnings\n');
+else
+    fprintf('Test step status: PASSED\n');
+end
+
+% Test Step 23: enablelocalcontrols Function (Function Test Step)
+
+errorcode = false;
+try
+    % Execute the function.
+    groupObj = get(deviceObj, 'System');
+    invoke(groupObj, 'enablelocalcontrols');
+ 
+    % Check if instrument error occurred.
+    result = invoke(deviceObj,'error');
+    errorcode = ~isempty(result);
+    
+    % Post information about error if one occurred.
+    if (errorcode == true)
+        fprintf('An instrument error occurred while executing the function.\n');
+        fprintf([result, '\n']);
+    end
+catch
+    % A MATLAB error occurred.
+    errorcode = true;
+
+    % Post information about error.
+    fprintf('A MATLAB error occurred while testing the function.\n');
+    fprintf([lasterr, '\n']);
+end
+
+% Post message indicating if test step passed.
+if (errorcode == true)
+    errorOccurred = true;
+    fprintf('Test step status: FAILED\n');
+elseif (stepWarningOccurred == true)
+    fprintf('Test step status: PASSED with warnings\n');
+else
+    fprintf('Test step status: PASSED\n');
+end
+
+% Test Step 24: savestate Function (Function Test Step)
+
+errorcode = false;
+try
+    % Execute the function.
+    groupObj = get(deviceObj, 'System');
+    invoke(groupObj, 'savestate', 1);
+ 
+    % Check if instrument error occurred.
+    result = invoke(deviceObj,'error');
+    errorcode = ~isempty(result);
+    
+    % Post information about error if one occurred.
+    if (errorcode == true)
+        fprintf('An instrument error occurred while executing the function.\n');
+        fprintf([result, '\n']);
+    end
+catch
+    % A MATLAB error occurred.
+    errorcode = true;
+
+    % Post information about error.
+    fprintf('A MATLAB error occurred while testing the function.\n');
+    fprintf([lasterr, '\n']);
+end
+
+% Post message indicating if test step passed.
+if (errorcode == true)
+    errorOccurred = true;
+    fprintf('Test step status: FAILED\n');
+elseif (stepWarningOccurred == true)
+    fprintf('Test step status: PASSED with warnings\n');
+else
+    fprintf('Test step status: PASSED\n');
+end
+
+% Test Step 25: loadstate Function (Function Test Step)
+
+errorcode = false;
+try
+    % Execute the function.
+    groupObj = get(deviceObj, 'System');
+    invoke(groupObj, 'loadstate', 1);
+ 
+    % Check if instrument error occurred.
+    result = invoke(deviceObj,'error');
+    errorcode = ~isempty(result);
+    
+    % Post information about error if one occurred.
+    if (errorcode == true)
+        fprintf('An instrument error occurred while executing the function.\n');
+        fprintf([result, '\n']);
+    end
+catch
+    % A MATLAB error occurred.
+    errorcode = true;
+
+    % Post information about error.
+    fprintf('A MATLAB error occurred while testing the function.\n');
+    fprintf([lasterr, '\n']);
+end
+
+% Post message indicating if test step passed.
+if (errorcode == true)
+    errorOccurred = true;
+    fprintf('Test step status: FAILED\n');
+elseif (stepWarningOccurred == true)
+    fprintf('Test step status: PASSED with warnings\n');
+else
+    fprintf('Test step status: PASSED\n');
+end
+
+% Test Step 26: All Properties Sweep (Properties Sweep Test Step)
+% Reset errorcode.
+errorcode = false;
+
+% Post information on the property being tested.
+fprintf('Testing CurrentLimit property in the Output group.\n');
+
+% Overall error status for all settings.
+finalerrorcode = false;
+
+% Valid values for the CurrentLimit property.
+validValues = {'max', 'min', 'up', 'down'};
+
+% Test all supported values.
+for i = 1:length(validValues)
+    try
+        % Configure the property.
+        groupObj = get(deviceObj, 'Output');
+        set(groupObj, 'CurrentLimit', validValues{i});
+
+        % Check if instrument error occurred.
+        result = invoke(deviceObj,'error');
+        errorcode = ~isempty(result);
+
+        % Post information about error if one occurred.
+        if (errorcode == true)
+            fprintf('An instrument error occurred while setting the property value.\n');
+            fprintf([result, '\n']);
+        end
+    catch
+        % A MATLAB error occurred.
+        errorcode = true;
+
+        % Post information about error.
+        fprintf('A MATLAB error occurred while testing the property.\n');
+        fprintf([lasterr, '\n']);
+    end
+    if (errorcode == true)
+        finalerrorcode = true;
+    end
+end
+errorcode = finalerrorcode;
+
+% Reset errorcode.
+errorcode = false;
+
+% Post information on the property being tested.
+fprintf('Testing CurrentStep property in the Output group.\n');
+
+% Overall error status for all settings.
+finalerrorcode = false;
+
+% Valid values for the CurrentStep property.
+validValues = {'default'};
+
+% Test all supported values.
+for i = 1:length(validValues)
+    try
+        % Configure the property.
+        groupObj = get(deviceObj, 'Output');
+        set(groupObj, 'CurrentStep', validValues{i});
+
+        % Check if instrument error occurred.
+        result = invoke(deviceObj,'error');
+        errorcode = ~isempty(result);
+
+        % Post information about error if one occurred.
+        if (errorcode == true)
+            fprintf('An instrument error occurred while setting the property value.\n');
+            fprintf([result, '\n']);
+        end
+    catch
+        % A MATLAB error occurred.
+        errorcode = true;
+
+        % Post information about error.
+        fprintf('A MATLAB error occurred while testing the property.\n');
+        fprintf([lasterr, '\n']);
+    end
+    if (errorcode == true)
+        finalerrorcode = true;
+    end
+end
+errorcode = finalerrorcode;
+
+% Reset errorcode.
+errorcode = false;
+
+% Post information on the property being tested.
+fprintf('Testing OverVoltageProtectionLimit property in the Output group.\n');
+
+% Overall error status for all settings.
+finalerrorcode = false;
+
+% Valid values for the OverVoltageProtectionLimit property.
+validValues = {'min', 'max'};
+
+% Test all supported values.
+for i = 1:length(validValues)
+    try
+        % Configure the property.
+        groupObj = get(deviceObj, 'Output');
+        set(groupObj, 'OverVoltageProtectionLimit', validValues{i});
+
+        % Check if instrument error occurred.
+        result = invoke(deviceObj,'error');
+        errorcode = ~isempty(result);
+
+        % Post information about error if one occurred.
+        if (errorcode == true)
+            fprintf('An instrument error occurred while setting the property value.\n');
+            fprintf([result, '\n']);
+        end
+    catch
+        % A MATLAB error occurred.
+        errorcode = true;
+
+        % Post information about error.
+        fprintf('A MATLAB error occurred while testing the property.\n');
+        fprintf([lasterr, '\n']);
+    end
+    if (errorcode == true)
+        finalerrorcode = true;
+    end
+end
+errorcode = finalerrorcode;
+
+% Reset errorcode.
+errorcode = false;
+
+% Post information on the property being tested.
+fprintf('Testing TriggerCurrentLimit property in the Output group.\n');
+
+% Overall error status for all settings.
+finalerrorcode = false;
+
+% Valid values for the TriggerCurrentLimit property.
+validValues = {'max', 'min'};
+
+% Test all supported values.
+for i = 1:length(validValues)
+    try
+        % Configure the property.
+        groupObj = get(deviceObj, 'Output');
+        set(groupObj, 'TriggerCurrentLimit', validValues{i});
+
+        % Check if instrument error occurred.
+        result = invoke(deviceObj,'error');
+        errorcode = ~isempty(result);
+
+        % Post information about error if one occurred.
+        if (errorcode == true)
+            fprintf('An instrument error occurred while setting the property value.\n');
+            fprintf([result, '\n']);
+        end
+    catch
+        % A MATLAB error occurred.
+        errorcode = true;
+
+        % Post information about error.
+        fprintf('A MATLAB error occurred while testing the property.\n');
+        fprintf([lasterr, '\n']);
+    end
+    if (errorcode == true)
+        finalerrorcode = true;
+    end
+end
+errorcode = finalerrorcode;
+
+% Reset errorcode.
+errorcode = false;
+
+% Post information on the property being tested.
+fprintf('Testing TriggerDelay property in the Output group.\n');
+
+% Overall error status for all settings.
+finalerrorcode = false;
+
+% Valid values for the TriggerDelay property.
+validValues = {'max', 'min'};
+
+% Test all supported values.
+for i = 1:length(validValues)
+    try
+        % Configure the property.
+        groupObj = get(deviceObj, 'Output');
+        set(groupObj, 'TriggerDelay', validValues{i});
+
+        % Check if instrument error occurred.
+        result = invoke(deviceObj,'error');
+        errorcode = ~isempty(result);
+
+        % Post information about error if one occurred.
+        if (errorcode == true)
+            fprintf('An instrument error occurred while setting the property value.\n');
+            fprintf([result, '\n']);
+        end
+    catch
+        % A MATLAB error occurred.
+        errorcode = true;
+
+        % Post information about error.
+        fprintf('A MATLAB error occurred while testing the property.\n');
+        fprintf([lasterr, '\n']);
+    end
+    if (errorcode == true)
+        finalerrorcode = true;
+    end
+end
+errorcode = finalerrorcode;
+
+% Reset errorcode.
+errorcode = false;
+
+% Post information on the property being tested.
+fprintf('Testing TriggerVoltageLevel property in the Output group.\n');
+
+% Overall error status for all settings.
+finalerrorcode = false;
+
+% Valid values for the TriggerVoltageLevel property.
+validValues = {'min', 'max'};
+
+% Test all supported values.
+for i = 1:length(validValues)
+    try
+        % Configure the property.
+        groupObj = get(deviceObj, 'Output');
+        set(groupObj, 'TriggerVoltageLevel', validValues{i});
+
+        % Check if instrument error occurred.
+        result = invoke(deviceObj,'error');
+        errorcode = ~isempty(result);
+
+        % Post information about error if one occurred.
+        if (errorcode == true)
+            fprintf('An instrument error occurred while setting the property value.\n');
+            fprintf([result, '\n']);
+        end
+    catch
+        % A MATLAB error occurred.
+        errorcode = true;
+
+        % Post information about error.
+        fprintf('A MATLAB error occurred while testing the property.\n');
+        fprintf([lasterr, '\n']);
+    end
+    if (errorcode == true)
+        finalerrorcode = true;
+    end
+end
+errorcode = finalerrorcode;
+
+% Reset errorcode.
+errorcode = false;
+
+% Post information on the property being tested.
+fprintf('Testing VoltageLevel property in the Output group.\n');
+
+% Overall error status for all settings.
+finalerrorcode = false;
+
+% Valid values for the VoltageLevel property.
+validValues = {'max', 'min', 'up', 'down'};
+
+% Test all supported values.
+for i = 1:length(validValues)
+    try
+        % Configure the property.
+        groupObj = get(deviceObj, 'Output');
+        set(groupObj, 'VoltageLevel', validValues{i});
+
+        % Check if instrument error occurred.
+        result = invoke(deviceObj,'error');
+        errorcode = ~isempty(result);
+
+        % Post information about error if one occurred.
+        if (errorcode == true)
+            fprintf('An instrument error occurred while setting the property value.\n');
+            fprintf([result, '\n']);
+        end
+    catch
+        % A MATLAB error occurred.
+        errorcode = true;
+
+        % Post information about error.
+        fprintf('A MATLAB error occurred while testing the property.\n');
+        fprintf([lasterr, '\n']);
+    end
+    if (errorcode == true)
+        finalerrorcode = true;
+    end
+end
+errorcode = finalerrorcode;
+
+% Reset errorcode.
+errorcode = false;
+
+% Post information on the property being tested.
+fprintf('Testing VoltageOutputRange property in the Output group.\n');
+
+% Overall error status for all settings.
+finalerrorcode = false;
+
+% Valid values for the VoltageOutputRange property.
+validValues = {'low', 'high', 'p8v', 'p20v'};
+
+% Test all supported values.
+for i = 1:length(validValues)
+    try
+        % Configure the property.
+        groupObj = get(deviceObj, 'Output');
+        set(groupObj, 'VoltageOutputRange', validValues{i});
+
+        % Check if instrument error occurred.
+        result = invoke(deviceObj,'error');
+        errorcode = ~isempty(result);
+
+        % Post information about error if one occurred.
+        if (errorcode == true)
+            fprintf('An instrument error occurred while setting the property value.\n');
+            fprintf([result, '\n']);
+        end
+    catch
+        % A MATLAB error occurred.
+        errorcode = true;
+
+        % Post information about error.
+        fprintf('A MATLAB error occurred while testing the property.\n');
+        fprintf([lasterr, '\n']);
+    end
+    if (errorcode == true)
+        finalerrorcode = true;
+    end
+end
+errorcode = finalerrorcode;
+
+% Reset errorcode.
+errorcode = false;
+
+% Post information on the property being tested.
+fprintf('Testing VoltageStep property in the Output group.\n');
+
+% Overall error status for all settings.
+finalerrorcode = false;
+
+% Valid values for the VoltageStep property.
+validValues = {'default', 'low', 'high'};
+
+% Test all supported values.
+for i = 1:length(validValues)
+    try
+        % Configure the property.
+        groupObj = get(deviceObj, 'Output');
+        set(groupObj, 'VoltageStep', validValues{i});
+
+        % Check if instrument error occurred.
+        result = invoke(deviceObj,'error');
+        errorcode = ~isempty(result);
+
+        % Post information about error if one occurred.
+        if (errorcode == true)
+            fprintf('An instrument error occurred while setting the property value.\n');
+            fprintf([result, '\n']);
+        end
+    catch
+        % A MATLAB error occurred.
+        errorcode = true;
+
+        % Post information about error.
+        fprintf('A MATLAB error occurred while testing the property.\n');
+        fprintf([lasterr, '\n']);
+    end
+    if (errorcode == true)
+        finalerrorcode = true;
+    end
+end
+errorcode = finalerrorcode;
+
+% Reset errorcode.
+errorcode = false;
+
+% Post information on the property being tested.
+fprintf('Testing Version property in the System group.\n');
+ 
+try
+    % Query the value for the read-only property, Version.
+    groupObj = get(deviceObj, 'System');
+    get(groupObj, {'Version'});
+
+    % Check if instrument error occurred.
+    result = invoke(deviceObj,'error');
+    errorcode = ~isempty(result);
+
+    % Post information about error if one occurred.
+    if (errorcode == true)
+        fprintf('An instrument error occurred while getting the property value.\n');
+        fprintf([result, '\n']);
+    end
+catch
+    % A MATLAB error occurred.
+    errorcode = true;
+
+    % Post information about error.
+    fprintf('A MATLAB error occurred while getting the property value.\n');
+    fprintf([lasterr, '\n']);
+end
+
+
+% Post message indicating if test step passed.
+if (errorcode == true)
+    errorOccurred = true;
+    fprintf('Test step status: FAILED\n');
+elseif (stepWarningOccurred == true)
+    fprintf('Test step status: PASSED with warnings\n');
+else
+    fprintf('Test step status: PASSED\n');
+end
+
+% Post results.
+fprintf(['Stop time: ' datestr(now) '\n']);
+if (errorOccurred == true)
+    fprintf('Test status: FAILED\n');
+    varargout{1} = false;
+elseif (warningOccurred == true)
+    fprintf('Test status: PASSED with warnings\n');
+    varargout{1} = true;
+else
+    fprintf('Test status: PASSED\n');
+    varargout{1} = true;
+end
+
+catch
+    % An error occurred while running the test.
+    fprintf('An error occurred while executing the test.\n');
+    fprintf([lasterr,'\n']);
+    varargout{1} = false;
+end</MCode>
+               </Code>
+               <Description>Test the driver to make sure it works properly.</Description>
+            </Method>
+            <Method>
+               <Name>error</Name>
+               <Location>parent</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>MCode</Type>
+               <Code>
+                  <MCode>function err = error(obj)
+% For group functions, OBJ is the group object. For
+% base device functions, OBJ is the device object.
+
+driverData = get(obj, 'DriverData');
+
+% checks to see if ther are any errors stored
+numberOfErrors = numel(driverData.error);
+if(numberOfErrors == 0)
+    err = '';
+else
+    err = driverData.error{numberOfErrors};
+    driverData.error(numberOfErrors) = '';
+    set(obj, 'DriverData', driverData);
+end
+</MCode>
+               </Code>
+               <Description/>
+            </Method>
+            <Method>
+               <Name>measure</Name>
+               <Location>parent</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>MCode</Type>
+               <Code>
+                  <MCode>function  measurement = measure(obj,type)
+% If this is a group function, OBJ is the group object. If
+% it a base device function, OBJ is the device object.
+
+
+driverData = get(obj, 'DriverData');
+
+hw = driverData.obj;
+if(~isnumeric(hw))
+    hw = 2;
+end 
+if(strcmpi(type,'voltage'))
+    measurement = driverData.output.VoltLev{hw};
+elseif(strcmpi(type,'current'))
+    
+    measurement = driverData.output.current{hw};
+else
+    error('type %s is not valid, type must be either current or voltage',type);
+end
+
+  
+
+</MCode>
+               </Code>
+               <Description>MEASURE Measure the voltage or current of output signal.
+
+OUT = INVOKE(OBJ, 'measure', 'TYPE') measures the voltage or current of the output signal of the instrument connected to device object, OBJ and returns value to OUT. If TYPE is 'voltage', the voltage is measured. If TYPE is 'current', the current is measured.</Description>
+            </Method>
+            <Method>
+               <Name>reset</Name>
+               <Location>parent</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>MCode</Type>
+               <Code>
+                  <MCode>function reset(obj)
+% For group functions, OBJ is the group object. For
+% base device functions, OBJ is the device object.
+driverData = get(obj, 'DriverData');
+
+driverData.track = 'off';
+driverData.volt.old = {0,0};
+driverData.current.old = {0,0};
+driverData.trigger = 0;
+driverData.error = {};
+driverData.holdplace = 1;
+
+driverData.calibration.enabled ='off';
+driverData.calibration.current.min = 1;
+driverData.calibration.current.mid = 0;
+driverData.calibration.current.max = 0;
+driverData.calibration.voltage.min = 0;
+driverData.calibration.voltage.mid = 0;
+driverData.calibration.voltage.max = 0;
+driverData.calibration.state = 'on';
+
+driverData.display.enabled = 'on';
+driverData.display.mode = 'voltage-current';
+driverData.display.settext = '';
+
+driverData.output.currentlimit = {5,5};
+driverData.output.currentstep = {9.5705E-5,9.5705E-5};
+driverData.output.enabled = {'on','on'};
+driverData.output.OverVoltProtectEnab = {'on','on'};
+driverData.output.OverVoltProtectLim = {22,22};
+driverData.output.state = {'on','on'};
+driverData.output.trigcoupling = {'off','off'};
+driverData.output.TrigCurrLim = {5,5};
+driverData.output.triggerdelay = {0,0};
+driverData.output.triggersource = {'bus','bus'};
+driverData.output.TrigVoltLev = {0,0};
+driverData.output.VoltLev = {0,0};
+driverData.output.current = {0,0};
+driverData.output.voltageoutrange = {'p8v','p8v'};
+driverData.output.voltagestep = {0.00038184,0.00038184};
+
+set(obj, 'DriverData', driverData);</MCode>
+               </Code>
+               <Description/>
+            </Method>
+            <Method>
+               <Name>trigger</Name>
+               <Location>parent</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>MCode</Type>
+               <Code>
+                  <MCode>function trigger(obj)
+% If this is a group function, OBJ is the group object. If
+% it a base device function, OBJ is the device object.
+
+driverData = get(obj, 'DriverData');
+driverData.trigger = 1;
+set(obj, 'DriverData', driverData);</MCode>
+               </Code>
+               <Description>TRIGGER Send a software trigger.
+
+INVOKE(OBJ, 'trigger') sends a software trigger to the instrument connected to device object.</Description>
+            </Method>
+         </MethodInfo>
+      </Group>
+      <Group>
+         <Name>calibration</Name>
+         <Description>The calibration group defines properties and functions related to instrument calibration.</Description>
+         <Command/>
+         <Size>1</Size>
+         <Mappings>
+            <ChannelMap Command="Calibration1" Index="1"/>
+         </Mappings>
+         <PropertyInfo>
+            <Property>
+               <Name>Count</Name>
+               <Location>calibration</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>MCode</Type>
+               <Code>
+                  <GetMCode>function propertyValue = getProperty(obj, propertyName)
+% Return a property value.
+%   This function is called to return the device or group object property
+%   value. If the property is a group property, OBJ is the group object. If
+%   the property is a base device property, OBJ is the device object.
+ 
+driverData = get(get(obj, 'Parent'), 'DriverData');
+propertyValue = driverData.calibration.count;</GetMCode>
+                  <SetMCode>function set(obj, propertyName, propertyValue)
+% Set a property value.
+%   This function is called to set the device or group object property
+%   value. If the property is a group property, OBJ is the group object. If
+%   the property is a base device property, OBJ is the device object.</SetMCode>
+               </Code>
+               <PermissibleType>
+                  <Type>Double</Type>
+                  <Constraint>none</Constraint>
+               </PermissibleType>
+               <DefaultValue>0</DefaultValue>
+               <ReadOnly>always</ReadOnly>
+               <Description>Returns number of times the instrument has been calibrated </Description>
+            </Property>
+            <Property>
+               <Name>Enabled</Name>
+               <Location>calibration</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>MCode</Type>
+               <Code>
+                  <GetMCode>function propertyValue = getProperty(obj, propertyName)
+% Return a property value.
+%   This function is called to return the device or group object property
+%   value. If the property is a group property, OBJ is the group object. If
+%   the property is a base device property, OBJ is the device object.
+
+driverData = get(get(obj, 'Parent'), 'DriverData');
+propertyValue = driverData.calibration.state;</GetMCode>
+                  <SetMCode>function set(obj, propertyName, propertyValue)
+% Set a property value.
+%   This function is called to set the device or group object property
+%   value. If the property is a group property, OBJ is the group object. If
+%   the property is a base device property, OBJ is the device object.</SetMCode>
+               </Code>
+               <PermissibleType>
+                  <Type>String</Type>
+                  <Constraint>enum</Constraint>
+                  <ConstraintValue>
+                     <Enum Name="on" Value="on"/>
+                     <Enum Name="off" Value="off"/>
+                  </ConstraintValue>
+               </PermissibleType>
+               <DefaultValue>on</DefaultValue>
+               <ReadOnly>always</ReadOnly>
+               <Description>Query the secured state for calibration of the instrument.</Description>
+            </Property>
+            <Property>
+               <Name>Message</Name>
+               <Location>calibration</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>MCode</Type>
+               <Code>
+                  <GetMCode>function propertyValue = getProperty(obj, propertyName)
+% Return a property value.
+%   This function is called to return the device or group object property
+%   value. If the property is a group property, OBJ is the group object. If
+%   the property is a base device property, OBJ is the device object.
+
+driverData = get(get(obj, 'Parent'), 'DriverData');
+propertyValue = driverData.calibration.message;</GetMCode>
+                  <SetMCode>function set(obj,propertyName, propertyValue)
+
+% Set a property value.
+%	This function is called to set the device or group object property
+%	value. If the property is a group property, OBJ is the group object. If
+%	the property is a base device property, OBJ is the device object.
+
+beep on
+driverData = get(get(obj, 'Parent'), 'DriverData');
+% Error checking.
+if ~ischar(propertyValue)
+	error('MESSAGE must be a string.');
+end
+
+% Checks to see if the string entered by the user is longer then 40 
+% characters. If it is it is then truncated and the user is given an error
+if( length(propertyValue) &gt; 40)
+    i = 1;
+   while(i &lt; 41)
+        message(i) = propertyValue(i);
+        i = 1 + i;
+   end
+    warning('ICDevice:longmessage',...
+		'Your message may only be 40 characters, and will be truncated')
+    beep
+    driverData.error{driverData.holdplace} = '-223,"Too much data"';
+    driverData.holdplace = driverData.holdplace + 1;
+else
+    message = propertyValue;
+end
+
+% Checks to see if the the power supply is unsecure if it is not, it returns an error.
+if(strcmp(driverData.calibration.state,'off'))
+    driverData.calibration.message = sprintf('"%s"',message);
+else
+    error('the power supply must be unsecure to set message')
+end
+
+set(get(obj, 'Parent'), 'DriverData', driverData);</SetMCode>
+               </Code>
+               <PermissibleType>
+                  <Type>String</Type>
+                  <Constraint>none</Constraint>
+               </PermissibleType>
+               <DefaultValue>0</DefaultValue>
+               <ReadOnly>never</ReadOnly>
+               <Description>Specifies calibration information for the instrument.</Description>
+            </Property>
+         </PropertyInfo>
+         <MethodInfo>
+            <Method>
+               <Name>calibratecurrent</Name>
+               <Location>calibration</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>MCode</Type>
+               <Code>
+                  <MCode>function calibratecurrent(obj,minData,midData,maxData)
+% For group functions, OBJ is the group object. For
+% base device functions, OBJ is the device object.
+
+beep on
+driverData = get(get(obj, 'Parent'), 'DriverData');
+
+% Checks to see if the power supply is unsecure and that the output is 
+% enable, if either are not, the corrisponding error message is dissplayed
+if(strcmp(driverData.output.enabled,'on'))
+    if(strcmp(driverData.calibration.state,'off'))
+        try
+            % set the min data
+            driverData.calibration.current.min = minData;
+        catch
+            error('must enter a value for minData')
+        end
+
+        try
+            % set the mid data
+            driverData.calibration.current.mid = midData;
+        catch
+            error('must enter a value for midData')
+        end
+
+        try
+            % set the max data
+            driverData.calibration.current.max = maxData;
+        catch
+            error('must enter a value for maxData')
+        end
+
+        % increase the calibration count
+        driverData.calibration.count = driverData.calibration.count + 1;
+        set(get(obj, 'Parent'), 'DriverData', driverData);
+    else
+        driverData.error{driverData.holdplace} = '702,"Cal secured"';
+        driverData.holdplace = driverData.holdplace + 1;
+        beep;
+        set(get(obj, 'Parent'), 'DriverData', driverData);
+        error('calibration must be unsecured')
+    end
+else
+    driverData.error{driverData.holdplace} = ' +708,"Cal output disabled"';
+    driverData.holdplace = driverData.holdplace + 1;
+    beep;
+    set(get(obj, 'Parent'), 'DriverData', driverData);
+   error('Output state must be set to on')
+end
+
+ set(get(obj, 'Parent'), 'DriverData', driverData);</MCode>
+               </Code>
+               <Description>CALIBRATECURRENT Calibrate the current of the power supply.</Description>
+            </Method>
+            <Method>
+               <Name>calibratevoltage</Name>
+               <Location>calibration</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>MCode</Type>
+               <Code>
+                  <MCode>function calibratecurrent(obj,minData,midData,maxData)
+% For group functions, OBJ is the group object. For
+% base device functions, OBJ is the device object.
+
+beep on
+driverData = get(get(obj, 'Parent'), 'DriverData');
+
+% Checks to see if the power supply is unsecure and that the output is 
+% enable, if either are not, the corrisponding error message is dissplayed
+if(strcmp(driverData.output.enabled,'on'))
+    if(strcmp(driverData.calibration.state,'off'))
+        try
+            % set the min data
+            driverData.calibration.voltage.min = minData;
+        catch
+            error('must enter a value for minData')
+        end
+        
+        try
+            % set the mid data
+            driverData.calibration.voltage.mid = midData; 
+        catch
+            error('must enter a value for midData')
+        end
+
+        try
+            % set the max data
+            driverData.calibration.voltage.max = maxData; 
+        catch
+            error('must enter a value for maxData')
+        end
+
+        % increase the calibration count
+        driverData.calibration.count = driverData.calibration.count + 1;
+        set(get(obj, 'Parent'), 'DriverData', driverData);
+    else
+        driverData.error{driverData.holdplace} = '702,"Cal secured"';
+        driverData.holdplace = driverData.holdplace + 1;
+        beep;
+        set(get(obj, 'Parent'), 'DriverData', driverData);
+        error('calibration must be unsecured')
+    end
+else
+    driverData.error{driverData.holdplace} = ' +708,"Cal output disabled"';
+    driverData.holdplace = driverData.holdplace + 1;
+    beep;
+    set(get(obj, 'Parent'), 'DriverData', driverData);
+   error('Output state must be set to on')
+end
+
+ set(get(obj, 'Parent'), 'DriverData', driverData);</MCode>
+               </Code>
+               <Description>CALIBRATEVOLTAGE Calibrate the voltage of the power supply.</Description>
+            </Method>
+            <Method>
+               <Name>calibratevoltageprotection</Name>
+               <Location>calibration</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>MCode</Type>
+               <Code>
+                  <MCode>function calibratevoltageprotection(obj)
+% If this is a group function, OBJ is the group object. If
+% it a base device function, OBJ is the device object.
+
+beep on
+driverData = get(get(obj, 'Parent'), 'DriverData');
+
+% Checks to see if the power supply is unsecure and that the output is 
+% enable, if either are not, the corrisponding error message is dissplayed
+if(strcmp(driverData.output.enabled,'on'))
+    if(strcmp(driverData.calibration.state,'off'))
+        driverData.calibration.count = driverData.calibration.count + 1;
+        set(get(obj, 'Parent'), 'DriverData', driverData);
+    else
+        driverData.error{driverData.holdplace} = '702,"Cal secured"';
+        driverData.holdplace = driverData.holdplace + 1;
+        beep;
+        set(get(obj, 'Parent'), 'DriverData', driverData);
+        error('calibration must be unsecured')
+    end
+else
+    driverData.error{driverData.holdplace} = ' +708,"Cal output disabled"';
+    driverData.holdplace = driverData.holdplace + 1;
+    beep;
+    set(get(obj, 'Parent'), 'DriverData', driverData);
+    error('Output state must be set to on')
+end
+
+set(get(obj, 'Parent'), 'DriverData', driverData);</MCode>
+               </Code>
+               <Description>CALIBRATEVOLTAGEPROTECTION Calibrate the overvoltage protection circuit of the power supply.
+</Description>
+            </Method>
+            <Method>
+               <Name>securedevice</Name>
+               <Location>calibration</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>MCode</Type>
+               <Code>
+                  <MCode>function securedevice(obj, calibrationCode, state)
+% OBJ is the device object.
+% code is the code to secure the instrument
+ 
+beep on
+driverData = get(get(obj, 'Parent'), 'DriverData');
+ 
+% Parse inputs.
+switch (nargin)
+case 1
+    error('CALIBRATIONCODE must be specified.');
+case 2
+    if(strcmp(calibrationCode,driverData.calibration.code)) 
+    currentState = driverData.calibration.state;
+    else
+        beep
+        driverData.error{driverData.holdplace} = '+703,"Invalid secure code"';
+        driverData.holdplace = driverData.holdplace+1;
+        set(get(obj, 'Parent'), 'DriverData', driverData);
+        error('incorrect code')
+    end
+case 3
+     if(strcmp(calibrationCode,driverData.calibration.code)) 
+         % STATE can either be 'secure' or 'unsecure'.
+           if ~any(strcmpi(state, {'secure', 'unsecure'}))
+               error('STATE must be either ''secure'' or ''unsecure''.');
+           end
+   
+        % Translating State into the expected current state numeric value.
+           if strcmpi(state, 'secure')
+               currentState = 'on';
+           else
+               currentState = 'off';
+           end
+     else
+         beep
+         driverData.error{driverData.holdplace} = '+703,"Invalid secure code"';
+         driverData.holdplace = driverData.holdplace + 1;
+         set(get(obj, 'Parent'), 'DriverData', driverData);
+         error('incorrect code')
+     end
+otherwise
+    error('Too many input arguments.');
+end
+ 
+% Error checking.
+if ~ischar(calibrationCode)
+    error('CALIBRATIONCODE must be a string.');
+end
+ 
+% Unsecure or secure the instrument.
+driverData.calibration.state = currentState;
+set(get(obj, 'Parent'), 'DriverData', driverData);
+
+</MCode>
+               </Code>
+               <Description>SECUREDEVICE secure or unsecure the power supply for calibration
+
+INVOKE(OBJ, 'securedevice','code', STATE) to secure or unsecure the device. Use a STATE of ‘unsecure’ to unsecure the device before initiating the calibration process. Use a STATE of 'secure' to secure the device after the calibration process is complete.
+
+
+
+
+</Description>
+            </Method>
+            <Method>
+               <Name>updatecode</Name>
+               <Location>calibration</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>MCode</Type>
+               <Code>
+                  <MCode>function updatecode(obj,secureCode)
+% OBJ is the device object.
+% SecureCode is the new code.
+
+driverData = get(get(obj, 'Parent'), 'DriverData');
+
+% Validating the code (12-character format).
+if ~(isvarname(secureCode))
+    error(['SECURECODE must be a character string with letters, ',...
+           'digits and ' sprintf('\n') 'underscores. The first character ',...
+           'in SECURECODE must be a letter.' sprintf('\n') 'The maximum length is 12 characters.']);
+elseif ~(length(secureCode) &lt;= 12)
+    beep
+    driverData.error{driverData.holdplace} = '+704,"Secure code too long"';
+    driverData.holdplace = driverData.holdplace + 1;
+    set(get(obj, 'Parent'), 'DriverData', driverData);    
+    error('The maximum length for SECURECODE is 12 characters.')
+end
+
+% Verifying that the device is unsecured before changing the code. 
+state = driverData.calibration.state;
+
+if (strcmp(state,'on'))
+    error(['The device must be unsecured before changing the code.' sprintf('\n'),...
+        'Type ''instrhelp(obj, ''securedevice'')'' for more information on how ' sprintf('\n'),...
+        'to unsecure the device.']);
+    return
+end
+
+% Set the secure code to the new code.
+driverData.calibration.code = secureCode;
+set(get(obj, 'Parent'), 'DriverData', driverData);</MCode>
+               </Code>
+               <Description>UPDATECODE Change the security code. 
+INVOKE(OBJ, 'updatecode' NEWCODE) updates the calibration security code.  
+The instrument must first be unsecured using the current security code. 
+
+See also SECUREDEVICE
+</Description>
+            </Method>
+         </MethodInfo>
+      </Group>
+      <Group>
+         <Name>display</Name>
+         <Description>Define the behavior of the instrument front panel display.</Description>
+         <Command/>
+         <Size>1</Size>
+         <Mappings>
+            <ChannelMap Command="Display1" Index="1"/>
+         </Mappings>
+         <PropertyInfo>
+            <Property>
+               <Name>Enabled</Name>
+               <Location>display</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>MCode</Type>
+               <Code>
+                  <GetMCode>function propertyValue = getProperty(obj, propertyName)
+% Return a property value.
+%   This function is called to return the device or group object property
+%   value. If the property is a group property, OBJ is the group object. If
+%   the property is a base device property, OBJ is the device object.
+
+driverData = get(get(obj, 'Parent'), 'DriverData');
+propertyValue = driverData.display.enabled;</GetMCode>
+                  <SetMCode>function set(obj, propertyName, propertyValue)
+% Set a property value.
+%   This function is called to set the device or group object property
+%   value. If the property is a group property, OBJ is the group object. If
+%   the property is a base device property, OBJ is the device object.
+
+driverData = get(get(obj, 'Parent'), 'DriverData');
+driverData.display.enabled = propertyValue;
+set(get(obj, 'Parent'), 'DriverData', driverData);</SetMCode>
+               </Code>
+               <PermissibleType>
+                  <Type>String</Type>
+                  <Constraint>enum</Constraint>
+                  <ConstraintValue>
+                     <Enum Name="on" Value="on"/>
+                     <Enum Name="off" Value="off"/>
+                  </ConstraintValue>
+               </PermissibleType>
+               <DefaultValue>on</DefaultValue>
+               <ReadOnly>never</ReadOnly>
+               <Description>Set the state of the front panel display.</Description>
+            </Property>
+            <Property>
+               <Name>Mode</Name>
+               <Location>display</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>MCode</Type>
+               <Code>
+                  <GetMCode>function propertyValue = getProperty(obj, propertyName)
+% Return a property value.
+%   This function is called to return the device or group object property
+%   value. If the property is a group property, OBJ is the group object. If
+%   the property is a base device property, OBJ is the device object.
+
+driverData = get(get(obj, 'Parent'), 'DriverData');
+propertyValue = driverData.display.mode;</GetMCode>
+                  <SetMCode>function set(obj, propertyName, propertyValue)
+% Set a property value.
+%   This function is called to set the device or group object property
+%   value. If the property is a group property, OBJ is the group object. If
+%   the property is a base device property, OBJ is the device object.
+
+driverData = get(get(obj, 'Parent'), 'DriverData');
+driverData.display.mode = propertyValue;
+set(get(obj, 'Parent'), 'DriverData', driverData);</SetMCode>
+               </Code>
+               <PermissibleType>
+                  <Type>String</Type>
+                  <Constraint>enum</Constraint>
+                  <ConstraintValue>
+                     <Enum Name="voltage-voltage" Value="voltage-voltage"/>
+                     <Enum Name="voltage-current" Value="voltage-current"/>
+                     <Enum Name="current-current" Value="current-current"/>
+                  </ConstraintValue>
+               </PermissibleType>
+               <DefaultValue>voltage-voltage</DefaultValue>
+               <ReadOnly>never</ReadOnly>
+               <Description>Set the front panel display mode. Valid values are:
+
+voltage-voltage         display the voltages of the two outputs
+voltage-current         display the voltage and current for each output
+current-current         display the currents of the two outputs</Description>
+            </Property>
+         </PropertyInfo>
+         <MethodInfo>
+            <Method>
+               <Name>clear</Name>
+               <Location>display</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>MCode</Type>
+               <Code>
+                  <MCode>function clear(obj)
+% If this is a group function, OBJ is the group object. If
+% it a base device function, OBJ is the device object.
+
+driverData = get(get(obj, 'Parent'), 'DriverData');
+driverData.display.settext = '';
+set(get(obj, 'Parent'), 'DriverData', driverData);</MCode>
+               </Code>
+               <Description>CLEAR Clear the message displayed on the front panel.
+
+INVOKE(OBJ, 'clear') removes any message displayed on the instrument front panel.
+
+See also SETTEXT</Description>
+            </Method>
+            <Method>
+               <Name>settext</Name>
+               <Location>display</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>MCode</Type>
+               <Code>
+                  <MCode>function setText(obj,str)
+% OBJ is the device object.
+% str is the string to display
+
+beep on
+driverData = get(get(obj, 'Parent'), 'DriverData');
+
+% Error checking.
+if ~ischar(str)
+    error('STR must be a string.');
+end
+
+% Checks to see if the string entered by the user is longer then 40 
+% characters. If it is it is then truncated and the user is given an error
+if( length(str) &gt; 40)
+    i = 1;
+   while(i &lt; 41)
+        text(i) = str(i);
+        i = 1 + i ;
+   end
+    warning('ICDevice:longmessage',...
+		'Your message may only be 40 characters, and will be truncated');
+    beep
+    driverData.error{driverData.holdplace} = '-223,"Too much data"';
+    driverData.holdplace = driverData.holdplace + 1;
+else
+    text = str;
+end
+
+driverData.display.settext = text;
+set(get(obj, 'Parent'), 'DriverData', driverData);</MCode>
+               </Code>
+               <Description>SETTEXT Set the string displayed on the instrument front panel.
+
+INVOKE(OBJ, 'displaytext', S) displays string, S, on the instrument's front panel.
+The Display group's Enable property must be on for the text to be visible.
+
+See also CLEAR.
+
+</Description>
+            </Method>
+         </MethodInfo>
+      </Group>
+      <Group>
+         <Name>output</Name>
+         <Description>Define the behavior and state of the outputs.</Description>
+         <Command/>
+         <Size>2</Size>
+         <Mappings>
+            <ChannelMap Command="2" Index="2"/>
+            <ChannelMap Command="1" Index="1"/>
+         </Mappings>
+         <PropertyInfo>
+            <Property>
+               <Name>CurrentLimit</Name>
+               <Location>output</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>MCode</Type>
+               <Code>
+                  <GetMCode>function propertyValue = getProperty(obj, propertyName)
+% Return a property value.
+%   This function is called to return the device or group object property
+%   value. If the property is a group property, OBJ is the group object. If
+%   the property is a base device property, OBJ is the device object.
+
+% finds the correct object
+hw = obj.HwIndex;
+
+driverData = get(get(obj, 'Parent'), 'DriverData');
+
+% sets the output object
+driverData.obj = hw;
+
+propertyValue = driverData.output.currentlimit{hw};
+set(get(obj, 'Parent'), 'DriverData', driverData);</GetMCode>
+                  <SetMCode>function set(obj, propertyName, propertyValue)
+% Set a property value.
+%   This function is called to set the device or group object property
+%   value. If the property is a group property, OBJ is the group object. If
+%   the property is a base device property, OBJ is the device object.
+
+% finds the correct object
+hw = obj.HwIndex;
+
+driverData = get(get(obj, 'Parent'), 'DriverData');
+
+% sets the output object
+driverData.obj = hw;
+
+% gets the old current limit
+oldLimit = driverData.output.currentlimit{hw};
+
+% gets the current value
+current = driverData.output.current{hw};
+
+% gets the voltage output range
+value = driverData.output.voltageoutrange{hw};
+currentLimit = propertyValue;
+
+% finds out the maxium current limit based on the value of voltageOutputRange
+if(strcmp(value,'p8v'))
+    max = 5.15;
+else
+    max = 2.575;
+end
+
+% creats the error message for if the propertyValue is not a valid value
+errorMsg = sprintf('??? Invalid value for CurrentLimit. Valid values: max, min, up, down or a value between 0 and %i.', max)
+
+% figures out the the current limit based on the old limit and the value of propertyValue
+if(ischar(currentLimit))
+    if(strcmpi(currentLimit,'up'))
+        currentLimit = oldLimit + driverData.output.currentstep{hw};
+    elseif(strcmpi(currentLimit,'down'))
+        currentLimit = oldLimit - driverData.output.currentstep{hw};
+    elseif(strcmpi(currentLimit,'max'))
+        currentLimit = max;
+    elseif(strcmpi(currentLimit,'min'))
+        currentLimit = 0;
+    else
+        error(errorMsg);
+    end
+    if~((currentLimit &gt;= 0) &amp;&amp; (max &gt;= currentLimit))
+        error('The result of %s has put CurrentLimit out of its possible max/min range of %i and 0',propertyValue,max) 
+    end
+elseif~((currentLimit &gt;= 0) &amp;&amp; (max &gt;= currentLimit))
+    error(errorMsg);
+end
+
+% checks to see if current is out side of the new current limit and then 
+% changes the value of current to that new limit
+if(propertyValue &lt; current)
+   driverData.output.current{hw} = currentLimit;
+end
+
+% sets driverData 
+driverData.output.currentlimit{hw} = currentLimit;    
+set(get(obj, 'Parent'), 'DriverData', driverData);</SetMCode>
+               </Code>
+               <PermissibleType>
+                  <Type>Double</Type>
+                  <Constraint>bounded</Constraint>
+                  <ConstraintValue>
+                     <Range Max="5.15" Min="0.0"/>
+                  </ConstraintValue>
+               </PermissibleType>
+               <PermissibleType>
+                  <Type>String</Type>
+                  <Constraint>enum</Constraint>
+                  <ConstraintValue>
+                     <Enum Name="min" Value="MIN"/>
+                     <Enum Name="max" Value="MAX"/>
+                     <Enum Name="up" Value="UP"/>
+                     <Enum Name="down" Value="DOWN"/>
+                  </ConstraintValue>
+               </PermissibleType>
+               <DefaultValue>5</DefaultValue>
+               <ReadOnly>never</ReadOnly>
+               <Description>Set and query the value of the output current limit.</Description>
+            </Property>
+            <Property>
+               <Name>CurrentStep</Name>
+               <Location>output</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>MCode</Type>
+               <Code>
+                  <GetMCode>function propertyValue = getProperty(obj, propertyName)
+% Return a property value.
+%   This function is called to return the device or group object property
+%   value. If the property is a group property, OBJ is the group object. If
+%   the property is a base device property, OBJ is the device object.
+
+% finds the correct object
+hw = obj.HwIndex;
+
+driverData = get(get(obj, 'Parent'), 'DriverData');
+
+% sets the output object
+driverData.obj = hw;
+
+propertyValue = driverData.output.currentstep{hw};
+set(get(obj, 'Parent'), 'DriverData', driverData);</GetMCode>
+                  <SetMCode>function set(obj, propertyName, propertyValue)
+% Set a property value.
+%   This function is called to set the device or group object property
+%   value. If the property is a group property, OBJ is the group object. If
+%   the property is a base device property, OBJ is the device object.
+
+% finds the correct object
+hw = obj.HwIndex;
+
+driverData = get(get(obj, 'Parent'), 'DriverData');
+
+% sets the output object
+driverData.obj = hw;
+
+% the minimum value for current step, which is also the default value
+min = 9.57505E-5 ;
+
+% gets the voltage output range
+value = driverData.output.voltageoutrange{hw};
+currentStep = propertyValue;
+
+% finds out the maxium current limit based on the value of voltageOutputRange
+if(strcmp(value,'p8v'))
+    max = 5.15;
+else
+    max = 2.575;
+end
+% creats the error message for if the propertyValue is not a valid value
+errorMsg = sprintf('??? Invalid value for CurrentStep. Valid values: default or a value between 9.57505E-5 and %i.', max);
+
+% figures out the value of current step based on the propertyValue and 
+% checks to see that the propertyValue is a valid value
+if(ischar(currentStep))
+    if(strcmpi(currentStep,'default'))
+        currentStep = min;
+    else
+        error(errorMsg);
+    end
+elseif~((currentStep &gt;= min) &amp;&amp; (max &gt;= currentStep))
+    error(errorMsg);
+end
+
+% sets driverData 
+driverData.output.currentstep{hw} = currentStep;
+set(get(obj, 'Parent'), 'DriverData', driverData);</SetMCode>
+               </Code>
+               <PermissibleType>
+                  <Type>Double</Type>
+                  <Constraint>bounded</Constraint>
+                  <ConstraintValue>
+                     <Range Max="5.15" Min="9.57505E-5"/>
+                  </ConstraintValue>
+               </PermissibleType>
+               <PermissibleType>
+                  <Type>String</Type>
+                  <Constraint>enum</Constraint>
+                  <ConstraintValue>
+                     <Enum Name="default" Value="default"/>
+                  </ConstraintValue>
+               </PermissibleType>
+               <DefaultValue>9.57505E-5</DefaultValue>
+               <ReadOnly>never</ReadOnly>
+               <Description>Set and query the step size used with the increasecurrent and decreasecurrent functions.
+
+</Description>
+            </Property>
+            <Property>
+               <Name>Enabled</Name>
+               <Location>output</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>MCode</Type>
+               <Code>
+                  <GetMCode>function propertyValue = getProperty(obj, propertyName)
+% Return a property value.
+%   This function is called to return the device or group object property
+%   value. If the property is a group property, OBJ is the group object. If
+%   the property is a base device property, OBJ is the device object.
+
+% finds the correct object
+hw = obj.HwIndex;
+
+driverData = get(get(obj, 'Parent'), 'DriverData');
+
+% sets the output object
+driverData.obj = hw;
+
+propertyValue = driverData.output.enabled{hw};
+set(get(obj, 'Parent'), 'DriverData', driverData);</GetMCode>
+                  <SetMCode>function set(obj, propertyName, propertyValue)
+% Set a property value.
+%   This function is called to set the device or group object property
+%   value. If the property is a group property, OBJ is the group object. If
+%   the property is a base device property, OBJ is the device object.
+
+% finds the correct object
+hw = obj.HwIndex;
+
+driverData = get(get(obj, 'Parent'), 'DriverData');
+
+% sets the output object
+driverData.obj = hw;
+
+driverData.output.enabled{hw} = propertyValue;
+set(get(obj, 'Parent'), 'DriverData', driverData);</SetMCode>
+               </Code>
+               <PermissibleType>
+                  <Type>String</Type>
+                  <Constraint>enum</Constraint>
+                  <ConstraintValue>
+                     <Enum Name="on" Value="on"/>
+                     <Enum Name="off" Value="off"/>
+                  </ConstraintValue>
+               </PermissibleType>
+               <DefaultValue>on</DefaultValue>
+               <ReadOnly>never</ReadOnly>
+               <Description>Set and query the state of the output.</Description>
+            </Property>
+            <Property>
+               <Name>OverVoltageProtectionEnabled</Name>
+               <Location>output</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>MCode</Type>
+               <Code>
+                  <GetMCode>function propertyValue = getProperty(obj, propertyName)
+% Return a property value.
+%   This function is called to return the device or group object property
+%   value. If the property is a group property, OBJ is the group object. If
+%   the property is a base device property, OBJ is the device object.
+
+% finds the correct object
+hw = obj.HwIndex;
+
+driverData = get(get(obj, 'Parent'), 'DriverData');
+
+% sets the output object
+driverData.obj = hw;
+
+propertyValue = driverData.output.OverVoltProtectEnab{hw};
+set(get(obj, 'Parent'), 'DriverData', driverData);</GetMCode>
+                  <SetMCode>function set(obj, propertyName, propertyValue)
+% Set a property value.
+%   This function is called to set the device or group object property
+%   value. If the property is a group property, OBJ is the group object. If
+%   the property is a base device property, OBJ is the device object.
+
+% finds the correct object
+hw = obj.HwIndex;
+
+driverData = get(get(obj, 'Parent'), 'DriverData');
+
+% sets the output object
+driverData.obj = hw;
+
+driverData.output.OverVoltProtectEnab{hw} = propertyValue;
+set(get(obj, 'Parent'), 'DriverData', driverData);</SetMCode>
+               </Code>
+               <PermissibleType>
+                  <Type>String</Type>
+                  <Constraint>enum</Constraint>
+                  <ConstraintValue>
+                     <Enum Name="on" Value="on"/>
+                     <Enum Name="off" Value="off"/>
+                  </ConstraintValue>
+               </PermissibleType>
+               <DefaultValue>on</DefaultValue>
+               <ReadOnly>never</ReadOnly>
+               <Description>Set and query the state of the over voltage protection feature.</Description>
+            </Property>
+            <Property>
+               <Name>OverVoltageProtectionLimit</Name>
+               <Location>output</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>MCode</Type>
+               <Code>
+                  <GetMCode>function propertyValue = getProperty(obj, propertyName)
+% Return a property value.
+%   This function is called to return the device or group object property
+%   value. If the property is a group property, OBJ is the group object. If
+%   the property is a base device property, OBJ is the device object.
+
+% finds the correct object
+hw = obj.HwIndex;
+
+driverData = get(get(obj, 'Parent'), 'DriverData');
+
+% sets the output object
+driverData.obj = hw;
+
+propertyValue = driverData.output.OverVoltProtectLim{hw};
+set(get(obj, 'Parent'), 'DriverData', driverData);</GetMCode>
+                  <SetMCode>function set(obj, propertyName, propertyValue)
+% Set a property value.
+%   This function is called to set the device or group object property
+%   value. If the property is a group property, OBJ is the group object. If
+%   the property is a base device property, OBJ is the device object.
+
+% finds the correct object
+hw = obj.HwIndex;
+
+driverData = get(get(obj, 'Parent'), 'DriverData');
+
+% sets the output object
+driverData.obj = hw;
+
+% checks to see if the user typed in min or max and sets the propertyValue 
+% to the correct corresponding value
+if(strcmpi(propertyValue,'min'))
+    propertyValue = 1;
+elseif(strcmpi(propertyValue,'max'))
+    propertyValue = 22;
+end
+
+driverData.output.OverVoltProtectLim{hw} = propertyValue;
+set(get(obj, 'Parent'), 'DriverData', driverData);</SetMCode>
+               </Code>
+               <PermissibleType>
+                  <Type>Double</Type>
+                  <Constraint>bounded</Constraint>
+                  <ConstraintValue>
+                     <Range Max="22.0" Min="1.0"/>
+                  </ConstraintValue>
+               </PermissibleType>
+               <PermissibleType>
+                  <Type>String</Type>
+                  <Constraint>enum</Constraint>
+                  <ConstraintValue>
+                     <Enum Name="min" Value="min"/>
+                     <Enum Name="max" Value="max"/>
+                  </ConstraintValue>
+               </PermissibleType>
+               <DefaultValue>22.0</DefaultValue>
+               <ReadOnly>never</ReadOnly>
+               <Description>Set and query the over voltage protection limit.</Description>
+            </Property>
+            <Property>
+               <Name>State</Name>
+               <Location>output</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>MCode</Type>
+               <Code>
+                  <GetMCode>function propertyValue = getProperty(obj, propertyName)
+% Return a property value.
+%   This function is called to return the device or group object property
+%   value. If the property is a group property, OBJ is the group object. If
+%   the property is a base device property, OBJ is the device object.
+
+% finds the correct object
+hw = obj.HwIndex;
+
+driverData = get(get(obj, 'Parent'), 'DriverData');
+
+% sets the output object
+driverData.obj = hw;
+
+driverData.output.state{hw} = driverData.output.enabled{hw};
+propertyValue = driverData.output.state{hw};
+set(get(obj, 'Parent'), 'DriverData', driverData);</GetMCode>
+                  <SetMCode>function set(obj, propertyName, propertyValue)
+% This function is called to set the group object property value.</SetMCode>
+               </Code>
+               <PermissibleType>
+                  <Type>String</Type>
+                  <Constraint>enum</Constraint>
+                  <ConstraintValue>
+                     <Enum Name="tripped" Value="tripped"/>
+                     <Enum Name="on" Value="on"/>
+                     <Enum Name="off" Value="off"/>
+                  </ConstraintValue>
+               </PermissibleType>
+               <DefaultValue>tripped</DefaultValue>
+               <ReadOnly>always</ReadOnly>
+               <Description>Returns whether the voltage protection is tripped. </Description>
+            </Property>
+            <Property>
+               <Name>TriggerCoupling</Name>
+               <Location>output</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>MCode</Type>
+               <Code>
+                  <GetMCode>function propertyValue = getProperty(obj, propertyName)
+% Return a property value.
+%   This function is called to return the device or group object property
+%   value. If the property is a group property, OBJ is the group object. If
+%   the property is a base device property, OBJ is the device object.
+
+% finds the correct object
+hw = obj.HwIndex;
+
+driverData = get(get(obj, 'Parent'), 'DriverData');
+
+% sets the output object
+driverData.obj = hw;
+
+propertyValue = driverData.output.trigcoupling{hw};
+set(get(obj, 'Parent'), 'DriverData', driverData);</GetMCode>
+                  <SetMCode>function set(obj, propertyName, propertyValue)
+% Set a property value.
+%   This function is called to set the device or group object property
+%   value. If the property is a group property, OBJ is the group object. If
+%   the property is a base device property, OBJ is the device object.
+
+% finds the correct object
+hw = obj.HwIndex;
+
+driverData = get(get(obj, 'Parent'), 'DriverData');
+
+% sets the output object
+driverData.obj = hw;
+
+driverData.output.trigcoupling{hw} = propertyValue;
+set(get(obj, 'Parent'), 'DriverData', driverData);</SetMCode>
+               </Code>
+               <PermissibleType>
+                  <Type>String</Type>
+                  <Constraint>enum</Constraint>
+                  <ConstraintValue>
+                     <Enum Name="on" Value="on"/>
+                     <Enum Name="off" Value="off"/>
+                  </ConstraintValue>
+               </PermissibleType>
+               <DefaultValue>off</DefaultValue>
+               <ReadOnly>never</ReadOnly>
+               <Description>Enable or disable the coupling between two outputs.
+
+The COUPLE command consists of an optional subsystem node followed by signal parameter. The only valid parameter for the subsystem node is the trigger subsystem. If no node follows the couple command, trigger subsystem is assumed to be couple.
+
+The outputs of the power supply are considered as two logical instruments. The instrument commands provide a mechanism to identify and select an output. When one output is selected, the other one is unavailable for programming until selected.
+
+
+</Description>
+            </Property>
+            <Property>
+               <Name>TriggerCurrentLimit</Name>
+               <Location>output</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>MCode</Type>
+               <Code>
+                  <GetMCode>function propertyValue = getProperty(obj, propertyName)
+% Return a property value.
+%   This function is called to return the device or group object property
+%   value. If the property is a group property, OBJ is the group object. If
+%   the property is a base device property, OBJ is the device object.
+
+% finds the correct object
+hw = obj.HwIndex;
+
+driverData = get(get(obj, 'Parent'), 'DriverData');
+
+% sets the output object
+driverData.obj = hw;
+
+propertyValue = driverData.output.TrigCurrLim{hw};
+set(get(obj, 'Parent'), 'DriverData', driverData);</GetMCode>
+                  <SetMCode>function set(obj, propertyName, propertyValue)
+% Set a property value.
+%   This function is called to set the device or group object property
+%   value. If the property is a group property, OBJ is the group object. If
+%   the property is a base device property, OBJ is the device object.
+
+% finds the correct object
+hw = obj.HwIndex;
+
+driverData = get(get(obj, 'Parent'), 'DriverData');
+
+% sets the output object
+driverData.obj = hw;
+
+% gets the voltage output range
+value = driverData.output.voltageoutrange{hw};
+trigCurrentLimit = propertyValue;
+
+% finds out the maxium trigger current limit based on the value of voltageOutputRange
+if(strcmp(value,'p8v'))
+    max = 5.15;
+else
+    max = 2.575;
+end
+
+% creats the error message for if the propertyValue is not a valid value
+errorMsg = sprintf('??? Invalid value for TriggerCurrentLimit. Valid values: max,min or a value between 0 and %i.', max);
+
+% figures out the the trigger current limit based the value of propertyValue
+%  and checks to see that the propertyValue is a valid value
+if(ischar(trigCurrentLimit))
+    if(strcmpi(trigCurrentLimit,'max'))
+        trigCurrentLimit = max;
+    elseif(strcmpi(trigCurrentLimit,'min'))
+        trigCurrentLimit = 0;
+    else
+        error(errorMsg);
+    end
+elseif~((trigCurrentLimit &gt;= 0) &amp;&amp; (max &gt;= trigCurrentLimit))
+    error(errorMsg);
+end
+
+% sets driverData 
+driverData.output.TrigCurrLim{hw} = trigCurrentLimit;
+set(get(obj, 'Parent'), 'DriverData', driverData);</SetMCode>
+               </Code>
+               <PermissibleType>
+                  <Type>Double</Type>
+                  <Constraint>bounded</Constraint>
+                  <ConstraintValue>
+                     <Range Max="5.15" Min="0.0"/>
+                  </ConstraintValue>
+               </PermissibleType>
+               <PermissibleType>
+                  <Type>String</Type>
+                  <Constraint>enum</Constraint>
+                  <ConstraintValue>
+                     <Enum Name="max" Value="max"/>
+                     <Enum Name="min" Value="min"/>
+                  </ConstraintValue>
+               </PermissibleType>
+               <DefaultValue>5</DefaultValue>
+               <ReadOnly>never</ReadOnly>
+               <Description>Set or query the trigger ouput current limit.</Description>
+            </Property>
+            <Property>
+               <Name>TriggerDelay</Name>
+               <Location>output</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>MCode</Type>
+               <Code>
+                  <GetMCode>function propertyValue = getProperty(obj, propertyName)
+% Return a property value.
+%   This function is called to return the device or group object property
+%   value. If the property is a group property, OBJ is the group object. If
+%   the property is a base device property, OBJ is the device object.
+
+% finds the correct object
+hw = obj.HwIndex;
+
+driverData = get(get(obj, 'Parent'), 'DriverData');
+
+% sets the output object
+driverData.obj = hw;
+
+propertyValue = driverData.output.triggerdelay{hw};
+set(get(obj, 'Parent'), 'DriverData', driverData);</GetMCode>
+                  <SetMCode>function set(obj, propertyName, propertyValue)
+% Set a property value.
+%   This function is called to set the device or group object property
+%   value. If the property is a group property, OBJ is the group object. If
+%   the property is a base device property, OBJ is the device object.
+
+% finds the correct object
+hw = obj.HwIndex;
+
+driverData = get(get(obj, 'Parent'), 'DriverData');
+
+% sets the output object
+driverData.obj = hw;
+
+% checks to see if the user typed in min or max and sets the propertyValue 
+% to the correct corresponding value
+if(ischar(propertyValue))
+    if(strcmpi('max',propertyValue))
+        propertyValue = 3600.0;
+    elseif(strcmpi('min',propertyValue))
+        propertyValue = 0;
+    end
+end
+
+driverData.output.triggerdelay{hw} = propertyValue;
+set(get(obj, 'Parent'), 'DriverData', driverData);</SetMCode>
+               </Code>
+               <PermissibleType>
+                  <Type>Double</Type>
+                  <Constraint>bounded</Constraint>
+                  <ConstraintValue>
+                     <Range Max="3600.0" Min="0.0"/>
+                  </ConstraintValue>
+               </PermissibleType>
+               <PermissibleType>
+                  <Type>String</Type>
+                  <Constraint>enum</Constraint>
+                  <ConstraintValue>
+                     <Enum Name="min" Value="min"/>
+                     <Enum Name="max" Value="max"/>
+                  </ConstraintValue>
+               </PermissibleType>
+               <DefaultValue>0</DefaultValue>
+               <ReadOnly>never</ReadOnly>
+               <Description>Set or query the time delay between the detection of the trigger and the start of output.</Description>
+            </Property>
+            <Property>
+               <Name>TriggerSource</Name>
+               <Location>output</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>MCode</Type>
+               <Code>
+                  <GetMCode>function propertyValue = getProperty(obj, propertyName)
+% Return a property value.
+%   This function is called to return the device or group object property
+%   value. If the property is a group property, OBJ is the group object. If
+%   the property is a base device property, OBJ is the device object.
+
+% finds the correct object
+hw = obj.HwIndex;
+
+driverData = get(get(obj, 'Parent'), 'DriverData');
+
+% sets the output object
+driverData.obj = hw;
+
+propertyValue = driverData.output.triggersource{hw};
+set(get(obj, 'Parent'), 'DriverData', driverData);</GetMCode>
+                  <SetMCode>function set(obj, propertyName, propertyValue)
+% Set a property value.
+%   This function is called to set the device or group object property
+%   value. If the property is a group property, OBJ is the group object. If
+%   the property is a base device property, OBJ is the device object.
+
+% finds the correct object
+hw = obj.HwIndex;
+
+driverData = get(get(obj, 'Parent'), 'DriverData');
+
+% sets the output object
+driverData.obj = hw;
+
+driverData.output.triggersource{hw} = propertyValue;
+set(get(obj, 'Parent'), 'DriverData', driverData);</SetMCode>
+               </Code>
+               <PermissibleType>
+                  <Type>String</Type>
+                  <Constraint>enum</Constraint>
+                  <ConstraintValue>
+                     <Enum Name="bus" Value="bus"/>
+                     <Enum Name="immediate" Value="immediate"/>
+                  </ConstraintValue>
+               </PermissibleType>
+               <DefaultValue>bus</DefaultValue>
+               <ReadOnly>never</ReadOnly>
+               <Description>Set or query the trigger source.</Description>
+            </Property>
+            <Property>
+               <Name>TriggerVoltageLevel</Name>
+               <Location>output</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>MCode</Type>
+               <Code>
+                  <GetMCode>function propertyValue = getProperty(obj, propertyName)
+% Return a property value.
+%   This function is called to return the device or group object property
+%   value. If the property is a group property, OBJ is the group object. If
+%   the property is a base device property, OBJ is the device object.
+
+% finds the correct object
+hw = obj.HwIndex;
+
+driverData = get(get(obj, 'Parent'), 'DriverData');
+
+% sets the output object
+driverData.obj = hw;
+
+propertyValue = driverData.output.TrigVoltLev{hw};
+set(get(obj, 'Parent'), 'DriverData', driverData);</GetMCode>
+                  <SetMCode>function set(obj, propertyName, propertyValue)
+% Set a property value.
+%   This function is called to set the device or group object property
+%   value. If the property is a group property, OBJ is the group object. If
+%   the property is a base device property, OBJ is the device object.
+
+% finds the correct object
+hw = obj.HwIndex;
+
+driverData = get(get(obj, 'Parent'), 'DriverData');
+
+% sets the output object
+driverData.obj = hw;
+
+% gets the voltage output range
+value = driverData.output.voltageoutrange{hw};
+trigVoltLevel = propertyValue;
+
+% finds out the maxium trigger voltage level based on the value of
+% voltageOutputRange
+if(strcmp(value,'p8v'))
+    max = 8.24;
+else
+    max = 20.6;
+end
+
+% creats the error message for if the propertyValue is not a valid value
+errorMsg = sprintf('??? Invalid value for TriggerVoltageLevel. Valid values: max,min or a value between 0 and %i.', max);
+
+% figures out the the trigger voltage level based on the value of propertyValue
+% and checks to see that the propertyValue is a valid value
+if(ischar(trigVoltLevel))
+    if(strcmpi(trigVoltLevel,'max'))
+        trigVoltLevel = max;
+    elseif(strcmpi(trigVoltLevel,'min'))
+        trigVoltLevel = 0;
+    else
+        error(errorMsg);
+    end
+elseif~((trigVoltLevel &gt;= 0) &amp;&amp; (max &gt;= trigVoltLevel))
+    error(errorMsg);
+end
+
+% sets driverData   
+driverData.output.TrigVoltLev{hw} = trigVoltLevel;
+set(get(obj, 'Parent'), 'DriverData', driverData);</SetMCode>
+               </Code>
+               <PermissibleType>
+                  <Type>Double</Type>
+                  <Constraint>bounded</Constraint>
+                  <ConstraintValue>
+                     <Range Max="20.6" Min="0.0"/>
+                  </ConstraintValue>
+               </PermissibleType>
+               <PermissibleType>
+                  <Type>String</Type>
+                  <Constraint>enum</Constraint>
+                  <ConstraintValue>
+                     <Enum Name="min" Value="min"/>
+                     <Enum Name="max" Value="max"/>
+                  </ConstraintValue>
+               </PermissibleType>
+               <DefaultValue>0</DefaultValue>
+               <ReadOnly>never</ReadOnly>
+               <Description>Set or query the trigger output voltage level.</Description>
+            </Property>
+            <Property>
+               <Name>VoltageLevel</Name>
+               <Location>output</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>MCode</Type>
+               <Code>
+                  <GetMCode>function propertyValue = getProperty(obj, propertyName)
+% Return a property value.
+%   This function is called to return the device or group object property
+%   value. If the property is a group property, OBJ is the group object. If
+%   the property is a base device property, OBJ is the device object.
+
+% finds the correct object
+hw = obj.HwIndex;
+
+driverData = get(get(obj, 'Parent'), 'DriverData');
+
+% sets the output object
+driverData.obj = hw;
+
+propertyValue = driverData.output.VoltLev{hw};
+set(get(obj, 'Parent'), 'DriverData', driverData);</GetMCode>
+                  <SetMCode>function set(obj, propertyName, propertyValue)
+% Set a property value.
+%   This function is called to set the device or group object property
+%   value. If the property is a group property, OBJ is the group object. If
+%   the property is a base device property, OBJ is the device object.
+
+% finds the correct object
+hw = obj.HwIndex;
+
+driverData = get(get(obj, 'Parent'), 'DriverData');
+
+% sets the output object
+driverData.obj = hw;
+
+% gets the increment of the voltage 
+step = driverData.output.voltagestep{hw};
+
+% gets the old voltage level
+oldLevel = driverData.output.VoltLev{hw};
+
+% gets the voltage output range
+value = driverData.output.voltageoutrange{hw};
+voltageLevel = propertyValue;
+
+% finds out the maxium current limit based on the value of voltageOutputRange
+if(strcmp(value,'p8v'))
+    max = 8.24;
+else
+    max = 20.6;
+end
+
+% creats the error message for if the propertyValue is not a valid value
+errorMsg = sprintf('??? Invalid value for VoltageLevel. Valid values: max, min, up, down or a value between 0 and %i.', max);
+
+% figures out the the current limit based on the old limit and the value of propertyValue
+if(ischar(voltageLevel))
+    if(strcmpi(voltageLevel,'up'))
+        voltageLevel = oldLevel + step;
+    elseif(strcmpi(voltageLevel,'down'))
+        voltageLevel = oldLevel - step;
+    elseif(strcmpi(voltageLevel,'max'))
+        voltageLevel = max;
+    elseif(strcmpi(voltageLevel,'min'))
+        voltageLevel = 0;
+    else
+        error(errorMsg);
+    end
+    if~((voltageLevel &gt;= 0) &amp;&amp; (max &gt;= voltageLevel))
+        error('The result of %s has put VoltageLevel out of its possible max/min range of %i and 0',propertyValue,max) 
+    end
+elseif~((voltageLevel &gt;= 0) &amp;&amp; (max &gt;= voltageLevel))
+    error(errorMsg);
+end
+
+
+% sets driverData 
+driverData.output.VoltLev{hw} = voltageLevel;
+%driverData.volt.c = propertyValue;
+set(get(obj, 'Parent'), 'DriverData', driverData);</SetMCode>
+               </Code>
+               <PermissibleType>
+                  <Type>Double</Type>
+                  <Constraint>bounded</Constraint>
+                  <ConstraintValue>
+                     <Range Max="20.6" Min="0.0"/>
+                  </ConstraintValue>
+               </PermissibleType>
+               <PermissibleType>
+                  <Type>String</Type>
+                  <Constraint>enum</Constraint>
+                  <ConstraintValue>
+                     <Enum Name="max" Value="max"/>
+                     <Enum Name="min" Value="min"/>
+                     <Enum Name="up" Value="up"/>
+                     <Enum Name="down" Value="down"/>
+                  </ConstraintValue>
+               </PermissibleType>
+               <DefaultValue>0</DefaultValue>
+               <ReadOnly>never</ReadOnly>
+               <Description>Set or query the trigger ouput voltage level.</Description>
+            </Property>
+            <Property>
+               <Name>VoltageOutputRange</Name>
+               <Location>output</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>MCode</Type>
+               <Code>
+                  <GetMCode>function propertyValue = getProperty(obj, propertyName)
+% Return a property value.
+%   This function is called to return the device or group object property
+%   value. If the property is a group property, OBJ is the group object. If
+%   the property is a base device property, OBJ is the device object.
+
+% finds the correct object
+hw = obj.HwIndex;
+
+driverData = get(get(obj, 'Parent'), 'DriverData');
+
+% sets the output object
+driverData.obj = hw;
+
+propertyValue = driverData.output.voltageoutrange{hw};
+set(get(obj, 'Parent'), 'DriverData', driverData);</GetMCode>
+                  <SetMCode>function set(obj, propertyName, propertyValue)
+% Set a property value.
+%   This function is called to set the device or group object property
+%   value. If the property is a group property, OBJ is the group object. If
+%   the property is a base device property, OBJ is the device object.
+
+% finds the correct object
+hw = obj.HwIndex;
+
+driverData = get(get(obj, 'Parent'), 'DriverData');
+
+% sets the output object
+driverData.obj = hw;
+
+voltage = driverData.output.VoltLev{hw};
+currentLimit = driverData.output.currentlimit{hw};
+
+%converts the instrument value to the property value
+if(strcmpi(propertyValue,'low'))
+    value = 'p8v';
+    if(voltage &gt; 8.24)
+        driverData.output.VoltLev{hw} = 8.24;
+    end
+    
+elseif(strcmpi(propertyValue,'high'))
+    value = 'p20v';
+    driverData.output.current{hw} = 2.575;
+    if(currentLimit &gt; 2.575)
+       driverData.output.currentlimit{hw} = 2.575;
+    end
+else
+    value = propertyValue;
+end
+
+driverData.output.voltageoutrange{hw} = value;
+set(get(obj, 'Parent'), 'DriverData', driverData);</SetMCode>
+               </Code>
+               <PermissibleType>
+                  <Type>String</Type>
+                  <Constraint>enum</Constraint>
+                  <ConstraintValue>
+                     <Enum Name="low" Value="LOW"/>
+                     <Enum Name="high" Value="HIGH"/>
+                     <Enum Name="p8v" Value="p8v"/>
+                     <Enum Name="p20v" Value="p20v"/>
+                  </ConstraintValue>
+               </PermissibleType>
+               <DefaultValue>low</DefaultValue>
+               <ReadOnly>never</ReadOnly>
+               <Description>Set or query the voltage output range.</Description>
+            </Property>
+            <Property>
+               <Name>VoltageStep</Name>
+               <Location>output</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>MCode</Type>
+               <Code>
+                  <GetMCode>function propertyValue = getProperty(obj, propertyName)
+% Return a property value.
+%   This function is called to return the device or group object property
+%   value. If the property is a group property, OBJ is the group object. If
+%   the property is a base device property, OBJ is the device object.
+
+% finds the correct object
+hw = obj.HwIndex;
+
+driverData = get(get(obj, 'Parent'), 'DriverData');
+
+% sets the output object
+driverData.obj = hw;
+
+propertyValue = driverData.output.voltagestep{hw};
+set(get(obj, 'Parent'), 'DriverData', driverData);</GetMCode>
+                  <SetMCode>function set(obj, propertyName, propertyValue)
+% Set a property value.
+%   This function is called to set the device or group object property
+%   value. If the property is a group property, OBJ is the group object. If
+%   the property is a base device property, OBJ is the device object.
+
+% finds the correct object
+hw = obj.HwIndex;
+
+driverData = get(get(obj, 'Parent'), 'DriverData');
+
+% sets the output object
+driverData.obj = hw;
+
+% gets the voltage output range
+value = driverData.output.voltageoutrange{hw};
+voltStep = propertyValue;
+
+% finds out the maxium  voltage stepl based on the value of voltageOutputRange
+if(strcmp(value,'p8v'))
+    max = 8.24;
+else
+    max = 20.6;
+end
+
+% creats the error message for if the propertyValue is not a valid value
+errorMsg = sprintf('??? Invalid value for VoltageStep. Valid values: high, low, default or a value between 9.57505E-5  and %i.', max);
+
+% figures out the the trigger voltage level based on the value of propertyValue
+%  and checks to see that the propertyValue is a valid value
+if(ischar(voltStep))
+    if(strcmpi(voltStep,'high'))
+        voltStep = max;
+    elseif((strcmpi(voltStep,'default')) || (strcmpi(voltStep,'low')))
+        voltStep = 9.57505E-5;
+    else
+        error(errorMsg);
+    end
+elseif~((voltStep &gt;= 9.57505E-5 ) &amp;&amp; (max &gt;= voltStep))
+    error(errorMsg);
+end
+
+% sets driverData   
+driverData.output.voltagestep{hw} = voltStep;
+set(get(obj, 'Parent'), 'DriverData', driverData);</SetMCode>
+               </Code>
+               <PermissibleType>
+                  <Type>Double</Type>
+                  <Constraint>bounded</Constraint>
+                  <ConstraintValue>
+                     <Range Max="20.6" Min="9.57505E-5"/>
+                  </ConstraintValue>
+               </PermissibleType>
+               <PermissibleType>
+                  <Type>String</Type>
+                  <Constraint>enum</Constraint>
+                  <ConstraintValue>
+                     <Enum Name="default" Value="default"/>
+                     <Enum Name="low" Value="low"/>
+                     <Enum Name="high" Value="high"/>
+                  </ConstraintValue>
+               </PermissibleType>
+               <DefaultValue>9.57505E-5</DefaultValue>
+               <ReadOnly>never</ReadOnly>
+               <Description>Set and query the step size used with the increasevoltage and decreasevoltage functions.
+
+</Description>
+            </Property>
+         </PropertyInfo>
+         <MethodInfo>
+            <Method>
+               <Name>decreasecurrent</Name>
+               <Location>output</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>MCode</Type>
+               <Code>
+                  <MCode>function decreasecurrent(obj)
+% If this is a group function, OBJ is the group object. If
+% it a base device function, OBJ is the device object.
+
+beep on
+d = get(obj,'Parent');
+
+% runs the code for each of the objects.
+for i = 1:numel(d)
+    
+    % gets the hardware index number so that the correct voltage is set
+    hw = obj(i).HwIndex;
+
+    % checks to see if there is one device or more
+    if (iscell(d));
+        %seperates one device from the rest
+        device = d{i};
+    else
+        device = d;
+    end
+
+    driverData = get(device, 'DriverData');
+    
+    % calculate the new current by getting the old current and the decrement 
+    % size set by currentstep
+    oldcurrent = driverData.output.current{hw};
+    decrease = driverData.output.currentstep{hw};
+    newcurrent = oldcurrent - decrease;
+    
+    % checks to see if the new calculated less than is greater than zero and 
+    % logs a warning
+    if(newcurrent &lt; 0)
+        driverData.output.current{hw} = oldcurrent;
+        driverData.error{driverData.holdplace} = '-222,"Data out of range"';
+        driverData.holdplace = driverData.holdplace + 1;
+        beep;
+    else
+        driverData.output.current{hw} = newcurrent;
+    end
+end
+
+% sets the output object
+if(i == 1)
+    driverData.obj = hw;
+else
+    driverData.obj = {[1];[2]};
+end
+
+set(device, 'DriverData', driverData);
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    </MCode>
+               </Code>
+               <Description>DECREASECURRENT Decrease the output current leve.
+
+INVOKE(OBJ, 'decreasecurrent') decreases the current by the amount specified in the CurrentStep property.
+</Description>
+            </Method>
+            <Method>
+               <Name>decreasevoltage</Name>
+               <Location>output</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>MCode</Type>
+               <Code>
+                  <MCode>function decreasevoltage(obj)
+% If this is a group function, OBJ is the group object. If
+% it a base device function, OBJ is the device object.
+
+beep on
+d = get(obj,'Parent');
+
+% runs the code for each of the objects.
+for i = 1:numel(d)
+    
+    % gets the hardware index number so that the correct voltage is set
+    hw = obj(i).HwIndex;
+    
+    % checks to see if there is one device or more
+    if (iscell(d));
+        %seperates one device from the rest
+        device = d{i};
+    else
+        device = d;
+    end
+
+    driverData = get(device, 'DriverData');
+    
+    % calculate the new voltage by getting the old voltage and the decrement 
+    % size set by voltagestep
+    oldvoltage = driverData.output.VoltLev{hw};
+    decrease = driverData.output.voltagestep{hw};
+    newvoltage = oldvoltage - decrease;
+    
+    % checks to see if the new calculated voltage is greater than zero and 
+    % logs a warning
+    if(newvoltage &lt; 0)
+        driverData.output.VoltLev{hw} = oldvoltage;
+        driverData.error{driverData.holdplace} = '-222,"Data out of range"';
+        driverData.holdplace = driverData.holdplace + 1;
+        beep;        
+    else
+        driverData.output.VoltLev{hw} = newvoltage;
+    end
+end
+
+% sets the output object
+if(i == 1)
+    driverData.obj = hw;
+else
+    driverData.obj = {[1];[2]};
+end
+
+set(device, 'DriverData', driverData);</MCode>
+               </Code>
+               <Description>DECREASEVOLTAGE Decrease the output voltage level.
+
+INVOKE(OBJ, 'decreasevoltage') decreases the output voltage by the amount specified in the VoltageStep property.
+</Description>
+            </Method>
+            <Method>
+               <Name>disable</Name>
+               <Location>output</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>MCode</Type>
+               <Code>
+                  <MCode>function disable(obj)
+% If this is a group function, OBJ is the group object. If
+% it a base device function, OBJ is the device object.
+
+d = get(obj,'Parent');
+
+% runs the code for each of the objects.
+for i = 1:numel(d)
+    % gets the hardware index number so that the correct voltage is set
+    hw = obj(i).HwIndex;
+    % checks to see if there is one device or more
+    if (iscell(d));
+        %seperates one device from the rest
+        device = d{i};
+    else
+        device = d;
+    end
+
+    driverData = get(device, 'DriverData');
+    driverData.output.enabled{hw} = 'off';
+end
+
+% sets the output object
+if(i == 1)
+    driverData.obj = hw;
+else
+    driverData.obj = {[1];[2]};
+end
+
+set(device, 'DriverData', driverData);</MCode>
+               </Code>
+               <Description>DISABLE Disable specified output of the power supply.
+
+INVOKE(OBJ, 'disable') disable device output object, OBJ. OBJ can be an array of output objects.
+
+See also ENABLE.</Description>
+            </Method>
+            <Method>
+               <Name>enable</Name>
+               <Location>output</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>MCode</Type>
+               <Code>
+                  <MCode>function enable(obj)
+% If this is a group function, OBJ is the group object. If
+% it a base device function, OBJ is the device object.
+
+d = get(obj,'Parent');
+
+% runs the code for each of the objects.
+for i = 1:numel(d)
+    % gets the hardware index number so that the correct voltage is set
+    hw = obj(i).HwIndex;
+    % checks to see if there is one device or more
+    if (iscell(d));
+        %seperates one device from the rest
+        device = d{i};
+    else
+        device = d;
+    end
+
+    driverData = get(device, 'DriverData'); 
+    driverData.output.enabled{hw} = 'on';
+end
+
+% sets the output object
+if(i == 1)
+    driverData.obj = hw;
+else
+    driverData.obj = {[1];[2]};
+end
+
+set(device, 'DriverData', driverData);</MCode>
+               </Code>
+               <Description>ENABLE Enable device output of the instrument.
+
+INVOKE(OBJ, 'enable') enable device output object, OBJ. OBJ can be an array of output objects.
+
+See also DISABLE.</Description>
+            </Method>
+            <Method>
+               <Name>increasecurrent</Name>
+               <Location>output</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>MCode</Type>
+               <Code>
+                  <MCode>function increasecurrent(obj)
+% If this is a group function, OBJ is the group object. If
+% it a base device function, OBJ is the device object.
+
+beep on
+
+d = get(obj,'Parent');
+
+% runs the code for each of the objects.
+for i = 1:numel(d)
+    % gets the hardware index number so that the correct voltage is set
+    hw = obj(i).HwIndex;
+    % checks to see if there is one device or more
+    if (iscell(d));
+        %seperates one device from the rest
+        device = d{i};
+    else
+        device = d;
+    end
+
+    driverData = get(device, 'DriverData');
+
+    % calculate the new current by getting the old current and the increment 
+    % size set by currentstep
+    oldcurrent = driverData.output.current{hw};
+    increase = driverData.output.currentstep{hw};
+    newcurrent = oldcurrent + increase;
+    limit = driverData.output.currentlimit{hw};
+
+    % checks to see if the new calculated current is over the limit
+    if(newcurrent &gt; limit)
+        driverData.output.current{hw} = oldcurrent;
+        driverData.error{driverData.holdplace} = '-222,"Data out of range"';
+        driverData.holdplace = driverData.holdplace + 1;
+        beep;
+    else
+        driverData.output.current{hw} = newcurrent;
+    end
+end
+
+% sets the output object
+if(i == 1)
+    driverData.obj = hw;
+else
+    driverData.obj = {[1];[2]};
+end
+
+set(device, 'DriverData', driverData);</MCode>
+               </Code>
+               <Description>INCREASECURRENT Increase the output current level.
+
+INVOKE(OBJ, 'increasecurrent') increases the current level by the amount specified in the CurrentLevel property.</Description>
+            </Method>
+            <Method>
+               <Name>increasevoltage</Name>
+               <Location>output</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>MCode</Type>
+               <Code>
+                  <MCode>function increasevoltage(obj)
+% If this is a group function, OBJ is the group object. If
+% it a base device function, OBJ is the device object.
+
+beep on
+
+d = get(obj,'Parent');
+
+% runs the code for each of the objects.
+for i = 1:numel(d)
+    % gets the hardware index number so that the correct voltage is set
+    hw = obj(i).HwIndex;
+    % checks to see if there is one device or more
+    if (iscell(d));
+        %seperates one device from the rest
+        device = d{i};
+    else
+        device = d;
+    end
+
+    driverData = get(device, 'DriverData');
+    
+    % calculate the new voltage by getting the old voltage and the increment 
+    % size set by voltagestep
+    oldvoltage = driverData.output.VoltLev{hw};
+    increase = driverData.output.voltagestep{hw};
+    newvoltage = oldvoltage + increase;
+    limit = driverData.output.voltageoutrange{hw};
+
+    %   figurs out the voltage limit
+    if((strcmp(limit,'low')) || (strcmp(limit,'p8v')))
+        Vlimit = 8;
+    elseif((strcmp(limit,'high')) || (strcmp(limit,'p20v')))
+        Vlimit = 20;
+    end
+    
+    % checks to see if the voltage went over the voltage protection limit 
+    % then sets the output to tripped if voltage did exceed the limit
+    if(newvoltage &gt; driverData.output.voltageoutrange{hw})
+        driverData.output.state{hw} = 'tripped';
+    end
+ 
+    %checks to see if the new calculated voltage is with in the limit and it 
+    %logs a warning
+    if(newvoltage &gt; Vlimit)
+        driverData.output.VoltLev{hw} = oldvoltage;
+        driverData.error{driverData.holdplace} = '-222,"Data out of range"';
+        driverData.holdplace = driverData.holdplace + 1;
+        beep
+    else
+        driverData.output.VoltLev{hw} = newvoltage;
+    end
+end
+
+% sets the output object
+if(i == 1)
+    driverData.obj = hw;
+else
+    driverData.obj = {[1];[2]};
+end
+
+set(device, 'DriverData', driverData);        
+        
+</MCode>
+               </Code>
+               <Description>INCREASEVOLTAGE Increase the voltage level.
+
+INVOKE(OBJ, 'increasevoltage') increases the voltage by the amount specified in the VoltageStep property.
+</Description>
+            </Method>
+            <Method>
+               <Name>resetvoltageprotection</Name>
+               <Location>output</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>MCode</Type>
+               <Code>
+                  <MCode>function resetvoltageprotection(obj)
+% If this is a group function, OBJ is the group object. If
+% it a base device function, OBJ is the device object.
+
+beep on
+
+d = get(obj,'Parent');
+
+% runs the code for each of the objects.
+for i = 1:numel(d)
+    % gets the hardware index number so that the correct voltage is set
+    hw = obj(i).HwIndex;
+    % checks to see if there is one device or more
+    if (iscell(d));
+        %seperates one device from the rest
+        device = d{i};
+    else
+        device = d;
+    end
+
+    driverData = get(device, 'DriverData');
+
+    if(driverData.output.VoltLev{hw} &lt; driverData.output.voltageoutrange{hw})
+        driverData.output.state{hw} = 'on';
+    end
+end
+
+% sets the output object
+if(i == 1)
+    driverData.obj = hw;
+else
+    driverData.obj = {[1];[2]};
+end
+
+set(device, 'DriverData', driverData);</MCode>
+               </Code>
+               <Description>RESETVOLTAGEPROTECTION Clears the overvoltage protection state.
+
+INVOKE(OBJ, 'resetvoltageprotection') resets the overvoltage protection state.
+</Description>
+            </Method>
+         </MethodInfo>
+      </Group>
+      <Group>
+         <Name>system</Name>
+         <Description>General instrument system functionality.</Description>
+         <Command/>
+         <Size>1</Size>
+         <Mappings>
+            <ChannelMap Command="Util1" Index="1"/>
+         </Mappings>
+         <PropertyInfo>
+            <Property>
+               <Name>Version</Name>
+               <Location>system</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>MCode</Type>
+               <Code>
+                  <GetMCode>function propertyValue = getProperty(obj, propertyName)
+% Return a property value.
+%   This function is called to return the device or group object property
+%   value. If the property is a group property, OBJ is the group object. If
+%   the property is a base device property, OBJ is the device object.
+
+propertyValue = '1997';</GetMCode>
+                  <SetMCode>function set(obj, propertyName, propertyValue)
+% Set a property value.
+%   This function is called to set the device or group object property
+%   value. If the property is a group property, OBJ is the group object. If
+%   the property is a base device property, OBJ is the device object.</SetMCode>
+               </Code>
+               <PermissibleType>
+                  <Type>Double</Type>
+                  <Constraint>none</Constraint>
+               </PermissibleType>
+               <DefaultValue>0</DefaultValue>
+               <ReadOnly>always</ReadOnly>
+               <Description>Returns the SCPI version of the instrument.</Description>
+            </Property>
+         </PropertyInfo>
+         <MethodInfo>
+            <Method>
+               <Name>beep</Name>
+               <Location>system</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>MCode</Type>
+               <Code>
+                  <MCode>function beep(obj)
+% If this is a group function, OBJ is the group object. If
+% it a base device function, OBJ is the device object.
+
+beep on;
+beep ;   </MCode>
+               </Code>
+               <Description>BEEP Issue a beep.
+
+INVOKE(OBJ, 'beep') issues a beep from the instrument.</Description>
+            </Method>
+            <Method>
+               <Name>disablelocalcontrols</Name>
+               <Location>system</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>MCode</Type>
+               <Code>
+                  <MCode>function disablelocalcontrols(obj)
+% OBJ is the group object.
+
+</MCode>
+               </Code>
+               <Description>DISABLELOCALCONTROLS Disable all front-panel buttons and knobs.
+
+INVOKE(OBJ, 'disablelocalcontrols') 'unlocks' all front-panel keys and knobs. Valid for RS-232 mode only.</Description>
+            </Method>
+            <Method>
+               <Name>enablelocalcontrols</Name>
+               <Location>system</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>MCode</Type>
+               <Code>
+                  <MCode>function enablelocalcontrols(obj)
+% OBJ is the group object.
+
+</MCode>
+               </Code>
+               <Description>ENABLELOCALCONTROLS Enable all front-panel buttons and knobs.
+
+INVOKE(OBJ, 'enablelocalcontrols') 'locks' all front-panel keys and knobs. Valid for RS-232 mode only.</Description>
+            </Method>
+            <Method>
+               <Name>loadstate</Name>
+               <Location>system</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>MCode</Type>
+               <Code>
+                  <MCode>function loadstate(obj,location)
+% OBJ is the group object.
+% LOCATION is the specified storage location
+
+driverData = get(get(obj, 'Parent'), 'DriverData');
+
+% Error checking
+% LOCATION must be a scalar and between 1 and 5, inclusive.
+if ~isnumeric(location) 
+    error('LOCATION must be numeric');
+elseif  location &gt;5 || location &lt;1
+    error('LOCATION must be between 1 and 5 inclusive');
+end
+
+savefile = sprintf('generic_agilent_e3648_location%i.mat',location);
+load (savefile);
+
+set(get(obj, 'Parent'), 'DriverData', driverData);</MCode>
+               </Code>
+               <Description>LOADSTATE Recall a previously saved configuration.
+
+INVOKE(OBJ, 'loadstate', LOCATION) recalls the power supply state stored in the specified storage LOCATION.</Description>
+            </Method>
+            <Method>
+               <Name>savestate</Name>
+               <Location>system</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>MCode</Type>
+               <Code>
+                  <MCode>function savestate(obj,location)
+% OBJ is the group object.
+% LOCATION is the specified storage location
+
+driverData = get(get(obj, 'Parent'), 'DriverData');
+
+% Error checking
+% LOCATION must be a scalar and between 1 and 5, inclusive.
+if ~isnumeric(location)
+    error('LOCATION must be numeric');
+elseif  location &gt;5 || location &lt;1
+    error('LOCATION must be between 1 and 5 inclusive');
+end
+
+savefile = sprintf('generic_agilent_e3648_location%i.mat',location);
+save(savefile, 'driverData');
+
+set(get(obj, 'Parent'), 'DriverData', driverData);</MCode>
+               </Code>
+               <Description>SAVESTATE Store a configuration.
+
+INVOKE(OBJ, 'savestate', LOCATION) stores the present configuration of theinstrument to the specified LOCATION. Any state previously stored in the same location is overwritten.
+
+Saves driverData in a .mat file, called generic_agilent_e3648a(location number), in the matlab path </Description>
+            </Method>
+         </MethodInfo>
+      </Group>
+   </GroupInfo>
+</MATLABInstrumentDriver>

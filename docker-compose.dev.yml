@@ -1,5 +1,18 @@
 services:
-  matlab:
+ matlab:
+    container_name: matlab-script
+    image: matlab-login
+    ports:
+     - "8888:8888"
+     - "12345:12345"  # Added TCP server port
+    volumes:
+     - ./scripts:/home/matlab/Documents/MATLAB
+    tty: true
+    stdin_open: true
+    networks:
+      - matlab-net
+
+ matlab-service:
     build:
       context: .
       dockerfile: Dockerfile.dev
@@ -11,4 +24,10 @@ services:
     ports:
       - "8087:8087"                     # Map port 8091 to the host
     environment:
-      SPRING_PROFILES_ACTIVE: dev
+      SPRING_PROFILES_ACTIVE: dev 
+    networks:
+      - matlab-net
+
+networks:
+  matlab-net:
+    driver: bridge

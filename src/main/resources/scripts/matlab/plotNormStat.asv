@@ -1,0 +1,10 @@
+function Norm=plotNormStat(A,score)
+
+for i=1:size(A)
+Norm(:,i)=A(:,i)./sum(A(:,i));
+end
+
+figure;
+set(0,'ColorOrder',[0 0 0],[0,0,0],[0 0 0],[0,0,0],[0 0 0],[0,0,0],[0 0 0],[0,0,0],...
+      'LineStyleOrder','--|-|--|-|--|-|--|-|--|-|')
+plot(score,Norm)

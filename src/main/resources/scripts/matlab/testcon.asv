@@ -1,0 +1,10 @@
+c1=60;
+c2=0.1;
+fpmax=40;%5.6*c2+fprest;
+%fpcon1=0:0.01:12;
+%R2=(fRp+c1*fRp*exp((f_sp-fpmax)./c2))./(1+exp((f_sp-fpmax)./c2));
+sigmaRp=(fRp+c1*fRp*exp((f_sp-f_sp0)./(c2)))./(1+exp((f_sp-f_sp0)./(c_R2*f_sp0)));
+
+figure; plot(R2,'k')
+min(R2)
+max(R2)

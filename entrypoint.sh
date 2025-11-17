@@ -25,4 +25,4 @@ else
 fi
 
 # Run Maven command to start the Spring Boot application
-exec ./mvnw spring-boot:run
+exec sh ./mvnw spring-boot:run

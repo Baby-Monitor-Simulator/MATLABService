@@ -1,0 +1,718 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Mask SelfModifiable="on">
+  <Type>instrument.system.VISA</Type>
+  <SourceCheckSum>69F05D11FB864F0101C4C4326B0C3063</SourceCheckSum>
+  <Display IconOpaque="transparent" RunInitForIconRedraw="off">blockUsage = get_param(gcb, &quot;BlockMode&quot;);
+
+if bdIsLibrary(bdroot(gcb))
+    icon = &apos;VISA&apos;;
+else
+    if strcmpi(blockUsage , &quot;Send command&quot;)
+        icon = &apos;VISA \nSend&apos;;
+    elseif strcmpi(blockUsage , &quot;Query Instrument&quot;)
+        icon = &apos;VISA \nQuery&apos;;
+    else
+        icon = &apos;VISA \nReceive&apos;;
+    end
+end
+
+% Set the icon name.
+disp(icon);
+
+if (strcmpi(blockUsage, &apos;Send command&apos;) || strcmpi(blockUsage, &apos;Query Instrument&apos;) ) &amp;&amp; ...
+        (strcmpi(get_param(gcb, &quot;SendCommandType&quot;), &apos;Compose command from input data&apos;) || ...
+        strcmpi(get_param(gcb, &quot;SendCommandType&quot;), &apos;Send input port data as is&apos;))
+
+    port_label(&apos;input&apos;, 1, &apos;Input&apos;);
+
+end
+
+if strcmpi(blockUsage , &quot;Send command&quot;)
+    if strcmpi(get_param(gcb, &quot;ActionWhenerror&quot;), &apos;Stop Simulation&apos;)
+        return;
+    end
+    if strcmpi(get_param(gcb, &quot;Checkerror&quot;), &quot;on&quot;)
+        port_label(&apos;output&apos;, 1,  &apos;Instrument error&apos;);
+    end
+else
+    if strcmpi(get_param(gcb, &quot;ActionWhenerror&quot;), &apos;Stop Simulation&apos;)
+        port_label(&apos;output&apos;, 1, &apos;Output&apos;);
+        return;
+    end
+    if strcmpi(get_param(gcb, &quot;Checkerror&quot;), &quot;on&quot;)
+        port_label(&apos;output&apos;, 1, &apos;Output&apos;);
+        port_label(&apos;output&apos;, 2, &apos;Status&apos;);
+        port_label(&apos;output&apos;, 3,  &apos;Instrument error&apos;);
+    else
+        port_label(&apos;output&apos;, 1, &apos;Output&apos;);
+        port_label(&apos;output&apos;, 2, &apos;Status&apos;);
+    end
+end
+
+</Display>
+  <Description>untitled2 Add summary here</Description>
+  <Initialization>matlab.system.MLSysBlockIconAndPortLabelsInfo.updateMLSysBlockIconAndPortLabels(gcbh)</Initialization>
+  <MaskParameter Name="SampleTime" Type="edit" Tunable="off">
+    <Prompt>Block sample time(-1 for inherited)</Prompt>
+    <Value>-1</Value>
+  </MaskParameter>
+  <MaskParameter Name="HwConfigOptions" Type="radiobutton" Evaluate="off" Tunable="off">
+    <Prompt>Select and configure hardware</Prompt>
+    <Value>Select from resource list</Value>
+    <Callback>instrument.system.visaCallbacks.updateParameterVisibility();
+instrument.system.visaCallbacks.updateResourcelist();
+instrument.system.visaCallbacks.customizeDialog(&quot;HwConfigOptions&quot;);
+instrument.system.visaCallbacks.clearInstrumentResponseAndStatus();</Callback>
+    <TypeOptions>
+      <Option>Select from resource list</Option>
+      <Option>Configure new VISA resource</Option>
+      <Option>Specify resource name</Option>
+    </TypeOptions>
+  </MaskParameter>
+  <MaskParameter Name="ResourceName" Type="popup" Evaluate="off" Tunable="off">
+    <Prompt>Resource name</Prompt>
+    <Value>&lt;Select a resource name&gt;</Value>
+    <Callback>instrument.system.visaCallbacks.updateParameterVisibility();
+instrument.system.visaCallbacks.clearInstrumentResponseAndStatus();
+instrument.system.visaCallbacks.customizeDialog(&quot;ResourceName&quot;);
+instrument.system.visaCallbacks.showSelectedResourceDetails();
+</Callback>
+    <TypeOptions>
+      <Option>&lt;Select a resource name&gt;</Option>
+    </TypeOptions>
+  </MaskParameter>
+  <MaskParameter Name="VendorName" Type="edit" Evaluate="off" Tunable="off">
+    <Prompt>Vendor</Prompt>
+    <Callback>instrument.system.visaCallbacks.updateParameterVisibility();
+</Callback>
+  </MaskParameter>
+  <MaskParameter Name="ModelName" Type="edit" Evaluate="off" Tunable="off">
+    <Prompt>Model</Prompt>
+    <Callback>instrument.system.visaCallbacks.updateParameterVisibility();
+</Callback>
+  </MaskParameter>
+  <MaskParameter Name="SlNumber" Type="edit" Evaluate="off" Tunable="off">
+    <Prompt>Serial Number</Prompt>
+    <Callback>instrument.system.visaCallbacks.updateParameterVisibility();
+</Callback>
+  </MaskParameter>
+  <MaskParameter Name="Interface" Type="popup" Evaluate="off" Tunable="off">
+    <Prompt>VISA resource type</Prompt>
+    <Value>TCP/IP Socket</Value>
+    <Callback>instrument.system.visaCallbacks.updateParameterVisibility();
+</Callback>
+    <TypeOptions>
+      <Option>TCP/IP Socket</Option>
+      <Option>TCP/IP HiSLIP 1</Option>
+      <Option>TCP/IP VXI-11</Option>
+    </TypeOptions>
+  </MaskParameter>
+  <MaskParameter Name="BoardNumber" Type="edit" Tunable="off">
+    <Prompt>Board index</Prompt>
+    <Value>0</Value>
+    <Callback>instrument.system.visaCallbacks.updateParameterVisibility();
+</Callback>
+  </MaskParameter>
+  <MaskParameter Name="IPAddress" Type="edit" Evaluate="off" Tunable="off">
+    <Prompt>IP address:</Prompt>
+    <Callback>instrument.system.visaCallbacks.updateParameterVisibility();
+</Callback>
+  </MaskParameter>
+  <MaskParameter Name="Port" Type="edit" Tunable="off">
+    <Prompt>Port number</Prompt>
+    <Value>4880</Value>
+    <Callback>instrument.system.visaCallbacks.updateParameterVisibility();
+</Callback>
+  </MaskParameter>
+  <MaskParameter Name="DeviceID" Type="edit" Tunable="off">
+    <Prompt>Device ID:</Prompt>
+    <Value>0</Value>
+    <Callback>instrument.system.visaCallbacks.updateParameterVisibility();
+</Callback>
+  </MaskParameter>
+  <MaskParameter Name="ResourceString" Type="edit" Evaluate="off" Tunable="off">
+    <Prompt>Resource name</Prompt>
+    <Callback>instrument.system.visaCallbacks.updateParameterVisibility();
+</Callback>
+  </MaskParameter>
+  <MaskParameter Name="EOIMode" Type="checkbox" Evaluate="off" Tunable="off">
+    <Prompt>EOI Mode</Prompt>
+    <Value>on</Value>
+    <Callback>instrument.system.visaCallbacks.updateParameterVisibility();
+</Callback>
+  </MaskParameter>
+  <MaskParameter Name="ByteOrder" Type="popup" Evaluate="off" Tunable="off">
+    <Prompt>Byte order</Prompt>
+    <Value>little-endian</Value>
+    <Callback>instrument.system.visaCallbacks.updateParameterVisibility();
+</Callback>
+    <TypeOptions>
+      <Option>little-endian</Option>
+      <Option>big-endian</Option>
+    </TypeOptions>
+  </MaskParameter>
+  <MaskParameter Name="ReadTerminator" Type="edit" Evaluate="off" Tunable="off">
+    <Prompt>Read terminator</Prompt>
+    <Value>off</Value>
+    <Callback>instrument.system.visaCallbacks.updateParameterVisibility();
+</Callback>
+  </MaskParameter>
+  <MaskParameter Name="WriteTerminator" Type="edit" Evaluate="off" Tunable="off">
+    <Prompt>Write terminator</Prompt>
+    <Value>LF</Value>
+    <Callback>instrument.system.visaCallbacks.updateParameterVisibility();
+</Callback>
+  </MaskParameter>
+  <MaskParameter Name="DataBits" Type="popup" Evaluate="off" Tunable="off">
+    <Prompt>Data bits</Prompt>
+    <Value>8</Value>
+    <Callback>instrument.system.visaCallbacks.updateParameterVisibility();
+</Callback>
+    <TypeOptions>
+      <Option>5</Option>
+      <Option>6</Option>
+      <Option>7</Option>
+      <Option>8</Option>
+    </TypeOptions>
+  </MaskParameter>
+  <MaskParameter Name="Parity" Type="popup" Evaluate="off" Tunable="off">
+    <Prompt>Parity</Prompt>
+    <Value>none</Value>
+    <Callback>instrument.system.visaCallbacks.updateParameterVisibility();
+</Callback>
+    <TypeOptions>
+      <Option>none</Option>
+      <Option>even</Option>
+      <Option>odd</Option>
+    </TypeOptions>
+  </MaskParameter>
+  <MaskParameter Name="StopBits" Type="edit" Tunable="off">
+    <Prompt>Stop bits</Prompt>
+    <Value>1</Value>
+    <Callback>instrument.system.visaCallbacks.updateParameterVisibility();
+</Callback>
+  </MaskParameter>
+  <MaskParameter Name="FlowControl" Type="popup" Evaluate="off" Tunable="off">
+    <Prompt>Flow control</Prompt>
+    <Value>none</Value>
+    <Callback>instrument.system.visaCallbacks.updateParameterVisibility();
+</Callback>
+    <TypeOptions>
+      <Option>none</Option>
+      <Option>hardware</Option>
+      <Option>software</Option>
+    </TypeOptions>
+  </MaskParameter>
+  <MaskParameter Name="BaudRate" Type="edit" Tunable="off">
+    <Prompt>Baud rate</Prompt>
+    <Value>9600</Value>
+    <Callback>instrument.system.visaCallbacks.updateParameterVisibility();
+</Callback>
+  </MaskParameter>
+  <MaskParameter Name="TimeOut" Type="edit" Tunable="off">
+    <Prompt>Timeout</Prompt>
+    <Value>10</Value>
+    <Callback>instrument.system.visaCallbacks.updateParameterVisibility();
+</Callback>
+  </MaskParameter>
+  <MaskParameter Name="TestCommand" Type="edit" Evaluate="off" Tunable="off">
+    <Prompt>Instrument identification command</Prompt>
+    <Value>*IDN?</Value>
+  </MaskParameter>
+  <MaskParameter Name="Response" Type="edit" Evaluate="off" Tunable="off">
+    <Prompt>Response</Prompt>
+    <Value>[]</Value>
+  </MaskParameter>
+  <MaskParameter Name="InitOptions" Type="radiobutton" Evaluate="off" Tunable="off">
+    <Value>No initialization commands</Value>
+    <Callback>instrument.system.visaCallbacks.updateParameterVisibility();
+</Callback>
+    <TypeOptions>
+      <Option>No initialization commands</Option>
+      <Option>Initialization commands</Option>
+      <Option>MATLAB Code</Option>
+    </TypeOptions>
+  </MaskParameter>
+  <MaskParameter Name="SendString" Type="textarea" Evaluate="off" Tunable="off">
+    <Prompt>Initialization commands (Enter your SCPI commands separated by semicolon)</Prompt>
+    <Value>*RST;*CLS</Value>
+    <Callback>instrument.system.visaCallbacks.updateParameterVisibility();</Callback>
+  </MaskParameter>
+  <MaskParameter Name="ExecuteFunction" Type="textarea" Evaluate="off" Tunable="off">
+    <Prompt>MATLAB Code (Use &apos;visaObj&apos; as VISA object to write your initialization code)</Prompt>
+    <Callback>instrument.system.visaCallbacks.updateParameterVisibility();</Callback>
+  </MaskParameter>
+  <MaskParameter Name="InitTestCommand" Type="edit" Evaluate="off" Tunable="off">
+    <Prompt>Instrument error check command</Prompt>
+    <Value>SYSTem:ERRor?</Value>
+  </MaskParameter>
+  <MaskParameter Name="initStatus" Type="edit" Evaluate="off" Tunable="off">
+    <Prompt>Instrument status</Prompt>
+    <Value>[]</Value>
+  </MaskParameter>
+  <MaskParameter Name="BlockMode" Type="radiobutton" Evaluate="off" Tunable="off">
+    <Prompt>Use block to </Prompt>
+    <Value>Send command</Value>
+    <Callback>instrument.system.visaCallbacks.updateParameterVisibility();
+instrument.system.visaCallbacks.customizeDialog(&quot;BlockMode&quot;)</Callback>
+    <TypeOptions>
+      <Option>Send command</Option>
+      <Option>Query Instrument</Option>
+      <Option>Receive response</Option>
+    </TypeOptions>
+  </MaskParameter>
+  <MaskParameter Name="SendCommandType" Type="radiobutton" Evaluate="off" Tunable="off">
+    <Prompt>Send command type</Prompt>
+    <Value>SCPI command</Value>
+    <Callback>instrument.system.visaCallbacks.updateParameterVisibility();
+instrument.system.visaCallbacks.customizeDialog(&quot;SendCommandType&quot;)</Callback>
+    <TypeOptions>
+      <Option>SCPI command</Option>
+      <Option>Binary</Option>
+      <Option>Binblock</Option>
+      <Option>Compose command from input data</Option>
+      <Option>Send input port data as is</Option>
+    </TypeOptions>
+  </MaskParameter>
+  <MaskParameter Name="StaticCommand" Type="edit" Evaluate="off" Tunable="off">
+    <Prompt>SCPI command</Prompt>
+    <Callback>instrument.system.visaCallbacks.updateParameterVisibility();
+</Callback>
+  </MaskParameter>
+  <MaskParameter Name="StaticBinary" Type="edit" Tunable="off">
+    <Prompt>Binary command</Prompt>
+    <Value>[]</Value>
+    <Callback>instrument.system.visaCallbacks.updateParameterVisibility();
+</Callback>
+  </MaskParameter>
+  <MaskParameter Name="BinBlockCommand" Type="edit" Tunable="off">
+    <Prompt>Binblock data</Prompt>
+    <Value>[]</Value>
+    <Callback>instrument.system.visaCallbacks.updateParameterVisibility();
+</Callback>
+  </MaskParameter>
+  <MaskParameter Name="DataType" Type="popup" Evaluate="off" Tunable="off">
+    <Prompt>Data type</Prompt>
+    <Value>uint8</Value>
+    <Callback>instrument.system.visaCallbacks.updateParameterVisibility();</Callback>
+    <TypeOptions>
+      <Option>single</Option>
+      <Option>double</Option>
+      <Option>int8</Option>
+      <Option>uint8</Option>
+      <Option>int16</Option>
+      <Option>uint16</Option>
+      <Option>int32</Option>
+      <Option>uint32</Option>
+      <Option>uint64</Option>
+      <Option>int64</Option>
+    </TypeOptions>
+  </MaskParameter>
+  <MaskParameter Name="Header" Type="edit" Evaluate="off" Tunable="off">
+    <Prompt>Command header</Prompt>
+    <Callback>instrument.system.visaCallbacks.updateParameterVisibility();</Callback>
+  </MaskParameter>
+  <MaskParameter Name="NumFormat" Type="popup" Evaluate="off" Tunable="off">
+    <Prompt>Numeric format</Prompt>
+    <Value>Integer, signed (%d)</Value>
+    <Callback>instrument.system.visaCallbacks.updateParameterVisibility();</Callback>
+    <TypeOptions>
+      <Option>Integer, signed (%d)</Option>
+      <Option>Integer, unsigned (%u)</Option>
+      <Option>Floating-point (%f)</Option>
+      <Option>Characters (%c)</Option>
+      <Option>Enter numeric format</Option>
+    </TypeOptions>
+  </MaskParameter>
+  <MaskParameter Name="CustomNumericFormat" Type="edit" Evaluate="off" Tunable="off">
+    <Value>%2f</Value>
+    <Callback>instrument.system.visaCallbacks.updateParameterVisibility();</Callback>
+  </MaskParameter>
+  <MaskParameter Name="delimiter" Type="edit" Evaluate="off" Tunable="off">
+    <Prompt>delimiter</Prompt>
+    <Value>,</Value>
+    <Callback>instrument.system.visaCallbacks.updateParameterVisibility();</Callback>
+  </MaskParameter>
+  <MaskParameter Name="RxOption" Type="radiobutton" Evaluate="off" Tunable="off">
+    <Prompt>Data format</Prompt>
+    <Value>Read string response and convert to numeric value</Value>
+    <Callback>instrument.system.visaCallbacks.updateParameterVisibility();</Callback>
+    <TypeOptions>
+      <Option>Read string response and convert to numeric value</Option>
+      <Option>Read string response and output as is</Option>
+      <Option>Read numeric data</Option>
+      <Option>Binblock</Option>
+    </TypeOptions>
+  </MaskParameter>
+  <MaskParameter Name="ResponseHeader" Type="edit" Evaluate="off" Tunable="off">
+    <Prompt>Header</Prompt>
+    <Callback>instrument.system.visaCallbacks.updateParameterVisibility();</Callback>
+  </MaskParameter>
+  <MaskParameter Name="FormatString" Type="popup" Evaluate="off" Tunable="off">
+    <Prompt>Numeric format</Prompt>
+    <Value>Integer, signed (%d)</Value>
+    <Callback>instrument.system.visaCallbacks.updateParameterVisibility();</Callback>
+    <TypeOptions>
+      <Option>Integer, signed (%d)</Option>
+      <Option>Integer, unsigned (%u)</Option>
+      <Option>Floating-point (%f)</Option>
+      <Option>Characters (%c)</Option>
+      <Option>Enter numeric format</Option>
+    </TypeOptions>
+  </MaskParameter>
+  <MaskParameter Name="CustomFormatString" Type="edit" Evaluate="off" Tunable="off">
+    <Value>%2f</Value>
+    <Callback>instrument.system.visaCallbacks.updateParameterVisibility();</Callback>
+  </MaskParameter>
+  <MaskParameter Name="ResponseDelimiter" Type="edit" Evaluate="off" Tunable="off">
+    <Prompt>delimiter</Prompt>
+    <Value>,</Value>
+    <Callback>instrument.system.visaCallbacks.updateParameterVisibility();</Callback>
+  </MaskParameter>
+  <MaskParameter Name="ReceiveDatatype" Type="popup" Evaluate="off" Tunable="off">
+    <Prompt>Data type</Prompt>
+    <Value>uint8</Value>
+    <Callback>instrument.system.visaCallbacks.updateParameterVisibility();</Callback>
+    <TypeOptions>
+      <Option>single</Option>
+      <Option>double</Option>
+      <Option>int8</Option>
+      <Option>uint8</Option>
+      <Option>int16</Option>
+      <Option>uint16</Option>
+      <Option>int32</Option>
+      <Option>uint32</Option>
+      <Option>uint64</Option>
+      <Option>int64</Option>
+    </TypeOptions>
+  </MaskParameter>
+  <MaskParameter Name="AutoSize" Type="checkbox" Evaluate="off" Tunable="off">
+    <Prompt>Determine data size automatically</Prompt>
+    <Value>on</Value>
+    <Callback>instrument.system.visaCallbacks.updateParameterVisibility();</Callback>
+  </MaskParameter>
+  <MaskParameter Name="OutputSize" Type="edit" Tunable="off">
+    <Prompt>Data size</Prompt>
+    <Value>[ 10000, 1 ]</Value>
+    <Callback>instrument.system.visaCallbacks.updateParameterVisibility();</Callback>
+  </MaskParameter>
+  <MaskParameter Name="Size" Type="edit" Tunable="off">
+    <Prompt>Data size</Prompt>
+    <Value>[ 1, 1 ]</Value>
+    <Callback>instrument.system.visaCallbacks.updateParameterVisibility();</Callback>
+  </MaskParameter>
+  <MaskParameter Name="ActionWhenerror" Type="popup" Evaluate="off" Tunable="off">
+    <Prompt>Action when error occurs</Prompt>
+    <Value>Stop Simulation</Value>
+    <TypeOptions>
+      <Option>Stop Simulation</Option>
+      <Option>Continue simulation</Option>
+    </TypeOptions>
+  </MaskParameter>
+  <MaskParameter Name="Checkerror" Type="checkbox" Evaluate="off" Tunable="off">
+    <Prompt>Check instrument error.</Prompt>
+    <Value>off</Value>
+    <Callback>instrument.system.visaCallbacks.updateParameterVisibility();</Callback>
+  </MaskParameter>
+  <MaskParameter Name="CheckCommand" Type="edit" Evaluate="off" Tunable="off">
+    <Prompt>Error check command</Prompt>
+    <Value>SYSTem:ERRor?</Value>
+    <Callback>instrument.system.visaCallbacks.updateParameterVisibility();</Callback>
+  </MaskParameter>
+  <MaskParameter Name="SimulateUsing" Type="popup" Evaluate="off" Tunable="off" NeverSave="on" Internal="on" ReadOnly="on" Enabled="off" Visible="off">
+    <Prompt>Simulate using:</Prompt>
+    <Value>Interpreted execution</Value>
+    <TypeOptions>
+      <Option>SystemBlock:MATLABSystem:SimulateUsingCodeGeneration</Option>
+      <Option>SystemBlock:MATLABSystem:SimulateUsingInterpretedExecution</Option>
+    </TypeOptions>
+  </MaskParameter>
+  <DialogControl Type="Group" Name="DescGroupVar">
+    <Prompt>VISA</Prompt>
+    <DialogControl Type="Text" Name="DescTextVar">
+      <Prompt>Query or Send commands to instrument</Prompt>
+    </DialogControl>
+  </DialogControl>
+  <DialogControl Type="Group" Name="SectionGroup0_Section1">
+    <Prompt>Block parameters</Prompt>
+    <ControlOptions AlignPrompts="on"/>
+    <DialogControl Type="Edit" Name="SampleTime">
+      <Prompt>Block sample time(-1 for inherited)</Prompt>
+      <ControlOptions HorizontalStretch="off" PromptLocation="left"/>
+    </DialogControl>
+    <DialogControl Type="TabContainer" Name="Container4">
+      <DialogControl Type="Tab" Name="Container5">
+        <Prompt>Hardware Configuration</Prompt>
+        <DialogControl Type="RadioButton" Name="HwConfigOptions">
+          <Prompt>Select and configure hardware</Prompt>
+          <ControlOptions PromptLocation="left"/>
+        </DialogControl>
+        <DialogControl Type="Group" Name="Container9">
+          <DialogControl Type="Popup" Name="ResourceName">
+            <Prompt>Resource name</Prompt>
+            <ControlOptions PromptLocation="left"/>
+          </DialogControl>
+          <DialogControl Type="Edit" Name="VendorName">
+            <Prompt>Vendor</Prompt>
+          </DialogControl>
+          <DialogControl Type="Edit" Name="ModelName">
+            <Prompt>Model</Prompt>
+            <ControlOptions Row="current"/>
+          </DialogControl>
+          <DialogControl Type="Edit" Name="SlNumber">
+            <Prompt>Serial Number</Prompt>
+            <ControlOptions Row="current"/>
+          </DialogControl>
+          <DialogControl Type="Popup" Name="Interface">
+            <Prompt>VISA resource type</Prompt>
+            <ControlOptions PromptLocation="left"/>
+          </DialogControl>
+          <DialogControl Type="Edit" Name="BoardNumber">
+            <Prompt>Board index</Prompt>
+            <ControlOptions PromptLocation="left"/>
+          </DialogControl>
+          <DialogControl Type="Edit" Name="IPAddress">
+            <Prompt>IP address:</Prompt>
+            <ControlOptions PromptLocation="left"/>
+          </DialogControl>
+          <DialogControl Type="Edit" Name="Port">
+            <Prompt>Port number</Prompt>
+            <ControlOptions PromptLocation="left"/>
+          </DialogControl>
+          <DialogControl Type="Edit" Name="DeviceID">
+            <Prompt>Device ID:</Prompt>
+            <ControlOptions PromptLocation="left"/>
+          </DialogControl>
+          <DialogControl Type="Hyperlink" Name="HlRscString">
+            <Prompt>Learn about resource name format</Prompt>
+            <Callback>web(&apos;https://www.mathworks.com/help/instrument/rsrcname.html&apos;)</Callback>
+            <ControlOptions Visible="off"/>
+          </DialogControl>
+          <DialogControl Type="Edit" Name="ResourceString">
+            <Prompt>Resource name</Prompt>
+            <ControlOptions PromptLocation="left"/>
+          </DialogControl>
+          <DialogControl Type="Group" Name="CtConnectConfig">
+            <Prompt>Configure connection</Prompt>
+            <ControlOptions AlignPrompts="on"/>
+            <DialogControl Type="CheckBox" Name="EOIMode">
+              <Prompt>EOI Mode</Prompt>
+            </DialogControl>
+            <DialogControl Type="Popup" Name="ByteOrder">
+              <Prompt>Byte order</Prompt>
+              <ControlOptions PromptLocation="left"/>
+            </DialogControl>
+            <DialogControl Type="Edit" Name="ReadTerminator">
+              <Prompt>Read terminator</Prompt>
+              <ControlOptions PromptLocation="left"/>
+            </DialogControl>
+            <DialogControl Type="Edit" Name="WriteTerminator">
+              <Prompt>Write terminator</Prompt>
+              <ControlOptions PromptLocation="left"/>
+            </DialogControl>
+            <DialogControl Type="Popup" Name="DataBits">
+              <Prompt>Data bits</Prompt>
+              <ControlOptions PromptLocation="left"/>
+            </DialogControl>
+            <DialogControl Type="Popup" Name="Parity">
+              <Prompt>Parity</Prompt>
+              <ControlOptions PromptLocation="left"/>
+            </DialogControl>
+            <DialogControl Type="Edit" Name="StopBits">
+              <Prompt>Stop bits</Prompt>
+              <ControlOptions PromptLocation="left"/>
+            </DialogControl>
+            <DialogControl Type="Popup" Name="FlowControl">
+              <Prompt>Flow control</Prompt>
+              <ControlOptions PromptLocation="left"/>
+            </DialogControl>
+            <DialogControl Type="Edit" Name="BaudRate">
+              <Prompt>Baud rate</Prompt>
+              <ControlOptions PromptLocation="left"/>
+            </DialogControl>
+            <DialogControl Type="Edit" Name="TimeOut">
+              <Prompt>Timeout</Prompt>
+              <ControlOptions PromptLocation="left"/>
+            </DialogControl>
+            <DialogControl Type="Text" Name="Control12">
+              <ControlOptions Row="current"/>
+            </DialogControl>
+          </DialogControl>
+        </DialogControl>
+        <DialogControl Type="Group" Name="Container10">
+          <Prompt>Validate and test connection</Prompt>
+          <DialogControl Type="Edit" Name="TestCommand">
+            <Prompt>Instrument identification command</Prompt>
+            <ControlOptions HorizontalStretch="off" PromptLocation="left"/>
+          </DialogControl>
+          <DialogControl Type="Text" Name="Control5"/>
+          <DialogControl Type="Button" Name="Control3">
+            <Prompt>Validate and test connection</Prompt>
+            <Callback>instrument.system.visaCallbacks.validateAndTestConnection</Callback>
+            <ControlOptions Row="current" HorizontalStretch="off"/>
+          </DialogControl>
+          <DialogControl Type="Edit" Name="Response">
+            <Prompt>Response</Prompt>
+            <ControlOptions PromptLocation="left"/>
+          </DialogControl>
+        </DialogControl>
+      </DialogControl>
+      <DialogControl Type="Tab" Name="Container6">
+        <Prompt>Instrument Initialization</Prompt>
+        <DialogControl Type="Group" Name="Container14">
+          <Prompt>Send initialization commands</Prompt>
+          <DialogControl Type="RadioButton" Name="InitOptions">
+            <ControlOptions PromptLocation="left"/>
+          </DialogControl>
+          <DialogControl Type="TextArea" Name="SendString">
+            <Prompt>Initialization commands (Enter your SCPI commands separated by semicolon)</Prompt>
+            <Tooltip>Enter Init commands</Tooltip>
+            <ControlOptions HorizontalStretch="off"/>
+          </DialogControl>
+          <DialogControl Type="TextArea" Name="ExecuteFunction">
+            <Prompt>MATLAB Code (Use &apos;visaObj&apos; as VISA object to write your initialization code)</Prompt>
+            <Tooltip>Write your MATLAB code here.</Tooltip>
+            <ControlOptions TextType="MATLAB Code"/>
+          </DialogControl>
+        </DialogControl>
+        <DialogControl Type="Group" Name="Container15">
+          <Prompt>Test instrument initialization commands</Prompt>
+          <DialogControl Type="Edit" Name="InitTestCommand">
+            <Prompt>Instrument error check command</Prompt>
+            <ControlOptions PromptLocation="left"/>
+          </DialogControl>
+          <DialogControl Type="Button" Name="Control6">
+            <Prompt>Upload initialization commands and check instrument error status</Prompt>
+            <Callback>instrument.system.visaCallbacks.testInitializationCommands</Callback>
+            <ControlOptions HorizontalStretch="off"/>
+          </DialogControl>
+          <DialogControl Type="Edit" Name="initStatus">
+            <Prompt>Instrument status</Prompt>
+            <ControlOptions PromptLocation="left"/>
+          </DialogControl>
+        </DialogControl>
+      </DialogControl>
+      <DialogControl Type="Tab" Name="Container11">
+        <Prompt>Send or Query</Prompt>
+        <ControlOptions AlignPrompts="on"/>
+        <DialogControl Type="RadioButton" Name="BlockMode">
+          <Prompt>Use block to </Prompt>
+          <ControlOptions PromptLocation="left"/>
+        </DialogControl>
+        <DialogControl Type="Text" Name="Control11"/>
+        <DialogControl Type="Group" Name="CtSendCommand">
+          <Prompt>Send command</Prompt>
+          <DialogControl Type="RadioButton" Name="SendCommandType">
+            <Prompt>Send command type</Prompt>
+            <ControlOptions PromptLocation="left" Orientation="vertical"/>
+          </DialogControl>
+          <DialogControl Type="Edit" Name="StaticCommand">
+            <Prompt>SCPI command</Prompt>
+            <ControlOptions PromptLocation="left"/>
+          </DialogControl>
+          <DialogControl Type="Edit" Name="StaticBinary">
+            <Prompt>Binary command</Prompt>
+            <ControlOptions PromptLocation="left"/>
+          </DialogControl>
+          <DialogControl Type="Edit" Name="BinBlockCommand">
+            <Prompt>Binblock data</Prompt>
+            <ControlOptions PromptLocation="left"/>
+          </DialogControl>
+          <DialogControl Type="Popup" Name="DataType">
+            <Prompt>Data type</Prompt>
+            <ControlOptions PromptLocation="left"/>
+          </DialogControl>
+          <DialogControl Type="Edit" Name="Header">
+            <Prompt>Command header</Prompt>
+            <ControlOptions PromptLocation="left"/>
+          </DialogControl>
+          <DialogControl Type="Popup" Name="NumFormat">
+            <Prompt>Numeric format</Prompt>
+            <ControlOptions PromptLocation="left"/>
+          </DialogControl>
+          <DialogControl Type="Edit" Name="CustomNumericFormat">
+            <ControlOptions Row="current" PromptLocation="left"/>
+          </DialogControl>
+          <DialogControl Type="Hyperlink" Name="HlnumericFormat">
+            <Prompt>Learn about Numeric formats</Prompt>
+            <Callback>web(&apos;https://www.mathworks.com/help/matlab/ref/sscanf.html#bvjmcrm_sep_shared-formatSpec&apos;)</Callback>
+            <ControlOptions Visible="off"/>
+          </DialogControl>
+          <DialogControl Type="Edit" Name="delimiter">
+            <Prompt>delimiter</Prompt>
+            <ControlOptions PromptLocation="left"/>
+          </DialogControl>
+        </DialogControl>
+        <DialogControl Type="Text" Name="Control14"/>
+        <DialogControl Type="Group" Name="CtReceiveResponse">
+          <Prompt>Receive response</Prompt>
+          <ControlOptions Visible="off"/>
+          <DialogControl Type="RadioButton" Name="RxOption">
+            <Prompt>Data format</Prompt>
+            <ControlOptions PromptLocation="left" Orientation="vertical"/>
+          </DialogControl>
+          <DialogControl Type="Edit" Name="ResponseHeader">
+            <Prompt>Header</Prompt>
+            <ControlOptions PromptLocation="left"/>
+          </DialogControl>
+          <DialogControl Type="Popup" Name="FormatString">
+            <Prompt>Numeric format</Prompt>
+            <ControlOptions PromptLocation="left"/>
+          </DialogControl>
+          <DialogControl Type="Edit" Name="CustomFormatString">
+            <ControlOptions Row="current" PromptLocation="left"/>
+          </DialogControl>
+          <DialogControl Type="Edit" Name="ResponseDelimiter">
+            <Prompt>delimiter</Prompt>
+            <ControlOptions PromptLocation="left"/>
+          </DialogControl>
+          <DialogControl Type="Popup" Name="ReceiveDatatype">
+            <Prompt>Data type</Prompt>
+            <ControlOptions PromptLocation="left"/>
+          </DialogControl>
+          <DialogControl Type="CheckBox" Name="AutoSize">
+            <Prompt>Determine data size automatically</Prompt>
+          </DialogControl>
+          <DialogControl Type="Edit" Name="OutputSize">
+            <Prompt>Data size</Prompt>
+            <ControlOptions HorizontalStretch="off" PromptLocation="left"/>
+          </DialogControl>
+          <DialogControl Type="Edit" Name="Size">
+            <Prompt>Data size</Prompt>
+            <ControlOptions PromptLocation="left"/>
+          </DialogControl>
+        </DialogControl>
+      </DialogControl>
+      <DialogControl Type="Tab" Name="Container7">
+        <Prompt>Handle Error </Prompt>
+        <DialogControl Type="Group" Name="Container16">
+          <DialogControl Type="Text" Name="Control10">
+            <Prompt>Select &apos;Check instrument error&apos; to output any error in the instrument through the &apos;instrument error&apos; port of the block at every timestep.</Prompt>
+          </DialogControl>
+        </DialogControl>
+        <DialogControl Type="Popup" Name="ActionWhenerror">
+          <Prompt>Action when error occurs</Prompt>
+          <ControlOptions PromptLocation="left"/>
+        </DialogControl>
+        <DialogControl Type="CheckBox" Name="Checkerror">
+          <Prompt>Check instrument error.</Prompt>
+        </DialogControl>
+        <DialogControl Type="Edit" Name="CheckCommand">
+          <Prompt>Error check command</Prompt>
+          <ControlOptions HorizontalStretch="off" PromptLocation="left"/>
+        </DialogControl>
+      </DialogControl>
+    </DialogControl>
+    <DialogControl Type="Text" Name="Control13">
+      <ControlOptions Row="current" HorizontalStretch="off"/>
+    </DialogControl>
+  </DialogControl>
+  <DialogControl Type="Panel" Name="SectionGroup0_Section2">
+    <ControlOptions Visible="off" AlignPrompts="on"/>
+    <DialogControl Type="Popup" Name="SimulateUsing">
+      <Prompt>Simulate using:</Prompt>
+      <Tooltip>SystemBlock:MATLABSystem:SimulateUsingDescription</Tooltip>
+      <ControlOptions PromptLocation="left"/>
+    </DialogControl>
+  </DialogControl>
+</Mask>

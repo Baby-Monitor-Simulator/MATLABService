@@ -1,0 +1,80 @@
+{
+    "icdevicefind":
+    {
+        "inputs":
+        [
+            {
+                "name": "Tag",
+                "kind": "namevalue",
+                "type": "choices = matlabshared.transportlib.internal.TabCompletionUtility.Icdevicelist('Tag')"
+            },
+            {
+                "name": "DriverName",
+                "kind": "namevalue",
+                "type": "choices = matlabshared.transportlib.internal.TabCompletionUtility.Icdevicelist('DriverName')"
+            },
+            {
+                "name": "DriverType",
+                "kind": "namevalue",
+                "type": "choices = matlabshared.transportlib.internal.TabCompletionUtility.Icdevicelist('DriverType')"
+            },
+            {
+                "name": "DriverVersion",
+                "kind": "namevalue",
+                "type": "choices = matlabshared.transportlib.internal.TabCompletionUtility.Icdevicelist('DriverVersion')"
+            },
+            {
+                "name": "InstrumentModel",
+                "kind": "namevalue",
+                "type": "choices = matlabshared.transportlib.internal.TabCompletionUtility.Icdevicelist('InstrumentModel')"
+            },
+            {
+                "name": "Interface",
+                "kind": "namevalue",
+                "type": "choices = matlabshared.transportlib.internal.TabCompletionUtility.Icdevicelist('Interface')"
+            },
+            {
+                "name": "Manufacturer",
+                "kind": "namevalue",
+                "type": "choices = matlabshared.transportlib.internal.TabCompletionUtility.Icdevicelist('Manufacturer')"
+            },
+            {
+                "name": "Name",
+                "kind": "namevalue",
+                "type": "choices = matlabshared.transportlib.internal.TabCompletionUtility.Icdevicelist('Name')"
+            },
+            {
+                "name": "RsrcName",
+                "kind": "namevalue",
+                "type": "choices = matlabshared.transportlib.internal.TabCompletionUtility.Icdevicelist('RsrcName')"
+            },
+            {
+                "name": "Status",
+                "kind": "namevalue",
+                "type": "choices = matlabshared.transportlib.internal.TabCompletionUtility.Icdevicelist('Status')"
+            },
+            {
+                "name": "Type",
+                "kind": "namevalue",
+                "type": "choices = matlabshared.transportlib.internal.TabCompletionUtility.Icdevicelist('Type')"
+            },
+            {
+                "name": "UserData",
+                "kind": "namevalue",
+                "type": "choices = matlabshared.transportlib.internal.TabCompletionUtility.Icdevicelist('UserData')"
+            },
+            {
+                "name": "LegacyMode",
+                "kind": "namevalue",
+                "type":  [ "scalar", "logical" ]
+            }
+        ],
+        "outputs":
+        [
+            {
+                "name":"obj",
+                "type":"icdevice"
+            }
+        ]
+    }
+}
