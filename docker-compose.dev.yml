@@ -25,9 +25,24 @@ services:
       - "8087:8087"                     # Map port 8091 to the host
     environment:
       SPRING_PROFILES_ACTIVE: dev 
+    depends_on:
+      - matlab                          # Wait for MATLAB container to start
     networks:
       - matlab-net
+      - rabbitmq-net
+ rabbitmq:
+    image: 'rabbitmq:management'
+    environment:
+      - 'RABBITMQ_DEFAULT_PASS=secret'
+      - 'RABBITMQ_DEFAULT_USER=myuser'
+    ports:
+      - '5672:5672'
+      - '15672:15672' # RabbitMQ Management UI
+    networks:
+      - rabbitmq-net
 
 networks:
   matlab-net:
+    driver: bridge
+  rabbitmq-net:
     driver: bridge
