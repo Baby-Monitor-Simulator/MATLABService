@@ -1,4 +1,4 @@
-package com.babymonitoring.dto.simulationUpdate;
+package com.babymonitoring.dto.RabbitMQ.simulationUpdate;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

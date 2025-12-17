@@ -1,10 +1,14 @@
 package com.babymonitoring.api.websocket;
 
 import com.babymonitoring.dto.*;
+import com.babymonitoring.dto.RabbitMQ.operatorEvent.OperatorEvent;
+import com.babymonitoring.dto.RabbitMQ.operatorEvent.OperatorEventPayload;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import com.babymonitoring.service.SimulationService;
 
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
@@ -13,6 +17,7 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.util.concurrent.*;
 import java.util.function.Consumer;
+import java.util.HashMap;
 
 /**
  * Manages TCP socket connection to MATLAB script container
@@ -37,6 +42,13 @@ public class MatlabConnection {
     private volatile boolean running = false;
     private volatile boolean connected = false;
     private Consumer<String> messageHandler;
+
+    private final SimulationService simulationService;
+    
+    @Autowired
+    public MatlabConnection(SimulationService simulationService) {
+        this.simulationService = simulationService;
+    }
     
     @PostConstruct
     public void initialize() {
@@ -52,7 +64,48 @@ public class MatlabConnection {
         executorService.shutdown();
         reconnectScheduler.shutdown();
     }
+
+    /**
+     * Send message to MATLAB
+     */
+    public synchronized boolean sendMessage(Object message) {
+        if (!connected) {
+            logger.warn("Cannot send message - not connected to MATLAB");
+            return false;
+        }
+        
+        try {
+            String json = objectMapper.writeValueAsString(message);
+            logger.debug("Sending to MATLAB: {}", json);
+            writer.println(json);
+            return !writer.checkError();
+        } catch (Exception e) {
+            logger.error("Error sending message to MATLAB", e);
+            return false;
+        }
+    }
     
+    /**
+         * Handle incoming message from MATLAB
+         */
+    private void handleMatlabMessage(String message) {
+        try {
+            logger.info("Processing MATLAB message: {}", message);
+            this.simulationService.handleMatlabMessage(message);
+            
+        } catch (Exception e) {
+            logger.error("Error handling MATLAB message: {}", message, e);
+        }
+    }
+    /**
+     * Create json {"type": "stop"} and send to MATLAB
+     */
+    public boolean stopScript() {
+        HashMap<String, String> stopCommand = new HashMap<String, String>();
+        stopCommand.put("type", "stop");
+        return sendMessage(stopCommand);
+    }
+
     /**
      * Establish connection to MATLAB
      */
@@ -80,21 +133,6 @@ public class MatlabConnection {
         } catch (Exception e) {
             logger.error("Failed to connect to MATLAB: {}", e.getMessage());
             scheduleReconnect();
-        }
-    }
-    
-    /**
-     * Disconnect from MATLAB
-     */
-    private synchronized void disconnect() {
-        connected = false;
-        
-        try {
-            if (writer != null) writer.close();
-            if (reader != null) reader.close();
-            if (socket != null && !socket.isClosed()) socket.close();
-        } catch (IOException e) {
-            logger.error("Error closing MATLAB connection", e);
         }
     }
     
@@ -156,90 +194,26 @@ public class MatlabConnection {
     }
     
     /**
-     * Handle incoming message from MATLAB
-     */
-    private void handleMatlabMessage(String message) {
+         * Disconnect from MATLAB
+         */
+    private synchronized void disconnect() {
+        connected = false;
+        
         try {
-            // Parse JSON message from MATLAB
-            // Expected format: {"type": "simulation.update", "payload": {...}}
-            logger.info("Processing MATLAB message: {}", message);
-            
-            // TODO: Parse and forward to WebSocket clients or process as needed
-            
-        } catch (Exception e) {
-            logger.error("Error handling MATLAB message: {}", message, e);
+            if (writer != null) writer.close();
+            if (reader != null) reader.close();
+            if (socket != null && !socket.isClosed()) socket.close();
+        } catch (IOException e) {
+            logger.error("Error closing MATLAB connection", e);
         }
     }
-    
+
     /**
      * Handle disconnection
      */
     private void handleDisconnect() {
         disconnect();
         scheduleReconnect();
-    }
-    
-    /**
-     * Send message to MATLAB
-     */
-    public synchronized boolean sendMessage(Object message) {
-        if (!connected) {
-            logger.warn("Cannot send message - not connected to MATLAB");
-            return false;
-        }
-        
-        try {
-            String json = objectMapper.writeValueAsString(message);
-            logger.debug("Sending to MATLAB: {}", json);
-            writer.println(json);
-            return !writer.checkError();
-        } catch (Exception e) {
-            logger.error("Error sending message to MATLAB", e);
-            return false;
-        }
-    }
-    
-    /**
-     * Send start simulation command
-     */
-    public boolean startSimulation() {
-        logger.info("Sending start command to MATLAB");
-        SimpleCommandMessage message = SimpleCommandMessage.start();
-        return sendMessage(message);
-    }
-    
-    /**
-     * Send stop simulation command
-     */
-    public boolean stopSimulation() {
-        logger.info("Sending stop command to MATLAB");
-        SimpleCommandMessage message = SimpleCommandMessage.stop();
-        return sendMessage(message);
-    }
-    
-    /**
-     * Send operator event to MATLAB
-     */
-    public boolean sendOperatorEvent(String eventType, double intensity, long durationMs) {
-        logger.info("Sending operator event to MATLAB: {} (intensity={}, duration={}ms)", 
-                   eventType, intensity, durationMs);
-        OperatorEventMessage message = OperatorEventMessage.createInjectEvent(eventType, intensity, durationMs);
-        return sendMessage(message);
-    }
-    
-    /**
-     * Send ping to MATLAB
-     */
-    public boolean sendPing() {
-        PingMessage message = PingMessage.ping();
-        return sendMessage(message);
-    }
-    
-    /**
-     * Check if connected
-     */
-    public boolean isConnected() {
-        return connected && socket != null && !socket.isClosed();
     }
     
     /**
@@ -252,11 +226,11 @@ public class MatlabConnection {
     /**
      * Get connection status
      */
-    public String getStatus() {
+    public boolean isConnected() {
         if (connected) {
-            return "Connected to " + MATLAB_HOST + ":" + MATLAB_PORT;
+            return true;
         } else {
-            return "Disconnected (reconnecting...)";
+            return false;
         }
     }
 }

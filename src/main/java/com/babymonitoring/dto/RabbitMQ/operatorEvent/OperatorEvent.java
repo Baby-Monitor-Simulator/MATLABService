@@ -1,4 +1,4 @@
-package com.babymonitoring.dto.operatorEvent;
+package com.babymonitoring.dto.RabbitMQ.operatorEvent;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
