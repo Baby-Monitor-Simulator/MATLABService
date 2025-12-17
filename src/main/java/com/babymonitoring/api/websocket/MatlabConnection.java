@@ -1,12 +1,10 @@
 package com.babymonitoring.api.websocket;
 
-import com.babymonitoring.dto.*;
-import com.babymonitoring.dto.RabbitMQ.operatorEvent.OperatorEvent;
-import com.babymonitoring.dto.RabbitMQ.operatorEvent.OperatorEventPayload;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import com.babymonitoring.service.SimulationService;
 
@@ -46,13 +44,14 @@ public class MatlabConnection {
     private final SimulationService simulationService;
     
     @Autowired
-    public MatlabConnection(SimulationService simulationService) {
+    public MatlabConnection(@Lazy SimulationService simulationService) {
         this.simulationService = simulationService;
     }
     
     @PostConstruct
     public void initialize() {
         logger.info("Initializing MATLAB connection...");
+        running = true;  // Set this before connect() so reconnects work
         connect();
     }
     
@@ -124,7 +123,6 @@ public class MatlabConnection {
             writer = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()), true);
             
             connected = true;
-            running = true;
             logger.info("✓ Connected to MATLAB successfully");
             
             // Start listening for messages from MATLAB

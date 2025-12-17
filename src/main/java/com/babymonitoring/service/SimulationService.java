@@ -39,6 +39,8 @@ public class SimulationService {
         logger.info("SimulationService: Starting simulation");
         
         try {
+            // create connection then send message
+            matlabConnection.connect();
             if (!matlabConnection.isConnected()) {
                 throw new RuntimeException("MATLAB connection not available");
             }
@@ -129,7 +131,7 @@ public class SimulationService {
             }
             
         } catch (Exception e) {
-            logger.error("SimulationService: Incoming json structure does not match expected structure from DTO: {}", e.getMessage());
+            logger.error("SimulationService: Incoming json structure does not match expected structure from DTO", e);
         }
     }
 
