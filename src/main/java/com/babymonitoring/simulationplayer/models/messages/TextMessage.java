@@ -1,7 +1,5 @@
 package com.babymonitoring.simulationplayer.models.messages;
 
-import jdk.jfr.Description;
-
 import java.util.UUID;
 
 /**
@@ -10,11 +8,11 @@ import java.util.UUID;
 public class TextMessage extends Message {
     String Msg;
 
-    public TextMessage (String msg) {
+    public TextMessage(String msg) {
         Msg = msg;
     }
 
-    public TextMessage (UUID userId, String msg) {
+    public TextMessage(UUID userId, String msg) {
         UserId = userId;
         Msg = msg;
     }

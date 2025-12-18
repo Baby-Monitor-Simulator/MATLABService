@@ -5,7 +5,6 @@ import com.babymonitoring.simulationplayer.models.events.SimulationUpdate;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -26,7 +25,5 @@ public class RabbitMQSenderService {
         // Send the message to the topic exchange with the routing key
         rabbitTemplate.convertAndSend(RabbitMQConfig.TOPIC_EXCHANGE_NAME, routingKey, update);
     }
-
-
 
 }
