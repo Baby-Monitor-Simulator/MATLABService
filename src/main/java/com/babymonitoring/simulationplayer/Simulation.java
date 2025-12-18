@@ -29,7 +29,7 @@ public class Simulation {
     private static int simcount = 1;
     private static double prevTimeIndex = 0;
     private static Timer timer;
-    private static XYSeries series;
+    private XYSeries series;
     private static CompletableFuture<double[]> simPreResults;
     private static double[] simResults;
     private static boolean endSimulation = false;
