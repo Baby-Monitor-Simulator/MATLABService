@@ -19,7 +19,6 @@ public class MessageController {
 
     private SimpMessagingTemplate template;
 
-    @SuppressWarnings("EI_EXPOSE_REP2")
     @Autowired
     public MessageController(SimpMessagingTemplate template) {
         this.template = template;
