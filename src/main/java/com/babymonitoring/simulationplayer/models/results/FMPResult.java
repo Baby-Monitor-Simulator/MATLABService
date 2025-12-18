@@ -2,8 +2,6 @@ package com.babymonitoring.simulationplayer.models.results;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.util.UUID;
-
 public class FMPResult {
     @JsonProperty("upResult")
     public UPResult[] upResult;
@@ -14,18 +12,19 @@ public class FMPResult {
     @JsonProperty("o2PResult")
     public O2PResult[] o2PResult;
 
-    public FMPResult () {}
+    public FMPResult() {
+    }
 
-    public FMPResult (FHRResult[] fhrResult, MAPResult[] mapResult, O2PResult[] o2PResult, UPResult[] upResult) {
+    public FMPResult(FHRResult[] fhrResult, MAPResult[] mapResult, O2PResult[] o2PResult, UPResult[] upResult) {
         this.fhrResult = fhrResult;
         this.mapResult = mapResult;
         this.o2PResult = o2PResult;
         this.upResult = upResult;
     }
 
-//    @Override
-//    public String toString()
-//    {
-//        return "address";
-//    }
+    // @Override
+    // public String toString()
+    // {
+    // return "address";
+    // }
 }
