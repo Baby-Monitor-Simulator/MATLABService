@@ -64,15 +64,15 @@ public class MessageController {
             }
         });
         newThread.start();
-        SendText(new TextMessage(message.getUserId(),
+        sendText(new TextMessage(message.getUserId(),
                 "Hello, " + HtmlUtils.htmlEscape(message.getUserId().toString()) + "!"));
     }
 
-    public void SendText(TextMessage message) {
+    public void sendText(TextMessage message) {
         this.template.convertAndSend("/lobby/" + message.getUserId(), message);
     }
 
-    public void SendCoords(CoordsMessage message) {
+    public void sendCoords(CoordsMessage message) {
         this.template.convertAndSend("/lobby/" + message.getUserId(), message);
     }
 

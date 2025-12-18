@@ -28,10 +28,10 @@ public class Simulation {
     private static double timeIndex = 0;
     private static int simcount = 1;
     private static double prevTimeIndex = 0;
-    private static Timer timer;
+    private Timer timer;
     private XYSeries series;
     private static CompletableFuture<double[]> simPreResults;
-    private static double[] simResults;
+    private double[] simResults;
     private static boolean endSimulation = false;
     private MessageController controller;
 
@@ -61,7 +61,7 @@ public class Simulation {
         });
     }
 
-    public void Chart() {
+    public void chart() {
         try {
 
             // Voer het script uit met invoer n = 4
@@ -110,7 +110,7 @@ public class Simulation {
     }
 
     @Async
-    public static void stopSimulation() {
+    public void stopSimulation() {
         timer.stop();
     }
 
@@ -124,7 +124,7 @@ public class Simulation {
     public void startSimulation(int t, int steps, double a, double f, double ts, double tsp, double te, UUID userId)
             throws ExecutionException, InterruptedException {
         // ----- For debug -----
-        Chart();
+        chart();
         // ---------------------
 
         simResults = getMatlabResultAsync(a, f, ts, tsp, te).get();
@@ -255,7 +255,7 @@ public class Simulation {
         // ------------------
         FMPResult[] results = SplitList(500, CorrectResults(fmpResult));
         for (int i = 0; i < results.length; i++) {
-            controller.SendCoords(new CoordsMessage(userId, results[i]));
+            controller.sendCoords(new CoordsMessage(userId, results[i]));
         }
         // ------------------------------------------------------------------------------------------------
     }
