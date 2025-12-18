@@ -28,7 +28,6 @@ public class Simulation {
     private static double timeIndex = 0;
     private static int simcount = 1;
     private static double prevTimeIndex = 0;
-    private static MatlabEngine eng = null;
     private static Timer timer;
     private static XYSeries series;
     private static CompletableFuture<double[]> simPreResults;
