@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import com.babymonitoring.api.messaging.MessagingSender;
 
@@ -25,10 +26,16 @@ public class SimulationService {
     private final MatlabConnection matlabConnection;
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final MessagingSender messagingSender;
+    private final BufferManagementService bufferManagementService;
+    
     @Autowired
-    public SimulationService(MatlabConnection matlabConnection, MessagingSender messagingSender) {
+    public SimulationService(
+            MatlabConnection matlabConnection, 
+            MessagingSender messagingSender,
+            @Lazy BufferManagementService bufferManagementService) {
         this.messagingSender = messagingSender;
         this.matlabConnection = matlabConnection;
+        this.bufferManagementService = bufferManagementService;
     }
     
     /**
@@ -40,11 +47,14 @@ public class SimulationService {
         
         try {
             // create connection then send message
-            matlabConnection.connect();
+            matlabConnection.initialize();
             if (!matlabConnection.isConnected()) {
                 throw new RuntimeException("MATLAB connection not available");
             }
             MatlabOperatorEvent matlabOperatorEvent = RabbitMQMatlabMapper.toMatlab(operatorEvent);
+            
+            // Start buffer management with initial parameters
+            bufferManagementService.start(matlabOperatorEvent.parameters);
             
             boolean success = matlabConnection.sendMessage(matlabOperatorEvent);
             if (!success) {
@@ -67,6 +77,9 @@ public class SimulationService {
         logger.info("SimulationService: Stopping simulation");
         
         try {
+            // Stop buffer management
+            bufferManagementService.stop();
+            
             if (!matlabConnection.isConnected()) {
                 throw new RuntimeException("MATLAB connection not available");
             }
@@ -88,6 +101,10 @@ public class SimulationService {
         logger.info("SimulationService: Processing operator event: {}", operatorEvent.payload.action);
         try {
             MatlabOperatorEvent matlabOperatorEvent = RabbitMQMatlabMapper.toMatlab(operatorEvent);
+            
+            // Update buffer management parameters
+            bufferManagementService.updateParameters(matlabOperatorEvent.parameters);
+            
             boolean success = matlabConnection.sendMessage(matlabOperatorEvent);
             if (!success) {
                 throw new RuntimeException("Failed to send operator event to MATLAB");
@@ -141,8 +158,18 @@ public class SimulationService {
             MatlabSimulationUpdate matlabSimulationUpdate = objectMapper.readValue(messageJson, MatlabSimulationUpdate.class);
             switch (matlabSimulationUpdate.type) {
                 case "data":
+                    // Notify buffer management of incoming data
+                    bufferManagementService.processDataUpdate(matlabSimulationUpdate);
+                    
+                    // Convert and send to RabbitMQ
                     SimulationUpdate simulationUpdate = RabbitMQMatlabMapper.toRabbitMQ(matlabSimulationUpdate);
                     messagingSender.sendToTestExchange("simulation.update", simulationUpdate);
+                    
+                    // Mark data as consumed from buffer
+                    int dataPoints = matlabSimulationUpdate.data.toco != null ? 
+                        matlabSimulationUpdate.data.toco.size() : 0;
+                    bufferManagementService.consumeDataPoints(dataPoints);
+                    
                     break;
                 default:
                     logger.error("SimulationService: Unknown MATLAB message type: {}", matlabSimulationUpdate.type);
